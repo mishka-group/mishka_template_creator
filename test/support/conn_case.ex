@@ -19,15 +19,15 @@ defmodule MishkaTemplateCreatorWeb.ConnCase do
 
   using do
     quote do
+      # The default endpoint for testing
+      @endpoint MishkaTemplateCreatorWeb.Endpoint
+
+      use MishkaTemplateCreatorWeb, :verified_routes
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import MishkaTemplateCreatorWeb.ConnCase
-
-      alias MishkaTemplateCreatorWeb.Router.Helpers, as: Routes
-
-      # The default endpoint for testing
-      @endpoint MishkaTemplateCreatorWeb.Endpoint
     end
   end
 

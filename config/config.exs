@@ -13,9 +13,12 @@ config :mishka_template_creator,
 # Configures the endpoint
 config :mishka_template_creator, MishkaTemplateCreatorWeb.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: MishkaTemplateCreatorWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [
+    formats: [html: MishkaTemplateCreatorWeb.ErrorHTML, json: MishkaTemplateCreatorWeb.ErrorJSON],
+    layout: false
+  ],
   pubsub_server: MishkaTemplateCreator.PubSub,
-  live_view: [signing_salt: "/WLEAJrh"]
+  live_view: [signing_salt: "y+wnwnne"]
 
 # Configures the mailer
 #
@@ -26,17 +29,26 @@ config :mishka_template_creator, MishkaTemplateCreatorWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :mishka_template_creator, MishkaTemplateCreator.Mailer, adapter: Swoosh.Adapters.Local
 
-# Swoosh API client is needed for adapters other than SMTP.
-config :swoosh, :api_client, false
-
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.14.29",
+  version: "0.14.41",
   default: [
     args:
       ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
+
+# Configure tailwind (the version is required)
+config :tailwind,
+  version: "3.1.8",
+  default: [
+    args: ~w(
+      --config=tailwind.config.js
+      --input=css/app.css
+      --output=../priv/static/assets/app.css
+    ),
+    cd: Path.expand("../assets", __DIR__)
   ]
 
 # Configures Elixir's Logger

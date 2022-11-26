@@ -17,14 +17,17 @@ config :mishka_template_creator, MishkaTemplateCreator.Repo,
 # you can enable the server option below.
 config :mishka_template_creator, MishkaTemplateCreatorWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "tBS7Cp4HiJ7biJbgRVNljCEEm864yCkhjUUyms80qzlh6M+xIhZFMuSuM/TbaPTy",
+  secret_key_base: "wjJRs4sMMdBX+JFYi2qYgANF0o8tGwTr3TPx4GVVQ+hNBhv871CqYw/zw3BhiJQa",
   server: false
 
 # In test we don't send emails.
 config :mishka_template_creator, MishkaTemplateCreator.Mailer, adapter: Swoosh.Adapters.Test
 
+# Disable swoosh api client as it is only required for production adapters.
+config :swoosh, :api_client, false
+
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime

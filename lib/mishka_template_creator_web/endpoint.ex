@@ -7,7 +7,8 @@ defmodule MishkaTemplateCreatorWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_mishka_template_creator_key",
-    signing_salt: "wKpY/DUN"
+    signing_salt: "AgiNinzw",
+    same_site: "Lax"
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
@@ -20,7 +21,7 @@ defmodule MishkaTemplateCreatorWeb.Endpoint do
     at: "/",
     from: :mishka_template_creator,
     gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+    only: MishkaTemplateCreatorWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
