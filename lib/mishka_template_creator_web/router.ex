@@ -14,10 +14,10 @@ defmodule MishkaTemplateCreatorWeb.Router do
     plug :accepts, ["json"]
   end
 
+
   scope "/", MishkaTemplateCreatorWeb do
     pipe_through :browser
-
-    get "/", PageController, :home
+    live "/", TemplateCreatorLive
   end
 
   # Other scopes may use custom stacks.
