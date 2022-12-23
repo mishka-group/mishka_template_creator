@@ -1,39 +1,67 @@
+<%!-- Start main container of mishka template creator editor --%>
 <div class="absolute inset-0 bg-gray-100 z-10 h-full overflow-hidden">
-  <%!-- Start main container of mishka template creator editor --%>
+  <%!-- Start Top side Navigation --%>
   <div
-    id="mishka_template_creator_editor"
-    class="container flex flex-col justify-start items-center mx-auto h-screen"
+    id="mishka_top_nav"
+    class="flex flex-row w-full bg-white justify-between items-center text-gray-500 border-b border-[rgb(229,229,229)] shadow-md z-10 rounded-b-xl mb-5 p-5"
   >
-    <%!-- Start Top side Navigation --%>
-    <div
-      id="mishka_top_nav"
-      class="flex flex-row w-full bg-white justify-center items-center text-white border-b border-[rgb(229,229,229)] shadow-md z-10 rounded-b-md"
-    >
-      sss
+    <div>Back To/History</div>
+    <div>Main Section</div>
+    <div>Settings</div>
+  </div>
+  <div
+    id="mishka_content"
+    class="flex flex-col-reverse mx-auto justify-between items-stretch w-full rounded-t-md lg:flex-row"
+  >
+    <%!-- Start Darg/Drop place and showing block codes --%>
+    <div class="flex flex-col items-stretch justify-start px-5 pt-5 pb-32 w-full space-y-4 overflow-y-scroll h-screen">
+      <%!-- Test Items :: should be deleted --%>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10"></div>
+      <div class="w-full bg-white p-10 h-96">
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+        <p>s</p>
+      </div>
+      <%!-- Test Items :: should be deleted --%>
     </div>
 
-    <div
-      id="mishka_content"
-      class="flex flex-col mx-auto justify-between items-stretch w-full rounded-t-md md:flex-row"
-    >
-      <%!-- Start Darg/Drop place and showing block codes --%>
-      <div>s</div>
-
-      <%!-- Start Side manu --%>
-      <div class="w-3/12 bg-white h-screen border-t-0 border-l border-r border-b border-[rgb(229,229,229)]">
-        <div class="flex flex-row justify-between items-stretch p-4 border-b border-[rgb(229,229,229)]">
-          <div
-            class="font-bold flex flex-row justify-start items-stretch space-x-1"
-          >
-            <span
-              ><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
-              </svg>
-              
-            </span>
-            <span>Title of Block</span>
-          </div>
-          <div>
+    <%!-- Start Side manu --%>
+    <div class="flex flex-col w-[95%] mx-auto bg-white border-t-0 border-l border-r border-b border-[rgb(229,229,229)] rounded-t-md lg:w-5/12 lg:h-screen lg:mx-0 lg:overflow-y-scroll xl:w-3/12">
+      <div class="flex flex-row justify-between items-stretch p-4 border-b border-[rgb(229,229,229)]">
+        <%!-- Start Blocks Head Title Icon and text--%>
+        <div class="font-bold flex flex-row justify-start items-stretch space-x-1">
+          <span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -45,10 +73,51 @@
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M6 18L18 6M6 6l12 12"
+                d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"
+              />
+            </svg>
+          </span>
+          <span>Title of Block</span>
+        </div>
+        <%!-- Start Close Blocks side --%>
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+      </div>
+      <%!-- Start Search blocks --%>
+      <div id="mishka_search" class="w-full border-b border-[rgb(229,229,229)]">
+        <div class="relative">
+          <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
               />
             </svg>
           </div>
+          <input
+            type="text"
+            id="search_blocks"
+            class="border-0  focus:ring-blue-300 focus:border-blue-300 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-300 dark:focus:border-blue-300"
+            placeholder="Search Blocks"
+          />
         </div>
       </div>
     </div>

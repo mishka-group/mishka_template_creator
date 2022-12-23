@@ -9,6 +9,5 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("delete", _, socket) do
-
   end
 end

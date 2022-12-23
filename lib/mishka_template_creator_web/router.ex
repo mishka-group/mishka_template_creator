@@ -14,7 +14,6 @@ defmodule MishkaTemplateCreatorWeb.Router do
     plug :accepts, ["json"]
   end
 
-
   scope "/", MishkaTemplateCreatorWeb do
     pipe_through :browser
     live "/", TemplateCreatorLive
