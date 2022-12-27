@@ -11,7 +11,7 @@
     id="mishka_content"
     class="flex flex-col-reverse mx-auto justify-between items-stretch w-full rounded-t-md lg:flex-row"
   >
-    <div class="flex flex-col items-stretch justify-start pr-9 pl-0 pt-5 pb-96 mb-96 w-full space-y-4 lg:overflow-y-scroll lg:h-screen lg:min-h-screen mx-5 lg:pr-0">
+    <div id="dragLocation" class="flex flex-col items-stretch justify-start pr-9 pl-0 pt-5 pb-96 mb-96 w-full space-y-4 lg:overflow-y-scroll lg:h-screen lg:min-h-screen mx-5 lg:pr-0">
       <div class="w-full bg-red-100 p-10"></div>
       <div class="w-full bg-red-100 p-10"></div>
       <div class="w-full bg-red-100 p-10"></div>
@@ -113,7 +113,7 @@
 
       <div id="layout" class="flex flex-col px-2 py-4 mx-auto w-full">
         <h3 class="mb-4 font-bold">Layout</h3>
-        <div class="grid grid-cols-3 gap-4 text-gray-700 lg:grid-cols-3 2xl:grid-cols-4">
+        <div id="layout-block" class="grid grid-cols-3 gap-4 text-gray-700 lg:grid-cols-3 2xl:grid-cols-4">
           <div id="section-drag" phx-hook="SectionDrag" class="border border-gray-200 rounded-md p-5 hover:border hover:border-blue-300 hover:duration-300 duration-1000 hover:text-blue-500 lg:px-1">
             <p class="mx-auto text-center">
               <svg

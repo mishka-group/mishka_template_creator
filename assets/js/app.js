@@ -7,12 +7,36 @@ import Sortable from 'sortablejs';
 // Start Hooks object
 let Hooks = {};
 
+const getBlocks = document.getElementById('layout-block');
+const putBlock = document.getElementById('dragLocation');
+const sortableSpeed = 150;
+var sortable1 = Sortable.create(getBlocks, {
+  group: {
+    name: 'group1',
+    pull: 'clone',
+    put: false,
+  },
+  animation: sortableSpeed,
+  sort: false,
+});
+
+var sortable2 = Sortable.create(putBlock, {
+  group: {
+    name: 'group2',
+    put: ['group1'],
+  },
+  animation: sortableSpeed,
+  swapThreshold: 0.65,
+});
+
 // Start hooks Functions, this place we put some hooks we defined in elixir side and communicate with backend
 Hooks.SectionDrag = {
   mounted() {
     // This is a simple way based on JS Listener
     this.el.addEventListener('click', (e) => {
       console.log(e);
+      // send back to the server
+      this.pushEvent('change-section', {});
     });
 
     // This is a way for sending data to client from backend
