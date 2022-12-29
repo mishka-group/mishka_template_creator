@@ -14,7 +14,7 @@ const sortableSpeed = 150;
 
 Sortable.create(getBlocks, {
   group: {
-    name: 'group1',
+    name: 'LayoutGroup',
     pull: 'clone',
     put: false,
   },
@@ -27,42 +27,58 @@ Sortable.create(getBlocks, {
     if (putBlock.children.length === 1) {
       previewHelper.classList.remove('hidden');
     } else {
-      // It is a custom listener to let Phoenix LiveView hook, something happened that it should be listen.
-      const eventAwesome = new CustomEvent('awesome', {
-        bubbles: true,
-        detail: { text: 'test params' },
-      });
-      // This is a sender and dispatcher for event
-      evt.item.dispatchEvent(eventAwesome);
+      customEventCreator('awesome', evt.item, { text: 'test params' });
     }
   },
 });
 
 Sortable.create(putBlock, {
   group: {
-    name: 'group2',
-    put: ['group1'],
+    name: 'ContentGroup',
+    put: ['LayoutGroup'],
   },
   animation: sortableSpeed,
   swapThreshold: 0.65,
   onAdd: function (/**Event*/ evt) {
-    const elementID = evt.item.id;
+    const elementID = evt.item.dataset.id;
     recoverAndConvertAfterDroppingAnItem(evt.item, elementID);
-
     if (elementID === 'section-drag') {
-      evt.item.setAttribute('data-type', 'container-Papayas-dd');
-
-      Sortable.create(evt.item, {
-        group: {
-          name: 'nested',
-          put: ['group1', 'group2'],
-        },
-        animation: sortableSpeed,
-        swapThreshold: 0.65,
-      });
+      console.log('heheheheheheheyyy1');
+      createSectionOnSortableJS(evt.item);
     }
   },
 });
+
+function createSectionOnSortableJS(htmlElement) {
+  htmlElement.innerHTML = '';
+  htmlElement.classList.add('create-section');
+
+  Sortable.create(htmlElement, {
+    group: {
+      name: `section-${uuidv4()}`,
+      put: ['LayoutGroup'],
+    },
+    animation: sortableSpeed,
+    swapThreshold: 0.65,
+    onAdd: function (/**Event*/ evt) {
+      const elementID = evt.item.dataset.id;
+      evt.item.innerHTML = '';
+      evt.item.classList.add('create-section');
+      recoverAndConvertAfterDroppingAnItem(evt.item, elementID);
+
+      if (elementID === 'section-drag') {
+        Sortable.create(evt.item, {
+          group: {
+            name: `section-${uuidv4()}`,
+            put: ['LayoutGroup'],
+          },
+          animation: sortableSpeed,
+          swapThreshold: 0.65,
+        });
+      }
+    },
+  });
+}
 
 function recoverAndConvertAfterDroppingAnItem(htmlElement, elementID) {
   liveViewAttributeRemover(htmlElement);
@@ -75,6 +91,16 @@ function liveViewAttributeRemover(htmlElement) {
   ['data-id', 'phx-click', 'phx-hook'].map((item) => {
     htmlElement.removeAttribute(item);
   });
+}
+
+function customEventCreator(name, htmlElement, params) {
+  // It is a custom listener to let Phoenix LiveView hook, something happened that it should be listen.
+  const event = new CustomEvent(name, {
+    bubbles: true,
+    detail: params,
+  });
+  // This is a sender and dispatcher for event
+  htmlElement.dispatchEvent(event);
 }
 
 function uuidv4() {

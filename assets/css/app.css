@@ -2,6 +2,10 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+.create-section {
+  @apply bg-white min-h-[200px] border;
+}
+
 /* This file is for your main application CSS */
 :root {
   --transparent: transparent;
