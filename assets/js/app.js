@@ -7,9 +7,12 @@ import Sortable from 'sortablejs';
 // Start Hooks object
 let Hooks = {};
 
+//
 const getBlocks = document.getElementById('layout-block');
 const putBlock = document.getElementById('dragLocation');
+const previewHelper = document.getElementById('previewHelper');
 const sortableSpeed = 150;
+
 var sortable1 = Sortable.create(getBlocks, {
   group: {
     name: 'group1',
@@ -18,6 +21,22 @@ var sortable1 = Sortable.create(getBlocks, {
   },
   animation: sortableSpeed,
   sort: false,
+  onStart: function (evt) {
+    previewHelper.classList.add('hidden');
+  },
+  onEnd: function (evt) {
+    if (putBlock.children.length === 1) {
+      previewHelper.classList.remove('hidden');
+    } else {
+      // It is a custom listener to let Phoenix LiveView hook, something happened that it should be listen.
+      const eventAwesome = new CustomEvent('awesome', {
+        bubbles: true,
+        detail: { text: 'test params' },
+      });
+      // This is a sender and dispatcher for event
+      evt.item.dispatchEvent(eventAwesome);
+    }
+  },
 });
 
 var sortable2 = Sortable.create(putBlock, {
@@ -27,14 +46,24 @@ var sortable2 = Sortable.create(putBlock, {
   },
   animation: sortableSpeed,
   swapThreshold: 0.65,
+  onAdd: function (/**Event*/ evt) {
+    const sectionID = evt.item.id;
+    evt.item.removeAttribute('data-id');
+    evt.item.removeAttribute('phx-click');
+    evt.item.setAttribute('id', sectionID + '-clone');
+    const blockCodeID = document.querySelector(`[data-id="${sectionID}"]`);
+    blockCodeID.setAttribute('id', sectionID);
+  },
 });
 
 // Start hooks Functions, this place we put some hooks we defined in elixir side and communicate with backend
-Hooks.SectionDrag = {
+Hooks.dragAndDropLocation = {
   mounted() {
     // This is a simple way based on JS Listener
-    this.el.addEventListener('click', (e) => {
-      console.log(e);
+    this.el.addEventListener('awesome', (e) => {
+      e.preventDefault();
+      console.log(e.detail.text);
+
       // send back to the server
       this.pushEvent('change-section', {});
     });

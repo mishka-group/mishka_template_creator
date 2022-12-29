@@ -12,4 +12,9 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     IO.inspect("This is we have")
     {:noreply, socket}
   end
+
+  def handle_event("test-btn", _, socket) do
+    IO.inspect("This is we have -- test-btn")
+    {:noreply, socket}
+  end
 end

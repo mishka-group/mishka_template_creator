@@ -9,45 +9,33 @@
   </div>
   <div
     id="mishka_content"
+    data-id="mishka_content"
     class="flex flex-col-reverse mx-auto justify-between items-stretch w-full rounded-t-md lg:flex-row"
+    phx-hook="dragAndDropLocation"
   >
-    <div id="dragLocation" class="flex flex-col items-stretch justify-start pr-9 pl-0 pt-5 pb-96 mb-96 w-full space-y-4 lg:overflow-y-scroll lg:h-screen lg:min-h-screen mx-5 lg:pr-0">
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10"></div>
-      <div class="w-full bg-red-100 p-10 h-96">
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
-        <p>s</p>
+    <div
+      id="dragLocation"
+      class="flex flex-col items-stretch justify-start pr-9 pl-0 pt-5 pb-96 mb-96 w-full space-y-4 lg:overflow-y-scroll lg:h-screen lg:min-h-screen mx-5 lg:pr-0"
+    >
+      <div id="previewHelper" class="flex flex-col justify-center items-center w-full border border-dashed border-gray-300 h-80 text-center object-center font-bold text-xl hover:border-blue-500 hover:duration-1000 hover:rounded-md rounded-sm duration-300 hover:text-blue-600 space-y-10">
+        <div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-32 h-32"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+            />
+          </svg>
+        </div>
+
+        <div>Drag And Drop a section here</div>
       </div>
     </div>
     <div class="flex flex-col w-[95%] h-[300px] mx-auto bg-white border-t-0 border-l border-r border-b border-[rgb(229,229,229)] rounded-t-md md:pb-20 overflow-y-scroll overflow-x-hidden lg:w-5/12 lg:h-screen lg:mx-0 xl:w-4/12">
@@ -113,8 +101,16 @@
 
       <div id="layout" class="flex flex-col px-2 py-4 mx-auto w-full">
         <h3 class="mb-4 font-bold">Layout</h3>
-        <div id="layout-block" class="grid grid-cols-3 gap-4 text-gray-700 lg:grid-cols-3 2xl:grid-cols-4">
-          <div id="section-drag" phx-hook="SectionDrag" class="border border-gray-200 rounded-md p-5 hover:border hover:border-blue-300 hover:duration-300 duration-1000 hover:text-blue-500 lg:px-1">
+        <div
+          id="layout-block"
+          class="grid grid-cols-3 gap-4 text-gray-700 lg:grid-cols-3 2xl:grid-cols-4"
+        >
+          <div
+            id="section-drag"
+            data-id="section-drag"
+            phx-click="test-btn"
+            class="border border-gray-200 rounded-md p-5 hover:border hover:border-blue-300 hover:duration-300 duration-1000 hover:text-blue-500 lg:px-1"
+          >
             <p class="mx-auto text-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
