@@ -7,13 +7,12 @@ import Sortable from 'sortablejs';
 // Start Hooks object
 let Hooks = {};
 
-//
 const getBlocks = document.getElementById('layout-block');
 const putBlock = document.getElementById('dragLocation');
 const previewHelper = document.getElementById('previewHelper');
 const sortableSpeed = 150;
 
-var sortable1 = Sortable.create(getBlocks, {
+Sortable.create(getBlocks, {
   group: {
     name: 'group1',
     pull: 'clone',
@@ -39,7 +38,7 @@ var sortable1 = Sortable.create(getBlocks, {
   },
 });
 
-var sortable2 = Sortable.create(putBlock, {
+Sortable.create(putBlock, {
   group: {
     name: 'group2',
     put: ['group1'],
@@ -47,14 +46,50 @@ var sortable2 = Sortable.create(putBlock, {
   animation: sortableSpeed,
   swapThreshold: 0.65,
   onAdd: function (/**Event*/ evt) {
-    const sectionID = evt.item.id;
-    evt.item.removeAttribute('data-id');
-    evt.item.removeAttribute('phx-click');
-    evt.item.setAttribute('id', sectionID + '-clone');
-    const blockCodeID = document.querySelector(`[data-id="${sectionID}"]`);
-    blockCodeID.setAttribute('id', sectionID);
+    const elementID = evt.item.id;
+    recoverAndConvertAfterDroppingAnItem(evt.item, elementID);
+
+    if (elementID === 'section-drag') {
+      evt.item.setAttribute('data-type', 'container-Papayas-dd');
+
+      Sortable.create(evt.item, {
+        group: {
+          name: 'nested',
+          put: ['group1', 'group2'],
+        },
+        animation: sortableSpeed,
+        swapThreshold: 0.65,
+      });
+    }
   },
 });
+
+function recoverAndConvertAfterDroppingAnItem(htmlElement, elementID) {
+  liveViewAttributeRemover(htmlElement);
+  htmlElement.setAttribute('id', `${elementID}-clone-${uuidv4()}`);
+  const blockCodeID = document.querySelector(`[data-id="${elementID}"]`);
+  blockCodeID.setAttribute('id', elementID);
+}
+
+function liveViewAttributeRemover(htmlElement) {
+  ['data-id', 'phx-click', 'phx-hook'].map((item) => {
+    htmlElement.removeAttribute(item);
+  });
+}
+
+function uuidv4() {
+  try {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+      (
+        c ^
+        (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+      ).toString(16)
+    );
+  } catch (e) {
+    const randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+    return randLetter + Date.now();
+  }
+}
 
 // Start hooks Functions, this place we put some hooks we defined in elixir side and communicate with backend
 Hooks.dragAndDropLocation = {
