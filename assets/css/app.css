@@ -3,7 +3,11 @@
 @import 'tailwindcss/utilities';
 
 .create-section {
-  @apply bg-white min-h-[200px] border;
+  @apply flex flex-row bg-purple-100 border-4 justify-between items-stretch border-dashed rounded-md p-5 hover:border-4 hover:border-blue-300 hover:border-dashed hover:duration-300 duration-1000 hover:text-blue-500 lg:px-1;
+}
+
+.create-sub-section {
+  @apply flex flex-col bg-white border justify-between items-stretch min-h-[200px] w-full;
 }
 
 /* This file is for your main application CSS */

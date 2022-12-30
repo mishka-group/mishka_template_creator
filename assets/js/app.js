@@ -43,7 +43,6 @@ Sortable.create(putBlock, {
     const elementID = evt.item.dataset.id;
     recoverAndConvertAfterDroppingAnItem(evt.item, elementID);
     if (elementID === 'section-drag') {
-      console.log('heheheheheheheyyy1');
       createSectionOnSortableJS(evt.item);
     }
   },
@@ -51,7 +50,9 @@ Sortable.create(putBlock, {
 
 function createSectionOnSortableJS(htmlElement) {
   htmlElement.innerHTML = '';
+  htmlElement.className = '';
   htmlElement.classList.add('create-section');
+  htmlElement.classList.add('!p-20');
 
   Sortable.create(htmlElement, {
     group: {
@@ -61,12 +62,14 @@ function createSectionOnSortableJS(htmlElement) {
     animation: sortableSpeed,
     swapThreshold: 0.65,
     onAdd: function (/**Event*/ evt) {
+      htmlElement.classList.remove('!p-20');
       const elementID = evt.item.dataset.id;
-      evt.item.innerHTML = '';
-      evt.item.classList.add('create-section');
+
       recoverAndConvertAfterDroppingAnItem(evt.item, elementID);
 
       if (elementID === 'section-drag') {
+        evt.item.innerHTML = '';
+        evt.item.classList.add('create-sub-section');
         Sortable.create(evt.item, {
           group: {
             name: `section-${uuidv4()}`,
