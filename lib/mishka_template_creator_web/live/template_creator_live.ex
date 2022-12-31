@@ -14,12 +14,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
-  def handle_event("test-btn", params, socket) do
-    IO.inspect("This is we have -- test-btn")
-    IO.inspect(params)
-    {:noreply, socket}
-  end
-
   # Layout Events
   def handle_event("save_draft", _, socket) do
     {:noreply, socket}
@@ -45,4 +39,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
+  def handle_event("dark_mod", %{"id" => _id}, socket) do
+    IO.inspect("dark mod")
+    {:noreply, socket}
+  end
 end
