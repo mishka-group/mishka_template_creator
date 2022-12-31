@@ -8,13 +8,41 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:ok, socket}
   end
 
+  # Test code and should be deleted
   def handle_event("change-section", _, socket) do
     IO.inspect("This is we have")
     {:noreply, socket}
   end
 
-  def handle_event("test-btn", _, socket) do
+  def handle_event("test-btn", params, socket) do
     IO.inspect("This is we have -- test-btn")
+    IO.inspect(params)
     {:noreply, socket}
   end
+
+  # Layout Events
+  def handle_event("save_draft", _, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("delete", %{"id" => _id}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("duplicate", %{"id" => _id}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("add_separator", %{"id" => _id}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("settings", %{"id" => _id}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("reset", %{"id" => _id}, socket) do
+    {:noreply, socket}
+  end
+
 end

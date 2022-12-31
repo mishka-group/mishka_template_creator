@@ -3,7 +3,7 @@
 @import 'tailwindcss/utilities';
 
 .create-section {
-  @apply flex flex-row bg-purple-100 border-4 justify-between items-stretch border-dashed rounded-md p-5 hover:border-4 hover:border-blue-300 hover:border-dashed hover:duration-300 duration-1000 hover:text-blue-500 lg:px-1;
+  @apply flex flex-row bg-gray-200 border-2 justify-between items-stretch border-dashed border-gray-200 rounded-tl-none rounded-md p-5 hover:border-2 hover:border-dashed hover:duration-300 duration-1000 lg:px-1 relative shadow-md;
 }
 
 .create-sub-section {
