@@ -19,8 +19,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
-  def handle_event("delete", %{"id" => _id}, socket) do
-    {:noreply, socket}
+  def handle_event("delete", %{"id" => id}, socket) do
+    {:noreply, push_event(socket, "delete_section", %{id: id})}
   end
 
   def handle_event("duplicate", %{"id" => _id}, socket) do
@@ -40,7 +40,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("dark_mod", %{"id" => _id}, socket) do
-    IO.inspect("dark mod")
     {:noreply, socket}
   end
 end

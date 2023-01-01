@@ -61,7 +61,7 @@ function createSectionOnSortableJS(htmlElement) {
       viewBox="0 0 24 24"
       stroke-width="1.5"
       stroke="currentColor"
-      class="w-6 h-6"
+      class="w-6 h-6 cursor-pointer"
       phx-click="dark_mod"
       phx-value-type="${htmlElement.dataset.type}"
       phx-value-id="${htmlElement.id}"
@@ -249,11 +249,9 @@ Hooks.dragAndDropLocation = {
     // This is a way for sending data to client from backend
     // example `{:noreply, push_event(socket, "points", %{points: new_points})}` from `<div id="chart" phx-hook="Chart">`
     // example get from server in client side: `this.handleEvent("points", ({points}) => MyChartLib.addPoints(points))`
-    this.handleEvent('createSection', ({ sectionType }) => {
-      console.log(sectionType);
-
-      // send back to the server
-      this.pushEvent('change-section', {});
+    this.handleEvent('delete_section', ({ id }) => {
+      const element = document.getElementById(id);
+      element.remove();
     });
   },
 };
