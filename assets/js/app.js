@@ -51,7 +51,9 @@ Sortable.create(putBlock, {
 
 function createSectionOnSortableJS(htmlElement) {
   console.log(htmlElement.id);
-  const deletePhx = `[[&quot;push&quot;,{&quot;event&quot;:&quot;delete&quot;,&quot;value&quot;:{&quot;id&quot;:"${htmlElement.id}"}}],[&quot;show&quot;,{&quot;display&quot;:null,&quot;time&quot;:200,&quot;to&quot;:&quot;#delete_confirm&quot;,&quot;transition&quot;:[[],[],[]]}],[&quot;show&quot;,{&quot;display&quot;:null,&quot;time&quot;:200,&quot;to&quot;:&quot;#delete_confirm-bg&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;transform&quot;,&quot;ease-out&quot;,&quot;duration-300&quot;],[&quot;opacity-0&quot;],[&quot;opacity-100&quot;]]}],[&quot;show&quot;,{&quot;display&quot;:null,&quot;time&quot;:200,&quot;to&quot;:&quot;#delete_confirm-container&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;transform&quot;,&quot;ease-out&quot;,&quot;duration-300&quot;],[&quot;opacity-0&quot;,&quot;translate-y-4&quot;,&quot;sm:translate-y-0&quot;,&quot;sm:scale-95&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;,&quot;sm:scale-100&quot;]]}],[&quot;focus_first&quot;,{&quot;to&quot;:&quot;#delete_confirm-content&quot;}]]`
+
+  // TODO: We need to find original converter
+  const deletePhx = `[["push",{"event":"delete","value":{"id":"${htmlElement.id}"}}],["show",{"display":null,"time":200,"to":"#delete_confirm","transition":[[],[],[]]}],["show",{"display":null,"time":200,"to":"#delete_confirm-bg","transition":[["transition-all","transform","ease-out","duration-300"],["opacity-0"],["opacity-100"]]}],["show",{"display":null,"time":200,"to":"#delete_confirm-container","transition":[["transition-all","transform","ease-out","duration-300"],["opacity-0","translate-y-4","sm:translate-y-0","sm:scale-95"],["opacity-100","translate-y-0","sm:scale-100"]]}],["focus_first",{"to":"#delete_confirm-content"}]]`
 
   htmlElement.innerHTML = `
     <div
