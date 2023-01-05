@@ -5,12 +5,12 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   alias Phoenix.LiveView.JS
 
   def mount(_params, _, socket) do
-    {:ok, socket}
+    new_socket = assign(socket, show: false, section_id: nil)
+    {:ok, new_socket}
   end
 
   # Test code and should be deleted
   def handle_event("change-section", _, socket) do
-    IO.inspect("This is we have")
     {:noreply, socket}
   end
 
@@ -19,12 +19,17 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
-  def handle_event("delete", %{"id" => id}, socket) do
-    {:noreply, push_event(socket, "delete_section", %{id: id})}
+  def handle_event("delete", %{"id" => id, "type" => "dom"}, socket) do
+    {:noreply, push_event(socket, "delete", %{id: id})}
   end
 
-  def handle_event("duplicate", %{"id" => _id}, socket) do
-    {:noreply, socket}
+  def handle_event("delete", %{"id" => id}, socket) do
+    # after delete count childeren of content div and if is there not any element enable perview
+    {:noreply, assign(socket, :section_id, id)}
+  end
+
+  def handle_event("tag", %{"id" => id}, socket) do
+    {:noreply, push_event(socket, "tag", %{id: id})}
   end
 
   def handle_event("add_separator", %{"id" => _id}, socket) do
@@ -39,7 +44,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
-  def handle_event("dark_mod", %{"id" => _id}, socket) do
+  def handle_event("dark_mod", %{"id" => id}, socket) do
+    IO.inspect(id)
     {:noreply, socket}
   end
 end

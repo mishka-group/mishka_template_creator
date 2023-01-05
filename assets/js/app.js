@@ -51,6 +51,8 @@ Sortable.create(putBlock, {
 
 function createSectionOnSortableJS(htmlElement) {
   console.log(htmlElement.id);
+  const deletePhx = `[[&quot;push&quot;,{&quot;event&quot;:&quot;delete&quot;,&quot;value&quot;:{&quot;id&quot;:"${htmlElement.id}"}}],[&quot;show&quot;,{&quot;display&quot;:null,&quot;time&quot;:200,&quot;to&quot;:&quot;#delete_confirm&quot;,&quot;transition&quot;:[[],[],[]]}],[&quot;show&quot;,{&quot;display&quot;:null,&quot;time&quot;:200,&quot;to&quot;:&quot;#delete_confirm-bg&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;transform&quot;,&quot;ease-out&quot;,&quot;duration-300&quot;],[&quot;opacity-0&quot;],[&quot;opacity-100&quot;]]}],[&quot;show&quot;,{&quot;display&quot;:null,&quot;time&quot;:200,&quot;to&quot;:&quot;#delete_confirm-container&quot;,&quot;transition&quot;:[[&quot;transition-all&quot;,&quot;transform&quot;,&quot;ease-out&quot;,&quot;duration-300&quot;],[&quot;opacity-0&quot;,&quot;translate-y-4&quot;,&quot;sm:translate-y-0&quot;,&quot;sm:scale-95&quot;],[&quot;opacity-100&quot;,&quot;translate-y-0&quot;,&quot;sm:scale-100&quot;]]}],[&quot;focus_first&quot;,{&quot;to&quot;:&quot;#delete_confirm-content&quot;}]]`
+
   htmlElement.innerHTML = `
     <div
       class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-10 w-52"
@@ -98,17 +100,21 @@ function createSectionOnSortableJS(htmlElement) {
       stroke-width="1.5"
       stroke="currentColor"
       class="w-6 h-6 cursor-pointer"
-      phx-click="duplicate"
+      phx-click="tag"
       phx-value-type="${htmlElement.dataset.type}"
       phx-value-id="${htmlElement.id}"
     >
       <path
         stroke-linecap="round"
         stroke-linejoin="round"
-        d="M7.5 7.5h-.75A2.25 2.25 0 004.5 9.75v7.5a2.25 2.25 0 002.25 2.25h7.5a2.25 2.25 0 002.25-2.25v-7.5a2.25 2.25 0 00-2.25-2.25h-.75m-6 3.75l3 3m0 0l3-3m-3 3V1.5m6 9h.75a2.25 2.25 0 012.25 2.25v7.5a2.25 2.25 0 01-2.25 2.25h-7.5a2.25 2.25 0 01-2.25-2.25v-.75"
+        d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+      />
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M6 6h.008v.008H6V6z"
       />
     </svg>
-
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -134,9 +140,9 @@ function createSectionOnSortableJS(htmlElement) {
       stroke-width="1.5"
       stroke="currentColor"
       class="w-6 h-6 text-red-600 cursor-pointer"
-      phx-click="delete"
-      phx-value-type="${htmlElement.dataset.type}"
-      phx-value-id="${htmlElement.id}"
+
+      phx-click=${deletePhx}
+
     >
       <path
         stroke-linecap="round"
@@ -239,8 +245,8 @@ Hooks.dragAndDropLocation = {
   mounted() {
     // This is a simple way based on JS Listener
     this.el.addEventListener('awesome', (e) => {
+      console.log('we are here');
       e.preventDefault();
-      console.log(e.detail.text);
 
       // send back to the server
       this.pushEvent('change-section', {});
@@ -249,9 +255,12 @@ Hooks.dragAndDropLocation = {
     // This is a way for sending data to client from backend
     // example `{:noreply, push_event(socket, "points", %{points: new_points})}` from `<div id="chart" phx-hook="Chart">`
     // example get from server in client side: `this.handleEvent("points", ({points}) => MyChartLib.addPoints(points))`
-    this.handleEvent('delete_section', ({ id }) => {
+    this.handleEvent('delete', ({ id }) => {
       const element = document.getElementById(id);
       element.remove();
+      if (putBlock.children.length === 1) {
+        previewHelper.classList.remove('hidden');
+      }
     });
   },
 };
