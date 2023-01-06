@@ -53,4 +53,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     IO.inspect(id)
     {:noreply, socket}
   end
+
+  def handle_event("mobile_view", %{"id" => _id}, socket) do
+    {:noreply, socket}
+  end
 end
