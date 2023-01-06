@@ -24,6 +24,11 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("delete", %{"id" => id}, socket) do
+    JS.push("delete", value: %{id: id, type: "dom"})
+    |> hide_modal("delete_confirm")
+    |> Map.get(:ops)
+    |> Jason.encode!()
+    |> IO.inspect()
     # after delete count childeren of content div and if is there not any element enable perview
     {:noreply, assign(socket, :section_id, id)}
   end
