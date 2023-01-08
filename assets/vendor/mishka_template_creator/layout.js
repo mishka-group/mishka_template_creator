@@ -216,6 +216,10 @@ function createSectionOnSortableJS(htmlElement) {
           },
           animation: sortableSpeed,
           swapThreshold: 0.65,
+          onAdd: function (/**Event*/ evt) {
+            const elementID = evt.item.dataset.id;
+            if (elementID === 'section-drag') evt.item.remove();
+          },
         });
       } else {
         evt.item.remove();
