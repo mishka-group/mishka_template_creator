@@ -3,6 +3,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   use Phoenix.LiveView
   import MishkaTemplateCreatorWeb.CoreComponents
   alias Phoenix.LiveView.JS
+  import MishkaTemplateCreatorWeb.MishkaCoreComponent
 
   def mount(_params, _, socket) do
     new_socket = assign(socket, show: false, section_id: nil)
@@ -29,6 +30,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     |> Map.get(:ops)
     |> Jason.encode!()
     |> IO.inspect()
+
     # after delete count childeren of content div and if is there not any element enable perview
     {:noreply, assign(socket, :section_id, id)}
   end
