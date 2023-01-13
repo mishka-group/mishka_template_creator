@@ -8,7 +8,8 @@ module.exports = {
     "./js/**/*.js",
     "./vendor/mishka_template_creator/*.js",
     "../lib/*_web.ex",
-    "../lib/*_web/**/*.*ex"
+    "../lib/*_web/**/*.*ex",
+    "../lib/mishka_template_creator_web/components/mishka_core_component.ex"
   ],
   theme: {
     extend: {
