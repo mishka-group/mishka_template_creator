@@ -31,14 +31,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_mobile_view(map) :: Phoenix.LiveView.Rendered.t()
   defp block_mobile_view(assigns) do
     ~H"""
-    <img
-      src="/images/mobile.svg"
-      alt="Show mobile view"
-      class="w-6 h-6 cursor-pointer"
-      phx-click="mobile_view"
-      phx-value-type=""
-      phx-value-id=""
-    />
+    <Heroicons.device_phone_mobile class="h-6 w-6 stroke-current" />
     """
   end
 
@@ -49,14 +42,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_dark_mod(map) :: Phoenix.LiveView.Rendered.t()
   defp block_dark_mod(assigns) do
     ~H"""
-    <img
-      src="/images/dark_mod.svg"
-      alt="Show dark mode or light one"
-      class="w-6 h-6 cursor-pointer"
-      phx-click="dark_mod"
-      phx-value-type=""
-      phx-value-id=""
-    />
+    <Heroicons.sun class="h-6 w-6 stroke-current" />
     """
   end
 
@@ -67,14 +53,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_settings(map) :: Phoenix.LiveView.Rendered.t()
   defp block_settings(assigns) do
     ~H"""
-    <img
-      src="/images/settings.svg"
-      alt="Show dark mode or light one"
-      class="w-6 h-6 cursor-pointer"
-      phx-click="dark_mod"
-      phx-value-type=""
-      phx-value-id=""
-    />
+    <Heroicons.wrench_screwdriver class="h-6 w-6 stroke-current" />
     """
   end
 
@@ -85,14 +64,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_tag(map) :: Phoenix.LiveView.Rendered.t()
   defp block_tag(assigns) do
     ~H"""
-    <img
-      src="/images/tag.svg"
-      alt="Show dark mode or light one"
-      class="w-6 h-6 cursor-pointer"
-      phx-click="dark_mod"
-      phx-value-type=""
-      phx-value-id=""
-    />
+    <Heroicons.tag class="h-6 w-6 stroke-current" />
     """
   end
 
@@ -103,14 +75,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_add_separator(map) :: Phoenix.LiveView.Rendered.t()
   defp block_add_separator(assigns) do
     ~H"""
-    <img
-      src="/images/plus.svg"
-      alt="Show dark mode or light one"
-      class="w-6 h-6 cursor-pointer"
-      phx-click="dark_mod"
-      phx-value-type=""
-      phx-value-id=""
-    />
+    <Heroicons.plus class="h-6 w-6 stroke-current" />
     """
   end
 
@@ -121,14 +86,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec delete_block(map) :: Phoenix.LiveView.Rendered.t()
   defp delete_block(assigns) do
     ~H"""
-    <img
-      src="/images/trash.svg"
-      alt="Show dark mode or light one"
-      class="w-6 h-6 cursor-pointer bg-red text-red"
-      phx-click="dark_mod"
-      phx-value-type=""
-      phx-value-id=""
-    />
+    <Heroicons.trash class="h-6 w-6 stroke-current text-red-500" />
     """
   end
 
@@ -139,14 +97,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_more(map) :: Phoenix.LiveView.Rendered.t()
   defp block_more(assigns) do
     ~H"""
-    <img
-      src="/images/more.svg"
-      alt="Show dark mode or light one"
-      class="w-6 h-6 cursor-pointer bg-red text-red"
-      phx-click="dark_mod"
-      phx-value-type=""
-      phx-value-id=""
-    />
+    <Heroicons.ellipsis_vertical class="h-6 w-6 stroke-current" />
     """
   end
 end

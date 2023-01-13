@@ -10,6 +10,14 @@
   @apply flex flex-col bg-white border justify-between items-stretch min-h-[200px] w-full;
 }
 
+.svg-trash svg path {
+  fill: green !important;
+}
+
+.svg-trash svg text{
+  fill: green !important;
+}
+
 /* This file is for your main application CSS */
 :root {
   --transparent: transparent;
