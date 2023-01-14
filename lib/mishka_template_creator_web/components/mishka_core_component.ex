@@ -100,4 +100,28 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     <Heroicons.ellipsis_vertical class="h-6 w-6 stroke-current" />
     """
   end
+
+  def create_element(type, index, parent_type, parent_id) do
+    id = Ecto.UUID.generate()
+
+    cond do
+      type == "layout" and parent_type == "dragLocation" ->
+        %{index: index, type: type, id: id, parent_id: parent_id}
+
+      type == "section" and parent_type == "layout" ->
+        %{index: index, type: type, id: id, parent_id: parent_id}
+
+      type in ["text", "tab"] and parent_type == "section" ->
+        %{index: index, type: type, id: id, parent_id: parent_id}
+
+      true ->
+        nil
+    end
+  end
+
+  def elements_reevaluation(_elements, _new_element) do
+  end
+
+  def elements_reevaluation(_elements, _element_id, _new_index) do
+  end
 end

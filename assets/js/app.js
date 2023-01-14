@@ -31,9 +31,11 @@ Sortable.create(dragLocation, {
   animation: sortableSpeed,
   swapThreshold: 0.65,
   onAdd: function (/**Event*/ evt) {
-    customEventCreator('awesome', evt.item, {
+    customEventCreator('serverNotification', evt.item, {
       index: evt.newIndex,
       type: evt.item.dataset.type,
+      parent: evt.to.dataset.type,
+      parent_id: evt.to.id,
     });
     evt.item.remove();
   },
@@ -49,12 +51,14 @@ Hooks.dragAndDropLocation = {
   mounted() {
     // This is a simple way based on JS Listener
     const liveView = this;
-    this.el.addEventListener('awesome', (e) => {
+    this.el.addEventListener('serverNotification', (e) => {
       e.preventDefault();
       // send back to the server
-      this.pushEvent('change-section', {
+      this.pushEvent('dropped_element', {
         index: e.detail.index,
         type: e.detail.type,
+        parent: e.detail.parent,
+        parent_id: e.detail.parent_id,
       });
     });
 
@@ -76,10 +80,13 @@ Hooks.dragAndDropLocation = {
         animation: 150,
         swapThreshold: 0.65,
         onAdd: function (/**Event*/ evt) {
-          liveView.pushEvent('change-section', {
+          liveView.pushEvent('dropped_element', {
             index: evt.newIndex,
-            type: evt.to.dataset.type,
+            type: evt.item.dataset.type,
+            parent: evt.to.dataset.type,
+            parent_id: evt.to.id,
           });
+          evt.item.remove();
         },
       });
     });

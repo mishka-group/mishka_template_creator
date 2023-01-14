@@ -9,21 +9,20 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # TODO: create multisection in a layout and store them under the layout
   # TODO: Define some rules no to allow drag a layout in a section
   # TODO: Define some rules not to allow drag another element in to empty space or layout without creating sections
+  # TODO: delete preView when on dragg
   def mount(_params, _, socket) do
     new_socket = assign(socket, elemens: [])
     {:ok, new_socket}
   end
 
   # Test code and should be deleted
-  def handle_event("change-section", %{"index" => _index, "type" => _type}, socket) do
-    id = Ecto.UUID.generate()
-
-    new_socket =
-      assign(socket,
-        elemens: socket.assigns.elemens ++ [%{"index" => 1, "type" => "layout", "id" => id}]
-      )
-
-    {:noreply, push_event(new_socket, "create_draggable", %{id: id, type: "layout"})}
+  def handle_event(
+        "dropped_element",
+        %{"index" => index, "type" => type, "parent" => parent, "parent_id" => parent_id},
+        socket
+      ) do
+    create_element(type, index, parent, parent_id)
+    |> update_elements(socket)
   end
 
   # Layout Events
@@ -69,6 +68,14 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   def handle_event("mobile_view", %{"id" => _id}, socket) do
     {:noreply, socket}
+  end
+
+  def update_elements(nil, socket), do: {:noreply, socket}
+
+  def update_elements(new_element, socket, event \\ "create_draggable") do
+    new_socket = assign(socket, elemens: socket.assigns.elemens ++ [new_element])
+
+    {:noreply, push_event(new_socket, event, new_element)}
   end
 end
 
