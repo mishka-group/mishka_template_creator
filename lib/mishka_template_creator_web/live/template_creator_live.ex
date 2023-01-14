@@ -5,14 +5,25 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   alias Phoenix.LiveView.JS
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
 
+  # TODO: create multi layout sections and store in a Genserver or ETS
+  # TODO: create multisection in a layout and store them under the layout
+  # TODO: Define some rules no to allow drag a layout in a section
+  # TODO: Define some rules not to allow drag another element in to empty space or layout without creating sections
   def mount(_params, _, socket) do
-    new_socket = assign(socket, show: false, section_id: nil)
+    new_socket = assign(socket, elemens: [])
     {:ok, new_socket}
   end
 
   # Test code and should be deleted
-  def handle_event("change-section", _, socket) do
-    {:noreply, socket}
+  def handle_event("change-section", %{"index" => _index, "type" => _type}, socket) do
+    id = Ecto.UUID.generate()
+
+    new_socket =
+      assign(socket,
+        elemens: socket.assigns.elemens ++ [%{"index" => 1, "type" => "layout", "id" => id}]
+      )
+
+    {:noreply, push_event(new_socket, "create_draggable", %{id: id, type: "layout"})}
   end
 
   # Layout Events
@@ -60,3 +71,15 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 end
+
+# <.modal
+#   id="delete_confirm"
+#   on_confirm={
+#     JS.push("delete", value: %{id: @section_id, type: "dom"})
+#     |> hide_modal("delete_confirm")
+#   }
+# >
+#   Are you sure?
+#   <:confirm>OK</:confirm>
+#   <:cancel>Cancel</:cancel>
+# </.modal>

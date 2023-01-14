@@ -2,24 +2,60 @@ import 'phoenix_html';
 import { Socket } from 'phoenix';
 import { LiveSocket } from 'phoenix_live_view';
 import topbar from '../vendor/topbar';
-import { dragLocation, previewHelper } from "../vendor/mishka_template_creator/utilities"
-import { LayoutGroup, ContentGroup } from '../vendor/mishka_template_creator/layout';
+import { customEventCreator } from '../vendor/mishka_template_creator/utilities';
+// import {
+//   LayoutGroup,
+//   ContentGroup,
+// } from '../vendor/mishka_template_creator/layout';
+import Sortable from 'sortablejs';
+
+const layoutBlock = document.getElementById('layoutBlock');
+const dragLocation = document.getElementById('dragLocation');
+const sortableSpeed = 150;
+
+Sortable.create(layoutBlock, {
+  group: {
+    name: 'LayoutGroup',
+    pull: 'clone',
+    put: false,
+  },
+  animation: sortableSpeed,
+  sort: false,
+});
+
+Sortable.create(dragLocation, {
+  group: {
+    name: 'ContentGroup',
+    put: ['LayoutGroup'],
+  },
+  animation: sortableSpeed,
+  swapThreshold: 0.65,
+  onAdd: function (/**Event*/ evt) {
+    customEventCreator('awesome', evt.item, {
+      index: evt.newIndex,
+      type: evt.item.dataset.type,
+    });
+    evt.item.remove();
+  },
+});
 // Start Hooks object
 let Hooks = {};
 
-LayoutGroup
-ContentGroup
+// LayoutGroup;
+// ContentGroup;
 
 // Start hooks Functions, this place we put some hooks we defined in elixir side and communicate with backend
 Hooks.dragAndDropLocation = {
   mounted() {
     // This is a simple way based on JS Listener
+    const liveView = this;
     this.el.addEventListener('awesome', (e) => {
-      console.log('we are here');
       e.preventDefault();
-
       // send back to the server
-      this.pushEvent('change-section', {});
+      this.pushEvent('change-section', {
+        index: e.detail.index,
+        type: e.detail.type,
+      });
     });
 
     // This is a way for sending data to client from backend
@@ -31,6 +67,21 @@ Hooks.dragAndDropLocation = {
       if (dragLocation.children.length === 1) {
         previewHelper.classList.remove('hidden');
       }
+    });
+
+    this.handleEvent('create_draggable', ({ id, layout }) => {
+      const element = document.getElementById(id);
+      Sortable.create(element, {
+        group: { name: `${layout}-${id}`, put: ['LayoutGroup'] },
+        animation: 150,
+        swapThreshold: 0.65,
+        onAdd: function (/**Event*/ evt) {
+          liveView.pushEvent('change-section', {
+            index: evt.newIndex,
+            type: evt.to.dataset.type,
+          });
+        },
+      });
     });
   },
 };
