@@ -2,6 +2,8 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   use Phoenix.Component
   alias Phoenix.LiveView.JS
 
+  @elements_type ~w(text tab)a
+
   attr :id, :string, required: true
   attr :title, :string, required: true
   attr :rest, :global
@@ -136,28 +138,44 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     """
   end
 
-  def create_element(type, index, parent_type, parent_id) do
-    IO.inspect(type)
-    IO.inspect(parent_type)
+  def create_element(%{type: type, index: _index, parent: parent, parent_id: _parent_id} = params) do
     id = Ecto.UUID.generate()
 
     cond do
-      type == "layout" and parent_type == "dragLocation" ->
-        %{index: index, type: type, id: id, parent_id: parent_id}
+      type == "layout" and parent == "dragLocation" ->
+        Map.merge(params, %{id: id, children: []})
 
-      type == "section" and parent_type == "layout" ->
-        %{index: index, type: type, id: id, parent_id: parent_id}
+      type == "section" and parent == "layout" ->
+        Map.merge(params, %{id: id, children: []})
 
-      type in ["text", "tab"] and parent_type == "section" ->
-        %{index: index, type: type, id: id, parent_id: parent_id}
+      type in @elements_type and parent == "section" ->
+        Map.merge(params, %{id: id, children: []})
 
       true ->
         nil
     end
   end
 
-  def elements_reevaluation(elements, new_element, _parent_id) do
+  def elements_reevaluation(elements, new_element, "dragLocation") do
     List.insert_at(elements, new_element.index, new_element)
+    |> sort_elements_list()
+  end
+
+  def elements_reevaluation(elements, new_element, "layout") do
+    Enum.map(elements, fn el ->
+      if el.id == new_element.parent_id do
+        Map.merge(el, %{
+          children:
+            el.children |> List.insert_at(new_element.index, new_element) |> sort_elements_list()
+        })
+      else
+        el
+      end
+    end)
+  end
+
+  defp sort_elements_list(list) do
+    list
     |> Enum.with_index(0)
     |> Enum.sort_by(fn {x, _y} -> x.index end)
     |> Enum.map(fn {map, index} -> Map.put(map, :index, index) end)

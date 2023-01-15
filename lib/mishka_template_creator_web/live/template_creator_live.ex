@@ -21,8 +21,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
         %{"index" => index, "type" => type, "parent" => parent, "parent_id" => parent_id},
         socket
       ) do
-    create_element(type, index, parent, parent_id)
-    |> update_elements(socket, parent_id)
+    create_element(%{type: type, index: index, parent: parent, parent_id: parent_id})
+    |> update_elements(socket, parent)
   end
 
   # Layout Events
@@ -72,11 +72,12 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   def update_elements(nil, socket), do: {:noreply, socket}
 
-  def update_elements(new_element, socket, parent_id, event \\ "create_draggable") do
-    socket.assigns.elemens
-    |> elements_reevaluation(new_element, parent_id)
+  def update_elements(new_element, socket, parent, event \\ "create_draggable") do
+    elemens =
+      socket.assigns.elemens
+      |> elements_reevaluation(new_element, parent)
 
-    new_socket = assign(socket, elemens: socket.assigns.elemens ++ [new_element])
+    new_socket = assign(socket, elemens: elemens)
 
     {:noreply, push_event(new_socket, event, new_element)}
   end
