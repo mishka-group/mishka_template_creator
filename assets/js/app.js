@@ -31,8 +31,12 @@ Sortable.create(dragLocation, {
   animation: sortableSpeed,
   swapThreshold: 0.65,
   onAdd: function (/**Event*/ evt) {
+    const preview = document.querySelector("#previewHelper")
+    if (preview) {
+      preview.remove()
+    }
     customEventCreator('serverNotification', evt.item, {
-      index: evt.newIndex,
+      index: preview && evt.newIndex === 1 ? 0 : evt.newIndex,
       type: evt.item.dataset.type,
       parent: evt.to.dataset.type,
       parent_id: evt.to.id,

@@ -47,6 +47,18 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     """
   end
 
+  attr :id, :string, default: "section-#{Ecto.UUID.generate()}"
+  attr :tag, :string, default: nil
+  attr :on_delete, JS, default: %JS{}
+  attr :on_duplicate, JS, default: %JS{}
+
+  @spec section(map) :: Phoenix.LiveView.Rendered.t()
+  def section(assigns) do
+    ~H"""
+    <div class="create-sub-section" id={@id} data-type="layout" data-tag={@tag || @id}></div>
+    """
+  end
+
   attr :block_id, :string, required: true
   attr :custom_class, :string, required: false
   attr :on_click, JS, default: %JS{}
@@ -144,9 +156,10 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end
   end
 
-  def elements_reevaluation(_elements, _new_element) do
-  end
-
-  def elements_reevaluation(_elements, _element_id, _new_index) do
+  def elements_reevaluation(elements, new_element, _parent_id) do
+    List.insert_at(elements, new_element.index, new_element)
+    |> Enum.with_index(0)
+    |> Enum.sort_by(fn {x, _y} -> x.index end)
+    |> Enum.map(fn {map, index} -> Map.put(map, :index, index) end)
   end
 end
