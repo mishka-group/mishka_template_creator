@@ -2,6 +2,29 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   use Phoenix.Component
   alias Phoenix.LiveView.JS
 
+  attr :id, :string, required: true
+  attr :title, :string, required: true
+  attr :rest, :global
+
+  slot :inner_block, required: true
+
+  @spec element(map) :: Phoenix.LiveView.Rendered.t()
+  def element(assigns) do
+    ~H"""
+    <div
+      data-id={@id}
+      data-type={@id}
+      class="border border-gray-200 rounded-md p-5 hover:border hover:border-blue-300 hover:duration-300 duration-1000 hover:text-blue-500 lg:px-1"
+      {@rest}
+    >
+      <p class="mx-auto text-center">
+        <%= render_slot(@inner_block) %>
+      </p>
+      <p class="text-xs font-bold mt-5 text-center"><%= @title %></p>
+    </div>
+    """
+  end
+
   attr :id, :string, default: "layout-#{Ecto.UUID.generate()}"
   attr :tag, :string, default: nil
   attr :on_delete, JS, default: %JS{}
@@ -10,7 +33,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec layout(map) :: Phoenix.LiveView.Rendered.t()
   def layout(assigns) do
     ~H"""
-    <div class="create-section !p-20" id={@id} data-type={@tag || @id}>
+    <div class="create-section !p-20" id={@id} data-type="layout" data-tag={@tag || @id}>
       <div class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-10 w-54">
         <.block_mobile_view block_id={@id} />
         <.block_dark_mod block_id={@id} />
@@ -102,6 +125,8 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   def create_element(type, index, parent_type, parent_id) do
+    IO.inspect(type)
+    IO.inspect(parent_type)
     id = Ecto.UUID.generate()
 
     cond do
