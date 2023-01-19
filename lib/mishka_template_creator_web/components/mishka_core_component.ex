@@ -46,7 +46,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         <.delete_block block_id={@id} />
         <.block_more block_id={@id} />
       </div>
-        <.section :for={child <- @children} id={child.id}/>
+      <.section :for={child <- @children} id={child.id} children={child.children} />
     </div>
     """
   end
@@ -55,11 +55,15 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   attr :tag, :string, default: nil
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
+  attr :rest, :global
+  attr :children, :list, default: []
 
   @spec section(map) :: Phoenix.LiveView.Rendered.t()
   def section(assigns) do
     ~H"""
-    <div class="create-sub-section" id={@id} data-type="section" data-tag={@tag || @id}></div>
+    <div class="create-sub-section" id={@id} data-type="section" data-tag={@tag || @id}>
+      <p :for={_child <- @children}>test</p>
+    </div>
     """
   end
 
@@ -142,8 +146,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   def create_element(%{type: type, index: _index, parent: parent, parent_id: _parent_id} = params) do
     id = Ecto.UUID.generate()
-    IO.inspect(type)
-    IO.inspect(parent)
+
     cond do
       type == "layout" and parent == "dragLocation" ->
         Map.merge(params, %{id: id, children: []})
@@ -173,6 +176,29 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         })
       else
         el
+      end
+    end)
+  end
+
+  def elements_reevaluation(elements, new_element, "section") do
+    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
+      Enum.find(children, &(&1.type == "section" && &1.id == new_element.parent_id))
+      |> case do
+        nil ->
+          layout
+
+        data ->
+          updated_children =
+            List.insert_at(data.children, new_element.index, new_element)
+            |> sort_elements_list()
+
+          converted_children = Enum.filter(children, &(&1.id != new_element.parent_id))
+
+          Map.merge(layout, %{
+            children:
+              (converted_children ++ [Map.merge(data, %{children: updated_children})])
+              |> sort_elements_list
+          })
       end
     end)
   end

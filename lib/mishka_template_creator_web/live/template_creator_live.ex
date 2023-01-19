@@ -39,7 +39,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     |> hide_modal("delete_confirm")
     |> Map.get(:ops)
     |> Jason.encode!()
-    |> IO.inspect()
 
     # after delete count childeren of content div and if is there not any element enable perview
     {:noreply, assign(socket, :section_id, id)}
@@ -61,8 +60,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
-  def handle_event("dark_mod", %{"id" => id}, socket) do
-    IO.inspect(id)
+  def handle_event("dark_mod", %{"id" => _id}, socket) do
     {:noreply, socket}
   end
 
@@ -73,7 +71,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   def update_elements(nil, socket, _, _), do: {:noreply, socket}
 
   def update_elements(new_element, socket, parent, event) do
-    IO.inspect(new_element)
     elemens =
       socket.assigns.elemens
       |> elements_reevaluation(new_element, parent)

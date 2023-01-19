@@ -18,7 +18,6 @@
       data-type="dragLocation"
       class="flex flex-col items-stretch justify-start pr-9 pl-0 pt-10 pb-96 mb-96 w-full space-y-16 lg:overflow-y-scroll lg:h-screen lg:min-h-screen mx-5 lg:pr-0"
     >
-    <% IO.inspect(@elemens) %>
       <div
         :if={@elemens == []}
         id="previewHelper"
@@ -30,7 +29,7 @@
         <div>Drag And Drop a section here</div>
       </div>
       <div :for={%{index: _index, type: _type, id: id, children: children} <- @elemens}>
-        <.layout id={id} children={children}/>
+        <.layout id={id} children={children} />
       </div>
     </div>
     <div class="flex flex-col w-[95%] h-[300px] mx-auto bg-white border-t-0 border-l border-r border-b border-[rgb(229,229,229)] rounded-t-md md:pb-20 overflow-y-scroll overflow-x-hidden lg:w-5/12 lg:h-screen lg:mx-0 xl:w-4/12">
