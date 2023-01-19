@@ -192,11 +192,10 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
             List.insert_at(data.children, new_element.index, new_element)
             |> sort_elements_list()
 
-          converted_children = Enum.filter(children, &(&1.id != new_element.parent_id))
-
           Map.merge(layout, %{
             children:
-              (converted_children ++ [Map.merge(data, %{children: updated_children})])
+              (Enum.filter(children, &(&1.id != new_element.parent_id)) ++
+                 [Map.merge(data, %{children: updated_children})])
               |> sort_elements_list
           })
       end

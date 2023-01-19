@@ -77,7 +77,12 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
     new_socket = assign(socket, elemens: elemens)
 
-    {:noreply, push_event(new_socket, event, new_element)}
+    push_element =
+      if new_element.type not in ["layout", "section"],
+        do: new_socket,
+        else: push_event(new_socket, event, new_element)
+
+    {:noreply, push_element}
   end
 end
 
