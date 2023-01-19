@@ -73,6 +73,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   def update_elements(nil, socket, _, _), do: {:noreply, socket}
 
   def update_elements(new_element, socket, parent, event) do
+    IO.inspect(new_element)
     elemens =
       socket.assigns.elemens
       |> elements_reevaluation(new_element, parent)

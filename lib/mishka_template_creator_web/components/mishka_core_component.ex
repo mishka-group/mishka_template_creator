@@ -27,7 +27,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     """
   end
 
-  attr :id, :string, default: "layout-#{Ecto.UUID.generate()}"
+  attr :id, :string, required: true
   attr :tag, :string, default: nil
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
@@ -36,7 +36,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec layout(map) :: Phoenix.LiveView.Rendered.t()
   def layout(assigns) do
     ~H"""
-    <div class="create-section !p-20" id={@id} data-type="layout" data-tag={@tag || @id}>
+    <div class="create-section" id={@id} data-type="layout" data-tag={@tag || @id}>
       <div class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-10 w-54">
         <.block_mobile_view block_id={@id} />
         <.block_dark_mod block_id={@id} />
@@ -46,14 +46,12 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         <.delete_block block_id={@id} />
         <.block_more block_id={@id} />
       </div>
-      <div :for={_child <- @children}>
-        <p>hey</p>
-      </div>
+        <.section :for={child <- @children} id={child.id}/>
     </div>
     """
   end
 
-  attr :id, :string, default: "section-#{Ecto.UUID.generate()}"
+  attr :id, :string, required: true
   attr :tag, :string, default: nil
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
@@ -61,7 +59,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec section(map) :: Phoenix.LiveView.Rendered.t()
   def section(assigns) do
     ~H"""
-    <div class="create-sub-section" id={@id} data-type="layout" data-tag={@tag || @id}></div>
+    <div class="create-sub-section" id={@id} data-type="section" data-tag={@tag || @id}></div>
     """
   end
 
@@ -144,7 +142,8 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   def create_element(%{type: type, index: _index, parent: parent, parent_id: _parent_id} = params) do
     id = Ecto.UUID.generate()
-
+    IO.inspect(type)
+    IO.inspect(parent)
     cond do
       type == "layout" and parent == "dragLocation" ->
         Map.merge(params, %{id: id, children: []})
