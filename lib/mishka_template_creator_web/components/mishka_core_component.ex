@@ -2,7 +2,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   use Phoenix.Component
   alias Phoenix.LiveView.JS
 
-  @elements_type ~w(text tab)a
+  @elements_type ["text", "tab"]
 
   attr :id, :string, required: true
   attr :title, :string, required: true
@@ -31,6 +31,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   attr :tag, :string, default: nil
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
+  attr :children, :list, default: []
 
   @spec layout(map) :: Phoenix.LiveView.Rendered.t()
   def layout(assigns) do
@@ -44,6 +45,9 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         <.block_add_separator block_id={@id} />
         <.delete_block block_id={@id} />
         <.block_more block_id={@id} />
+      </div>
+      <div :for={_child <- @children}>
+        <p>hey</p>
       </div>
     </div>
     """
