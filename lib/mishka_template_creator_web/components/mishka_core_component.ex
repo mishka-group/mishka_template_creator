@@ -36,7 +36,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec layout(map) :: Phoenix.LiveView.Rendered.t()
   def layout(assigns) do
     ~H"""
-    <div class="create-section" id={@id} data-type="layout" data-tag={@tag || @id}>
+    <div class="create-section">
       <div class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-10 w-54">
         <.block_mobile_view block_id={@id} />
         <.block_dark_mod block_id={@id} />
@@ -46,7 +46,14 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         <.delete_block block_id={@id} />
         <.block_more block_id={@id} />
       </div>
-      <.section :for={child <- @children} id={child.id} children={child.children} />
+      <div
+        id={@id}
+        class={"flex flex-row justify-start items-center w-full space-x-3 px-3 #{if length(@children) == 0, do: "py-10"}"}
+        data-type="layout"
+        data-tag={@tag || @id}
+      >
+        <.section :for={child <- @children} id={child.id} children={child.children} />
+      </div>
     </div>
     """
   end
@@ -172,7 +179,9 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       if el.id == new_element.parent_id do
         Map.merge(el, %{
           children:
-            el.children |> List.insert_at(new_element.index, new_element) |> sort_elements_list()
+            el.children
+            |> List.insert_at(new_element.index, new_element)
+            |> sort_elements_list()
         })
       else
         el
@@ -182,27 +191,25 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   def elements_reevaluation(elements, new_element, "section") do
     Enum.map(elements, fn %{type: "layout", children: children} = layout ->
-      Enum.find(children, &(&1.type == "section" && &1.id == new_element.parent_id))
-      |> case do
-        nil ->
-          layout
+      converted_data =
+        Enum.map(children, fn data ->
+          if data.type == "section" && data.id == new_element.parent_id do
+            updated_children =
+              List.insert_at(data.children, new_element.index, new_element)
+              |> sort_elements_list()
 
-        data ->
-          updated_children =
-            List.insert_at(data.children, new_element.index, new_element)
-            |> sort_elements_list()
+            Map.merge(data, %{children: updated_children})
+          else
+            data
+          end
+        end)
+        |> sort_elements_list()
 
-          Map.merge(layout, %{
-            children:
-              (Enum.filter(children, &(&1.id != new_element.parent_id)) ++
-                 [Map.merge(data, %{children: updated_children})])
-              |> sort_elements_list
-          })
-      end
+      Map.merge(layout, %{children: converted_data})
     end)
   end
 
-  defp sort_elements_list(list) do
+  def sort_elements_list(list) do
     list
     |> Enum.with_index(0)
     |> Enum.sort_by(fn {x, _y} -> x.index end)

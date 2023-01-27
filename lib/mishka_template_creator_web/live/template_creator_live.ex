@@ -74,6 +74,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     elemens =
       socket.assigns.elemens
       |> elements_reevaluation(new_element, parent)
+      |> sort_elements_list()
+      |> IO.inspect(label: "ListOfElements\n ================================> \n")
 
     new_socket = assign(socket, elemens: elemens)
 
