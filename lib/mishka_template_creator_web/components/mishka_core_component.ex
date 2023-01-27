@@ -191,21 +191,17 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   def elements_reevaluation(elements, new_element, "section") do
     Enum.map(elements, fn %{type: "layout", children: children} = layout ->
-      converted_data =
+      updated_children =
         Enum.map(children, fn data ->
           if data.type == "section" && data.id == new_element.parent_id do
-            updated_children =
-              List.insert_at(data.children, new_element.index, new_element)
-              |> sort_elements_list()
-
-            Map.merge(data, %{children: updated_children})
+            children = List.insert_at(data.children, new_element.index, new_element)
+            %{data | children: sort_elements_list(children)}
           else
             data
           end
         end)
-        |> sort_elements_list()
 
-      Map.merge(layout, %{children: converted_data})
+      %{layout | children: sort_elements_list(updated_children)}
     end)
   end
 
