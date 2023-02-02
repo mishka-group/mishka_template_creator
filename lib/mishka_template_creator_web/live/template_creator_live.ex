@@ -35,8 +35,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("delete", %{"id" => id, "type" => "layout"}, socket) do
-    IO.inspect(id)
-    {:noreply, socket}
+    {:noreply, assign(socket, :elemens, Enum.reject(socket.assigns.elemens, &(&1.id == id)))}
   end
 
   def handle_event("delete", %{"id" => id}, socket) do
