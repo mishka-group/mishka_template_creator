@@ -1,6 +1,7 @@
 defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   use Phoenix.Component
   alias Phoenix.LiveView.JS
+  import MishkaTemplateCreatorWeb.CoreComponents
 
   @elements_type ["text", "tab"]
 
@@ -136,7 +137,21 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec delete_block(map) :: Phoenix.LiveView.Rendered.t()
   defp delete_block(assigns) do
     ~H"""
-    <Heroicons.trash class="h-6 w-6 stroke-current text-red-500" />
+    <Heroicons.trash
+      class="h-6 w-6 stroke-current text-red-500 cursor-pointer"
+      phx-click={show_modal("delete_confirm-#{@block_id}")}
+    />
+    <.modal
+      id={"delete_confirm-#{@block_id}"}
+      on_confirm={
+        JS.push("delete", value: %{id: @block_id, type: "layout"})
+        |> hide_modal("delete_confirm-#{@block_id}")
+      }
+    >
+      Are you sure?
+      <:confirm>OK</:confirm>
+      <:cancel>Cancel</:cancel>
+    </.modal>
     """
   end
 

@@ -34,6 +34,11 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, push_event(socket, "delete", %{id: id})}
   end
 
+  def handle_event("delete", %{"id" => id, "type" => "layout"}, socket) do
+    IO.inspect(id)
+    {:noreply, socket}
+  end
+
   def handle_event("delete", %{"id" => id}, socket) do
     JS.push("delete", value: %{id: id, type: "dom"})
     |> hide_modal("delete_confirm")
@@ -75,7 +80,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       socket.assigns.elemens
       |> elements_reevaluation(new_element, parent)
       |> sort_elements_list()
-      |> IO.inspect(label: "ListOfElements\n ================================> \n")
 
     new_socket = assign(socket, elemens: elemens)
 
