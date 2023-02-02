@@ -38,7 +38,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   def layout(assigns) do
     ~H"""
     <div class="create-section" id={"layout-#{@id}"}>
-      <div class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-10 w-54">
+      <div class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-1 w-54">
         <.block_mobile_view block_id={@id} />
         <.block_dark_mod block_id={@id} />
         <.block_settings block_id={@id} />
@@ -82,7 +82,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_mobile_view(map) :: Phoenix.LiveView.Rendered.t()
   defp block_mobile_view(assigns) do
     ~H"""
-    <Heroicons.device_phone_mobile class="h-6 w-6 stroke-current" />
+    <Heroicons.device_phone_mobile class="layout-icons" />
     """
   end
 
@@ -93,7 +93,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_dark_mod(map) :: Phoenix.LiveView.Rendered.t()
   defp block_dark_mod(assigns) do
     ~H"""
-    <Heroicons.sun class="h-6 w-6 stroke-current" />
+    <Heroicons.sun class="layout-icons" />
     """
   end
 
@@ -104,7 +104,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_settings(map) :: Phoenix.LiveView.Rendered.t()
   defp block_settings(assigns) do
     ~H"""
-    <Heroicons.wrench_screwdriver class="h-6 w-6 stroke-current" />
+    <Heroicons.wrench_screwdriver class="layout-icons" />
     """
   end
 
@@ -115,7 +115,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_tag(map) :: Phoenix.LiveView.Rendered.t()
   defp block_tag(assigns) do
     ~H"""
-    <Heroicons.tag class="h-6 w-6 stroke-current" />
+    <Heroicons.tag class="layout-icons" />
     """
   end
 
@@ -126,7 +126,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_add_separator(map) :: Phoenix.LiveView.Rendered.t()
   defp block_add_separator(assigns) do
     ~H"""
-    <Heroicons.plus class="h-6 w-6 stroke-current" />
+    <Heroicons.plus class="layout-icons" />
     """
   end
 
@@ -138,7 +138,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   defp delete_block(assigns) do
     ~H"""
     <Heroicons.trash
-      class="h-6 w-6 stroke-current text-red-500 cursor-pointer"
+      class="layout-icons text-red-500"
       phx-click={show_modal("delete_confirm-#{@block_id}")}
     />
     <.modal
@@ -162,7 +162,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec block_more(map) :: Phoenix.LiveView.Rendered.t()
   defp block_more(assigns) do
     ~H"""
-    <Heroicons.ellipsis_vertical class="h-6 w-6 stroke-current" />
+    <Heroicons.ellipsis_vertical class="layout-icons" />
     """
   end
 

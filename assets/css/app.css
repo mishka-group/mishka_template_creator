@@ -10,6 +10,10 @@
   @apply flex flex-col bg-white border justify-between items-stretch min-h-[200px] w-full;
 }
 
+.layout-icons {
+  @apply h-6 w-6 stroke-current cursor-pointer;
+}
+
 .svg-trash svg path {
   fill: green !important;
 }
