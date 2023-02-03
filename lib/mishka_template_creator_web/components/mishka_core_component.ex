@@ -11,8 +11,8 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   slot :inner_block, required: true
 
-  @spec element(map) :: Phoenix.LiveView.Rendered.t()
-  def element(assigns) do
+  @spec block(map) :: Phoenix.LiveView.Rendered.t()
+  def block(assigns) do
     ~H"""
     <div
       data-id={@id}
@@ -70,8 +70,25 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   def section(assigns) do
     ~H"""
     <div class="create-sub-section" id={@id} data-type="section" data-tag={@tag || @id}>
-      <p :for={_child <- @children}>test</p>
+      <.element :for={child <- @children} type={child.type} id={child.id} />
     </div>
+    """
+  end
+
+  attr :id, :string, required: true
+  attr :on_delete, JS, default: %JS{}
+  attr :on_duplicate, JS, default: %JS{}
+  attr :rest, :global
+
+  def element(%{rest: %{type: "text"}} = assigns) do
+    ~H"""
+    <p>text</p>
+    """
+  end
+
+  def element(%{rest: %{type: "tabs"}} = assigns) do
+    ~H"""
+    <p>tabs</p>
     """
   end
 
@@ -245,6 +262,10 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         layout
       end
     end)
+  end
+
+  def change_order(_elements, _current_index, _new_index, _parent_id, type)
+      when type in @elements_type do
   end
 
   @spec sort_elements_list(list, boolean) :: list
