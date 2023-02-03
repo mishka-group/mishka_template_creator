@@ -220,21 +220,20 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
-  def sort_elements_list(list) do
-    list
-    |> Enum.with_index(0)
-    |> Enum.sort_by(fn {x, _y} -> x.index end)
-    |> Enum.map(fn {map, index} -> Map.put(map, :index, index) end)
-  end
-
   def change_order(elements, current_index, new_index, "layout") do
     current_Element = Enum.at(elements, current_index)
 
     elements
     |> List.delete_at(current_index)
     |> List.insert_at(new_index, current_Element)
+    |> sort_elements_list(false)
+  end
+
+  @spec sort_elements_list(list, boolean) :: list
+  def sort_elements_list(list, auto \\ true) do
+    list
     |> Enum.with_index(0)
-    |> Enum.sort_by(&elem(&1, 1))
+    |> Enum.sort_by(&if(auto, do: elem(&1, 0).index, else: elem(&1, 1)))
     |> Enum.map(fn {map, index} -> Map.put(map, :index, index) end)
   end
 end

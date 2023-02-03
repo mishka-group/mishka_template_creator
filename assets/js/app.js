@@ -41,7 +41,6 @@ Sortable.create(dragLocation, {
     evt.item.remove();
   },
   onUpdate: function (/**Event*/ evt) {
-    console.log(evt.item);
     customEventCreator('changeElementOrderServerNotification', evt.item, {
       current_index: evt.oldIndex,
       new_index: evt.newIndex,
