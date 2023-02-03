@@ -32,13 +32,21 @@ Sortable.create(dragLocation, {
   swapThreshold: 0.65,
   onAdd: function (/**Event*/ evt) {
     const preview = document.querySelector('#previewHelper');
-    customEventCreator('serverNotification', evt.item, {
+    customEventCreator('droppedElementServerNotification', evt.item, {
       index: preview && evt.newIndex === 1 ? 0 : evt.newIndex,
       type: evt.item.dataset.type,
       parent: evt.to.dataset.type,
       parent_id: evt.to.id,
     });
     evt.item.remove();
+  },
+  onUpdate: function (/**Event*/ evt) {
+    console.log(evt.item);
+    customEventCreator('changeElementOrderServerNotification', evt.item, {
+      current_index: evt.oldIndex,
+      new_index: evt.newIndex,
+      type: evt.item.dataset.type,
+    });
   },
 });
 // Start Hooks object
@@ -52,15 +60,16 @@ Hooks.dragAndDropLocation = {
   mounted() {
     // This is a simple way based on JS Listener
     const liveView = this;
-    this.el.addEventListener('serverNotification', (e) => {
+    this.el.addEventListener('droppedElementServerNotification', (e) => {
       e.preventDefault();
       // send back to the server
-      this.pushEvent('dropped_element', {
-        index: e.detail.index,
-        type: e.detail.type,
-        parent: e.detail.parent,
-        parent_id: e.detail.parent_id,
-      });
+      this.pushEvent('dropped_element', e.detail);
+    });
+
+    this.el.addEventListener('changeElementOrderServerNotification', (e) => {
+      e.preventDefault();
+      // send back to the server
+      this.pushEvent('change_order', e.detail);
     });
 
     // This is a way for sending data to client from backend

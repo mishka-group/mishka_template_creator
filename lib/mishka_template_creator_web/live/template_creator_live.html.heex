@@ -28,7 +28,10 @@
         </div>
         <div>Drag And Drop a section here</div>
       </div>
-      <div :for={%{index: _index, type: _type, id: id, children: children} <- @elemens}>
+      <div
+        :for={%{index: _index, type: _type, id: id, children: children} <- @elemens}
+        data-type="layout"
+      >
         <.layout id={id} children={children} />
       </div>
     </div>
