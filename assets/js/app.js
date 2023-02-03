@@ -45,6 +45,7 @@ Sortable.create(dragLocation, {
       current_index: evt.oldIndex,
       new_index: evt.newIndex,
       type: evt.item.dataset.type,
+      parent_id: evt.to.id,
     });
   },
 });
@@ -101,9 +102,7 @@ Hooks.dragAndDropLocation = {
           liveView.pushEvent('change_order', {
             current_index: evt.oldIndex,
             new_index: evt.newIndex,
-            id: evt.item.id,
             type: evt.item.dataset.type,
-            parent: evt.to.dataset.type,
             parent_id: evt.to.id,
           });
         },

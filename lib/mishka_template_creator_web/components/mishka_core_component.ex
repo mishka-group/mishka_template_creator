@@ -220,13 +220,31 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
-  def change_order(elements, current_index, new_index, "layout") do
+  def change_order(elements, current_index, new_index, _parent_id, "layout") do
     current_Element = Enum.at(elements, current_index)
 
     elements
     |> List.delete_at(current_index)
     |> List.insert_at(new_index, current_Element)
     |> sort_elements_list(false)
+  end
+
+  def change_order(elements, current_index, new_index, parent_id, "section") do
+    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
+      if layout.id == parent_id do
+        current_Element = Enum.at(children, current_index)
+
+        sorted_list =
+          children
+          |> List.delete_at(current_index)
+          |> List.insert_at(new_index, current_Element)
+          |> sort_elements_list(false)
+
+        %{layout | children: sorted_list}
+      else
+        layout
+      end
+    end)
   end
 
   @spec sort_elements_list(list, boolean) :: list

@@ -74,12 +74,18 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   def handle_event(
         "change_order",
-        %{"current_index" => current_index, "new_index" => new_index, "type" => "layout"},
+        %{
+          "current_index" => current_index,
+          "new_index" => new_index,
+          "parent_id" => parent_id,
+          "type" => type
+        },
         socket
       ) do
     elemens =
       socket.assigns.elemens
-      |> change_order(current_index, new_index, "layout")
+      |> change_order(current_index, new_index, parent_id, type)
+      |> IO.inspect()
 
     {:noreply, assign(socket, elemens: elemens)}
   end
