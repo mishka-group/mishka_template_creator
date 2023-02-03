@@ -72,6 +72,18 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
+  def handle_event(
+        "change_order",
+        %{"current_index" => current_index, "new_index" => new_index, "type" => "layout"},
+        socket
+      ) do
+    elemens =
+      socket.assigns.elemens
+      |> change_order(current_index, new_index, "layout")
+
+    {:noreply, assign(socket, elemens: elemens)}
+  end
+
   def update_elements(nil, socket, _, _), do: {:noreply, socket}
 
   def update_elements(new_element, socket, parent, event) do

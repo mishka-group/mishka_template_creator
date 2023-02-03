@@ -31,7 +31,7 @@ Sortable.create(dragLocation, {
   animation: sortableSpeed,
   swapThreshold: 0.65,
   onAdd: function (/**Event*/ evt) {
-    const preview = document.querySelector("#previewHelper")
+    const preview = document.querySelector('#previewHelper');
     customEventCreator('serverNotification', evt.item, {
       index: preview && evt.newIndex === 1 ? 0 : evt.newIndex,
       type: evt.item.dataset.type,
@@ -88,6 +88,16 @@ Hooks.dragAndDropLocation = {
             parent_id: evt.to.id,
           });
           evt.item.remove();
+        },
+        onUpdate: function (/**Event*/ evt) {
+          liveView.pushEvent('change_order', {
+            current_index: evt.oldIndex,
+            new_index: evt.newIndex,
+            id: evt.item.id,
+            type: evt.item.dataset.type,
+            parent: evt.to.dataset.type,
+            parent_id: evt.to.id,
+          });
         },
       });
     });

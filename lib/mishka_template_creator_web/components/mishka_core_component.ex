@@ -3,7 +3,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   alias Phoenix.LiveView.JS
   import MishkaTemplateCreatorWeb.CoreComponents
 
-  @elements_type ["text", "tab"]
+  @elements_type ["text", "tabs"]
 
   attr :id, :string, required: true
   attr :title, :string, required: true
@@ -224,6 +224,17 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     list
     |> Enum.with_index(0)
     |> Enum.sort_by(fn {x, _y} -> x.index end)
+    |> Enum.map(fn {map, index} -> Map.put(map, :index, index) end)
+  end
+
+  def change_order(elements, current_index, new_index, "layout") do
+    current_Element = Enum.at(elements, current_index)
+
+    elements
+    |> List.delete_at(current_index)
+    |> List.insert_at(new_index, current_Element)
+    |> Enum.with_index(0)
+    |> Enum.sort_by(&elem(&1, 1))
     |> Enum.map(fn {map, index} -> Map.put(map, :index, index) end)
   end
 end
