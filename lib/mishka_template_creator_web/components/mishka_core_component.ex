@@ -82,13 +82,13 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   def element(%{rest: %{type: "text"}} = assigns) do
     ~H"""
-    <p>text</p>
+    <p data-type="text" id={"text-#{@id}"}>text</p>
     """
   end
 
   def element(%{rest: %{type: "tabs"}} = assigns) do
     ~H"""
-    <p>tabs</p>
+    <p data-type="tabs" id={"tabs-#{@id}"}>tabs</p>
     """
   end
 
@@ -264,8 +264,28 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
-  def change_order(_elements, _current_index, _new_index, _parent_id, type)
+  def change_order(elements, current_index, new_index, parent_id, type)
       when type in @elements_type do
+    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
+      updated_children =
+        Enum.map(children, fn data ->
+          if data.type == "section" && data.id == parent_id do
+            current_Element = Enum.at(data.children, current_index)
+
+            sorted_list =
+              data.children
+              |> List.delete_at(current_index)
+              |> List.insert_at(new_index, current_Element)
+              |> sort_elements_list(false)
+
+            %{data | children: sorted_list}
+          else
+            data
+          end
+        end)
+
+      %{layout | children: sort_elements_list(updated_children)}
+    end)
   end
 
   @spec sort_elements_list(list, boolean) :: list
