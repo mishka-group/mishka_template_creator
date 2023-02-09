@@ -35,3 +35,9 @@ mishka_template_creator-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Ignore general stuff
+.DS_Store
+Desktop.ini
+.AppleDouble
+.LSOverride
+
