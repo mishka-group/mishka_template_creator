@@ -188,7 +188,7 @@ function createSectionOnSortableJS(htmlElement) {
   </div>
   `;
   htmlElement.className = '';
-  htmlElement.classList.add('create-section');
+  htmlElement.classList.add('create-layout');
   htmlElement.classList.add('!p-20');
 
   Sortable.create(htmlElement, {
@@ -207,7 +207,7 @@ function createSectionOnSortableJS(htmlElement) {
 
       if (elementID === 'section-drag') {
         evt.item.innerHTML = '';
-        evt.item.classList.add('create-sub-section');
+        evt.item.classList.add('create-section');
         Sortable.create(evt.item, {
           group: {
             name: `section-${uuidv4()}`,

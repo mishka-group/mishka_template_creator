@@ -15,7 +15,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:ok, new_socket}
   end
 
-  # Test code and should be deleted
   def handle_event(
         "dropped_element",
         %{"index" => index, "type" => type, "parent" => parent, "parent_id" => parent_id},
@@ -72,6 +71,16 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
+  def handle_event("edit_section", %{"id" => id}, socket) do
+    IO.inspect(id)
+    {:noreply, socket}
+  end
+
+  def handle_event("edit_element", %{"id" => id}, socket) do
+    IO.inspect(id)
+    {:noreply, socket}
+  end
+
   def handle_event(
         "change_order",
         %{
@@ -85,7 +94,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     elemens =
       socket.assigns.elemens
       |> change_order(current_index, new_index, parent_id, type)
-      |> IO.inspect()
 
     {:noreply, assign(socket, elemens: elemens)}
   end
@@ -108,15 +116,3 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, push_element}
   end
 end
-
-# <.modal
-#   id="delete_confirm"
-#   on_confirm={
-#     JS.push("delete", value: %{id: @section_id, type: "dom"})
-#     |> hide_modal("delete_confirm")
-#   }
-# >
-#   Are you sure?
-#   <:confirm>OK</:confirm>
-#   <:cancel>Cancel</:cancel>
-# </.modal>

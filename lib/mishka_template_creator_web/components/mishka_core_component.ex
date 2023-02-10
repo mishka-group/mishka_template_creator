@@ -37,7 +37,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec layout(map) :: Phoenix.LiveView.Rendered.t()
   def layout(assigns) do
     ~H"""
-    <div class="create-section" id={"layout-#{@id}"} data-type="layout">
+    <div class="create-layout" id={"layout-#{@id}"} data-type="layout">
       <div class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-1 w-54">
         <.block_mobile_view block_id={@id} />
         <.block_dark_mod block_id={@id} />
@@ -69,7 +69,14 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec section(map) :: Phoenix.LiveView.Rendered.t()
   def section(assigns) do
     ~H"""
-    <div class="create-sub-section" id={@id} data-type="section" data-tag={@tag || @id}>
+    <div
+      class="create-section"
+      id={@id}
+      data-type="section"
+      data-tag={@tag || @id}
+      phx-click="edit_section"
+      phx-value-id={@id}
+    >
       <.element :for={child <- @children} type={child.type} id={child.id} />
     </div>
     """
@@ -82,7 +89,9 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   def element(%{rest: %{type: "text"}} = assigns) do
     ~H"""
-    <p data-type="text" id={"text-#{@id}"}>text</p>
+    <p data-type="text" id={"text-#{@id}"} phx-click="edit_element" phx-value-id={"text-#{@id}"}>
+      text
+    </p>
     """
   end
 

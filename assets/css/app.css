@@ -2,12 +2,12 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-.create-section {
+.create-layout {
   @apply flex flex-row bg-gray-200 border-2 justify-between items-stretch border-dashed border-gray-200 rounded-tl-none rounded-md p-5 hover:border-2 hover:border-dashed hover:duration-300 duration-1000 lg:px-1 relative shadow-md;
 }
 
-.create-sub-section {
-  @apply flex flex-col bg-white border justify-between items-stretch min-h-[200px] w-full;
+.create-section {
+  @apply flex flex-col justify-between items-stretch min-h-[200px] w-full border border-dashed border-gray-400;
 }
 
 .layout-icons {
@@ -18,7 +18,7 @@
   fill: green !important;
 }
 
-.svg-trash svg text{
+.svg-trash svg text {
   fill: green !important;
 }
 
