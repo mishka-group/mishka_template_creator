@@ -11,7 +11,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # TODO: Define some rules not to allow drag another element in to empty space or layout without creating sections
   # TODO: delete preView when on dragg
   def mount(_params, _, socket) do
-    new_socket = assign(socket, elemens: [])
+    new_socket = assign(socket, elemens: [], selected: nil)
     {:ok, new_socket}
   end
 
@@ -72,13 +72,16 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("edit_section", %{"id" => id}, socket) do
-    IO.inspect(id)
+    {:noreply, assign(socket, :selected, id)}
+  end
+
+  def handle_event("edit_element", %{"id" => _id}, socket) do
     {:noreply, socket}
   end
 
-  def handle_event("edit_element", %{"id" => id}, socket) do
-    IO.inspect(id)
-    {:noreply, socket}
+  # This is reset event
+  def handle_event("reset", _params, socket) do
+    {:noreply, assign(socket, :selected, nil)}
   end
 
   def handle_event(

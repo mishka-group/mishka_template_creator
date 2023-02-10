@@ -29,6 +29,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   attr :id, :string, required: true
+  attr :selected, :string, required: true
   attr :tag, :string, default: nil
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
@@ -53,13 +54,19 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         data-type="layout"
         data-tag={@tag || @id}
       >
-        <.section :for={child <- @children} id={child.id} children={child.children} />
+        <.section
+          :for={child <- @children}
+          id={child.id}
+          children={child.children}
+          selected={@selected}
+        />
       </div>
     </div>
     """
   end
 
   attr :id, :string, required: true
+  attr :selected, :string, required: true
   attr :tag, :string, default: nil
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
@@ -77,6 +84,9 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       phx-click="edit_section"
       phx-value-id={@id}
     >
+      <%= if @selected === @id do %>
+        Hi I am selected
+      <% end %>
       <.element :for={child <- @children} type={child.type} id={child.id} />
     </div>
     """

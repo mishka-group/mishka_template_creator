@@ -7,7 +7,7 @@
 }
 
 .create-section {
-  @apply flex flex-col justify-between items-stretch min-h-[200px] w-full border border-dashed border-gray-400;
+  @apply flex flex-col justify-between items-stretch min-h-[200px] w-full border border-dashed border-gray-400 p-1;
 }
 
 .layout-icons {
