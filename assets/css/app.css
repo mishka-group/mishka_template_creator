@@ -19,7 +19,7 @@
 }
 
 .section-header {
-  @apply flex flex-row justify-end items-end p-2 w-full text-sm gap-1 text-gray-500 shadow-md;
+  @apply absolute -mt-5 bg-[#e1e1e1] flex flex-row justify-end items-end p-2 text-sm gap-1 text-gray-500 shadow-md rounded-md right-2;
 }
 
 .svg-trash svg path {

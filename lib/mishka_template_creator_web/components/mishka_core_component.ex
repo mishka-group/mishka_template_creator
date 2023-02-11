@@ -59,6 +59,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
           id={child.id}
           children={child.children}
           selected={@selected}
+          parent_id={@id}
         />
       </div>
     </div>
@@ -66,6 +67,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   attr :id, :string, required: true
+  attr :parent_id, :string, required: true
   attr :selected, :string, required: true
   attr :tag, :string, default: nil
   attr :on_delete, JS, default: %JS{}
@@ -77,7 +79,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   def section(assigns) do
     ~H"""
     <div
-      class={"create-section #{if @selected === @id, do: "bg-white rounded-sm"}"}
+      class={"relative create-section #{if @selected === @id, do: "bg-white rounded-sm"}"}
       id={@id}
       data-type="section"
       data-tag={@tag || @id}
@@ -85,7 +87,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       phx-value-id={@id}
     >
       <%= if @selected === @id do %>
-        <.section_header section_id={@id} />
+        <.section_header section_id={@id} parent_id={@parent_id} />
       <% end %>
       <.element :for={child <- @children} type={child.type} id={child.id} />
     </div>
@@ -167,6 +169,8 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   attr :block_id, :string, required: true
+  attr :parent_id, :string, required: false, default: nil
+  attr :type, :string, required: false, default: "layout"
   attr :custom_class, :string, required: false, default: "layout-icons text-red-500"
   attr :on_click, JS, default: %JS{}
 
@@ -177,7 +181,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     <.modal
       id={"delete_confirm-#{@block_id}"}
       on_confirm={
-        JS.push("delete", value: %{id: @block_id, type: "layout"})
+        JS.push("delete", value: %{id: @block_id, type: @type, parent_id: @parent_id})
         |> hide_modal("delete_confirm-#{@block_id}")
       }
     >
@@ -200,6 +204,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   attr :section_id, :string, required: true
+  attr :parent_id, :string, required: true
 
   @spec section_header(map) :: Phoenix.LiveView.Rendered.t()
   defp section_header(assigns) do
@@ -208,7 +213,12 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       <.block_settings block_id={@section_id} custom_class="section-icons" />
       <.block_tag block_id={@section_id} custom_class="section-icons" />
       <.block_add_separator block_id={@section_id} custom_class="section-icons" />
-      <.delete_block block_id={@section_id} custom_class="section-icons text-red-500" />
+      <.delete_block
+        block_id={@section_id}
+        custom_class="section-icons text-red-500"
+        type="section"
+        parent_id={@parent_id}
+      />
     </div>
     """
   end
@@ -315,6 +325,26 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         end)
 
       %{layout | children: sort_elements_list(updated_children)}
+    end)
+  end
+
+  def delete_element(elements, id, "layout") do
+    elements
+    |> Enum.reject(&(&1.id == id))
+  end
+
+  def delete_element(elements, id, parent_id, "section") do
+    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
+      if layout.id == parent_id do
+        sorted_list =
+          children
+          |> Enum.reject(&(&1.id == id))
+          |> sort_elements_list(false)
+
+        %{layout | children: sorted_list}
+      else
+        layout
+      end
     end)
   end
 

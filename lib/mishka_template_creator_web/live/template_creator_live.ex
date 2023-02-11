@@ -34,7 +34,18 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("delete", %{"id" => id, "type" => "layout"}, socket) do
-    {:noreply, assign(socket, :elemens, Enum.reject(socket.assigns.elemens, &(&1.id == id)))}
+    {:noreply, assign(socket, :elemens, delete_element(socket.assigns.elemens, id, "layout"))}
+  end
+
+  def handle_event(
+        "delete",
+        %{"id" => id, "type" => "section", "parent_id" => parent_id},
+        socket
+      ) do
+    new_assign =
+      assign(socket, :elemens, delete_element(socket.assigns.elemens, id, parent_id, "section"))
+
+    {:noreply, new_assign}
   end
 
   def handle_event("delete", %{"id" => id}, socket) do
