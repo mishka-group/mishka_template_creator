@@ -14,6 +14,14 @@
   @apply h-6 w-6 stroke-current cursor-pointer;
 }
 
+.section-icons {
+  @apply h-5 w-6 stroke-current cursor-pointer;
+}
+
+.section-header {
+  @apply flex flex-row justify-end items-end p-2 w-full text-sm gap-1 text-gray-500 shadow-md;
+}
+
 .svg-trash svg path {
   fill: green !important;
 }

@@ -77,7 +77,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   def section(assigns) do
     ~H"""
     <div
-      class="create-section"
+      class={"create-section #{if @selected === @id, do: "bg-white rounded-sm"}"}
       id={@id}
       data-type="section"
       data-tag={@tag || @id}
@@ -85,7 +85,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       phx-value-id={@id}
     >
       <%= if @selected === @id do %>
-        Hi I am selected
+        <.section_header section_id={@id} />
       <% end %>
       <.element :for={child <- @children} type={child.type} id={child.id} />
     </div>
@@ -112,71 +112,68 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   attr :block_id, :string, required: true
-  attr :custom_class, :string, required: false
+  attr :custom_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
   @spec block_mobile_view(map) :: Phoenix.LiveView.Rendered.t()
   defp block_mobile_view(assigns) do
     ~H"""
-    <Heroicons.device_phone_mobile class="layout-icons" />
+    <Heroicons.device_phone_mobile class={@custom_class} />
     """
   end
 
   attr :block_id, :string, required: true
-  attr :custom_class, :string, required: false
+  attr :custom_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
   @spec block_dark_mod(map) :: Phoenix.LiveView.Rendered.t()
   defp block_dark_mod(assigns) do
     ~H"""
-    <Heroicons.sun class="layout-icons" />
+    <Heroicons.sun class={@custom_class} />
     """
   end
 
   attr :block_id, :string, required: true
-  attr :custom_class, :string, required: false
+  attr :custom_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
   @spec block_settings(map) :: Phoenix.LiveView.Rendered.t()
   defp block_settings(assigns) do
     ~H"""
-    <Heroicons.wrench_screwdriver class="layout-icons" />
+    <Heroicons.wrench_screwdriver class={@custom_class} />
     """
   end
 
   attr :block_id, :string, required: true
-  attr :custom_class, :string, required: false
+  attr :custom_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
   @spec block_tag(map) :: Phoenix.LiveView.Rendered.t()
   defp block_tag(assigns) do
     ~H"""
-    <Heroicons.tag class="layout-icons" />
+    <Heroicons.tag class={@custom_class} />
     """
   end
 
   attr :block_id, :string, required: true
-  attr :custom_class, :string, required: false
+  attr :custom_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
   @spec block_add_separator(map) :: Phoenix.LiveView.Rendered.t()
   defp block_add_separator(assigns) do
     ~H"""
-    <Heroicons.plus class="layout-icons" />
+    <Heroicons.plus class={@custom_class} />
     """
   end
 
   attr :block_id, :string, required: true
-  attr :custom_class, :string, required: false
+  attr :custom_class, :string, required: false, default: "layout-icons text-red-500"
   attr :on_click, JS, default: %JS{}
 
   @spec delete_block(map) :: Phoenix.LiveView.Rendered.t()
   defp delete_block(assigns) do
     ~H"""
-    <Heroicons.trash
-      class="layout-icons text-red-500"
-      phx-click={show_modal("delete_confirm-#{@block_id}")}
-    />
+    <Heroicons.trash class={@custom_class} phx-click={show_modal("delete_confirm-#{@block_id}")} />
     <.modal
       id={"delete_confirm-#{@block_id}"}
       on_confirm={
@@ -192,13 +189,27 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   attr :block_id, :string, required: true
-  attr :custom_class, :string, required: false
+  attr :custom_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
   @spec block_more(map) :: Phoenix.LiveView.Rendered.t()
   defp block_more(assigns) do
     ~H"""
-    <Heroicons.ellipsis_vertical class="layout-icons" />
+    <Heroicons.ellipsis_vertical class={@custom_class} />
+    """
+  end
+
+  attr :section_id, :string, required: true
+
+  @spec section_header(map) :: Phoenix.LiveView.Rendered.t()
+  defp section_header(assigns) do
+    ~H"""
+    <div id={"section_header_#{@section_id}"} class="section-header">
+      <.block_settings block_id={@section_id} custom_class="section-icons" />
+      <.block_tag block_id={@section_id} custom_class="section-icons" />
+      <.block_add_separator block_id={@section_id} custom_class="section-icons" />
+      <.delete_block block_id={@section_id} custom_class="section-icons text-red-500" />
+    </div>
     """
   end
 
