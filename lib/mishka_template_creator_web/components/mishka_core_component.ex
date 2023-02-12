@@ -147,13 +147,18 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   attr :block_id, :string, required: true
+  attr :type, :string, required: false, default: "layout"
+  attr :parent_id, :string, required: false, default: nil
   attr :custom_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
   @spec block_tag(map) :: Phoenix.LiveView.Rendered.t()
   defp block_tag(assigns) do
     ~H"""
-    <Heroicons.tag class={@custom_class} />
+    <Heroicons.tag class={@custom_class} phx-click={show_modal("#{@type}-tag-#{@block_id}")} />
+    <.modal id={"#{@type}-tag-#{@block_id}"}>
+      hey we are
+    </.modal>
     """
   end
 
@@ -211,7 +216,12 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     ~H"""
     <div id={"section_header_#{@section_id}"} class="section-header">
       <.block_settings block_id={@section_id} custom_class="section-icons" />
-      <.block_tag block_id={@section_id} custom_class="section-icons" />
+      <.block_tag
+        block_id={@section_id}
+        custom_class="section-icons"
+        type="section"
+        parent_id={@parent_id}
+      />
       <.block_add_separator block_id={@section_id} custom_class="section-icons" />
       <.delete_block
         block_id={@section_id}
