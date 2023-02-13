@@ -157,7 +157,13 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     ~H"""
     <Heroicons.tag class={@custom_class} phx-click={show_modal("#{@type}-tag-#{@block_id}")} />
     <.modal id={"#{@type}-tag-#{@block_id}"}>
-      hey we are
+      <.simple_form :let={f} for={:user} phx-submit="save_tag">
+        <.input field={{f, :tag}} label="Tag Name" />
+        <.input field={{f, :type}} type="hidden" value={@type}/>
+        <:actions>
+          <.button>Save</.button>
+        </:actions>
+      </.simple_form>
     </.modal>
     """
   end
