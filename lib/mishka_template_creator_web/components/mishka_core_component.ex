@@ -61,6 +61,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
           selected={@selected}
           parent_id={@id}
           submit={@submit}
+          tag={Map.get(child, :tag)}
         />
       </div>
     </div>
@@ -81,15 +82,24 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   def section(assigns) do
     ~H"""
     <div
-      class={"relative create-section #{if @selected === @id, do: "bg-white rounded-sm"}"}
+      class={"group relative create-section #{if @selected === @id, do: "bg-white rounded-sm"}"}
       id={@id}
       data-type="section"
       phx-click="edit_section"
       phx-value-id={@id}
     >
-      <%= if @selected === @id do %>
-        <.section_header section_id={@id} parent_id={@parent_id} submit={@submit} />
-      <% end %>
+      <.section_header
+        :if={@selected == @id}
+        section_id={@id}
+        parent_id={@parent_id}
+        submit={@submit}
+      />
+
+      <div :if={@tag} class="section-tag">
+        <strong>Tag:</strong>
+        <%= @tag %>
+      </div>
+
       <.element :for={child <- @children} type={child.type} id={child.id} />
     </div>
     """
