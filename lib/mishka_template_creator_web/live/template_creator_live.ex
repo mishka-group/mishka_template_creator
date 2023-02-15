@@ -1,8 +1,6 @@
 defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # In Phoenix v1.6+ apps, the line below should be: use MyAppWeb, :live_view
   use Phoenix.LiveView
-  import MishkaTemplateCreatorWeb.CoreComponents
-  alias Phoenix.LiveView.JS
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
 
   # TODO: create multi layout sections and store in a Genserver or ETS
@@ -83,16 +81,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       assign(socket, :elemens, delete_element(socket.assigns.elemens, id, parent_id, "section"))
 
     {:noreply, new_assign}
-  end
-
-  def handle_event("delete", %{"id" => id}, socket) do
-    JS.push("delete", value: %{id: id, type: "dom"})
-    |> hide_modal("delete_confirm")
-    |> Map.get(:ops)
-    |> Jason.encode!()
-
-    # after delete count childeren of content div and if is there not any element enable perview
-    {:noreply, assign(socket, :section_id, id)}
   end
 
   def handle_event("tag", %{"id" => id}, socket) do
