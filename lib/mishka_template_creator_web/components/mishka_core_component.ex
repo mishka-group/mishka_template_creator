@@ -53,7 +53,6 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         id={@id}
         class={"flex flex-row justify-start items-center w-full space-x-3 px-3 #{if length(@children) == 0, do: "py-10"}"}
         data-type="layout"
-        data-tag={@tag || @id}
       >
         <.section
           :for={child <- @children}
@@ -71,6 +70,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   attr :parent_id, :string, required: true
   attr :selected, :string, required: true
   attr :tag, :string, default: nil
+  attr :submit, :boolean, default: false
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
   attr :rest, :global
@@ -83,12 +83,11 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       class={"relative create-section #{if @selected === @id, do: "bg-white rounded-sm"}"}
       id={@id}
       data-type="section"
-      data-tag={@tag || @id}
       phx-click="edit_section"
       phx-value-id={@id}
     >
       <%= if @selected === @id do %>
-        <.section_header section_id={@id} parent_id={@parent_id} />
+        <.section_header section_id={@id} parent_id={@parent_id} submit={@submit} />
       <% end %>
       <.element :for={child <- @children} type={child.type} id={child.id} />
     </div>
@@ -160,13 +159,28 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     <Heroicons.tag class={@custom_class} phx-click={show_modal("#{@type}-tag-#{@block_id}")} />
     <.modal id={"#{@type}-tag-#{@block_id}"}>
       <.simple_form :let={f} for={:user} phx-submit="save_tag" phx-change="validate_tag">
-        <.input field={{f, :tag}} label="Tag Name" />
+        <.input field={{f, :tag}} label="Tag Name" id={"field-tag-#{@type}-#{@block_id}"} />
         <p class={"text-sm #{if @submit, do: "text-red-500", else: ""}"}>
           Please use only letters and numbers in naming and also keep in mind that you can only use (<code class="text-pink-400">-</code>) between letters. It should be noted, the tag name must be more than 4 characters.
         </p>
-        <.input field={{f, :type}} type="hidden" value={@type} />
-        <.input field={{f, :id}} type="hidden" value={@block_id} />
-        <.input field={{f, :parent_id}} type="hidden" value={@parent_id} />
+        <.input
+          field={{f, :type}}
+          type="hidden"
+          value={@type}
+          id={"field-type-#{@type}-#{@block_id}"}
+        />
+        <.input
+          field={{f, :id}}
+          type="hidden"
+          value={@block_id}
+          id={"field-id-#{@type}-#{@block_id}"}
+        />
+        <.input
+          field={{f, :parent_id}}
+          type="hidden"
+          value={@parent_id}
+          id={"field-parent_id-#{@type}-#{@block_id}"}
+        />
         <:actions>
           <.button
             class="phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80 disabled:bg-gray-400 disabled:text-white disabled:outline-none"
@@ -229,6 +243,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   attr :section_id, :string, required: true
   attr :parent_id, :string, required: true
+  attr :submit, :boolean, default: false
 
   @spec section_header(map) :: Phoenix.LiveView.Rendered.t()
   defp section_header(assigns) do
@@ -240,6 +255,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         custom_class="section-icons"
         type="section"
         parent_id={@parent_id}
+        submit={@submit}
       />
       <.block_add_separator block_id={@section_id} custom_class="section-icons" />
       <.delete_block
