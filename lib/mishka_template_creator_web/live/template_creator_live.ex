@@ -11,7 +11,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # TODO: Define some rules not to allow drag another element in to empty space or layout without creating sections
   # TODO: delete preView when on dragg
   def mount(_params, _, socket) do
-    new_socket = assign(socket, elemens: [], selected: nil)
+    new_socket = assign(socket, elemens: [], selected: nil, submit: true)
     {:ok, new_socket}
   end
 
@@ -38,14 +38,39 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event(
+        "validate_tag",
+        %{"_target" => _target, "user" => %{"tag" => tag}},
+        socket
+      ) do
+    submit_status =
+      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
+        String.length(String.trim(tag)) > 3
+
+    {:noreply, assign(socket, :submit, !submit_status)}
+  end
+
+  def handle_event(
         "save_tag",
         %{"user" => %{"tag" => tag, "type" => type, "id" => id, "parent_id" => parent_id}},
         socket
       ) do
-    new_socket =
-      assign(socket, :elemens, add_tag(socket.assigns.elemens, id, parent_id, tag, type))
+    submit_status =
+      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
+        String.length(String.trim(tag)) > 3
 
-    IO.inspect(add_tag(socket.assigns.elemens, id, parent_id, tag, type))
+    new_socket =
+      case {submit_status, String.trim(tag)} do
+        {true, tag} ->
+          assign(
+            socket,
+            elemens: add_tag(socket.assigns.elemens, id, parent_id, tag, type),
+            submit: true
+          )
+
+        _ ->
+          socket
+      end
+
     {:noreply, new_socket}
   end
 

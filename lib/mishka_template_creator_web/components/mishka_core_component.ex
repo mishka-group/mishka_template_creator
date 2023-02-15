@@ -31,6 +31,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   attr :id, :string, required: true
   attr :selected, :string, required: true
   attr :tag, :string, default: nil
+  attr :submit, :boolean, default: false
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
   attr :children, :list, default: []
@@ -43,7 +44,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         <.block_mobile_view block_id={@id} />
         <.block_dark_mod block_id={@id} />
         <.block_settings block_id={@id} />
-        <.block_tag block_id={@id} />
+        <.block_tag block_id={@id} submit={@submit} />
         <.block_add_separator block_id={@id} />
         <.delete_block block_id={@id} />
         <.block_more block_id={@id} />
@@ -149,6 +150,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   attr :block_id, :string, required: true
   attr :type, :string, required: false, default: "layout"
   attr :parent_id, :string, required: false, default: nil
+  attr :submit, :boolean, default: false
   attr :custom_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
@@ -157,13 +159,22 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     ~H"""
     <Heroicons.tag class={@custom_class} phx-click={show_modal("#{@type}-tag-#{@block_id}")} />
     <.modal id={"#{@type}-tag-#{@block_id}"}>
-      <.simple_form :let={f} for={:user} phx-submit="save_tag">
+      <.simple_form :let={f} for={:user} phx-submit="save_tag" phx-change="validate_tag">
         <.input field={{f, :tag}} label="Tag Name" />
+        <p class={"text-sm #{if @submit, do: "text-red-500", else: ""}"}>
+          Please use only letters and numbers in naming and also keep in mind that you can only use (<code class="text-pink-400">-</code>) between letters. It should be noted, the tag name must be more than 4 characters.
+        </p>
         <.input field={{f, :type}} type="hidden" value={@type} />
         <.input field={{f, :id}} type="hidden" value={@block_id} />
         <.input field={{f, :parent_id}} type="hidden" value={@parent_id} />
         <:actions>
-          <.button>Save</.button>
+          <.button
+            class="phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80 disabled:bg-gray-400 disabled:text-white disabled:outline-none"
+            disabled={@submit}
+            phx-click={if !@submit, do: hide_modal("#{@type}-tag-#{@block_id}"), else: nil}
+          >
+            Save
+          </.button>
         </:actions>
       </.simple_form>
     </.modal>
