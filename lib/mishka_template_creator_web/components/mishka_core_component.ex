@@ -39,12 +39,13 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec layout(map) :: Phoenix.LiveView.Rendered.t()
   def layout(assigns) do
     ~H"""
-    <div class="create-layout" id={"layout-#{@id}"} data-type="layout">
+    <div class="create-layout group" id={"layout-#{@id}"} data-type="layout">
       <div class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-1 w-54">
         <.block_mobile_view block_id={@id} />
         <.block_dark_mod block_id={@id} />
         <.block_settings block_id={@id} />
         <.block_tag block_id={@id} submit={@submit} />
+        <div :if={@tag}> <strong>Tag: </strong><%= @tag %></div>
         <.block_add_separator block_id={@id} />
         <.delete_block block_id={@id} />
         <.block_more block_id={@id} />
