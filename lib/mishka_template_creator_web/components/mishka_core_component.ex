@@ -60,6 +60,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
           children={child.children}
           selected={@selected}
           parent_id={@id}
+          submit={@submit}
         />
       </div>
     </div>
@@ -155,6 +156,8 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   @spec block_tag(map) :: Phoenix.LiveView.Rendered.t()
   defp block_tag(assigns) do
+    IO.inspect(assigns)
+
     ~H"""
     <Heroicons.tag class={@custom_class} phx-click={show_modal("#{@type}-tag-#{@block_id}")} />
     <.modal id={"#{@type}-tag-#{@block_id}"}>
