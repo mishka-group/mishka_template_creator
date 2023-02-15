@@ -159,7 +159,9 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     <.modal id={"#{@type}-tag-#{@block_id}"}>
       <.simple_form :let={f} for={:user} phx-submit="save_tag">
         <.input field={{f, :tag}} label="Tag Name" />
-        <.input field={{f, :type}} type="hidden" value={@type}/>
+        <.input field={{f, :type}} type="hidden" value={@type} />
+        <.input field={{f, :id}} type="hidden" value={@block_id} />
+        <.input field={{f, :parent_id}} type="hidden" value={@parent_id} />
         <:actions>
           <.button>Save</.button>
         </:actions>
@@ -358,6 +360,28 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
           |> sort_elements_list(false)
 
         %{layout | children: sorted_list}
+      else
+        layout
+      end
+    end)
+  end
+
+  def add_tag(elements, id, _parent_id, tag, "layout") do
+    Enum.map(elements, fn %{type: "layout"} = layout ->
+      if layout.id == id, do: Map.merge(layout, %{tag: tag}), else: layout
+    end)
+  end
+
+  def add_tag(elements, id, parent_id, tag, "section") do
+    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
+      if layout.id == parent_id do
+        edited_list =
+          children
+          |> Enum.map(fn el ->
+            if el.id == id, do: Map.merge(el, %{tag: tag}), else: el
+          end)
+
+        %{layout | children: edited_list}
       else
         layout
       end

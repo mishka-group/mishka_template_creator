@@ -37,10 +37,16 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, assign(socket, :elemens, delete_element(socket.assigns.elemens, id, "layout"))}
   end
 
-  def handle_event("save_tag", %{"user" => %{"tag" => tag, "type" => type}}, socket) do
-    IO.inspect(tag)
-    IO.inspect(type)
-    {:noreply, socket}
+  def handle_event(
+        "save_tag",
+        %{"user" => %{"tag" => tag, "type" => type, "id" => id, "parent_id" => parent_id}},
+        socket
+      ) do
+    new_socket =
+      assign(socket, :elemens, add_tag(socket.assigns.elemens, id, parent_id, tag, type))
+
+    IO.inspect(add_tag(socket.assigns.elemens, id, parent_id, tag, type))
+    {:noreply, new_socket}
   end
 
   def handle_event(
