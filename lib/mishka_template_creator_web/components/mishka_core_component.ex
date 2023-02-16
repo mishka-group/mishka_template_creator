@@ -5,21 +5,21 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   @elements_type ["text", "tabs"]
   @tailwind_settings [
-    {"layout", "Layout"},
-    {"flexbox_grid", "Flexbox & Grid"},
-    {"spacing", "Spacing"},
-    {"sizing", "Sizing"},
-    {"typography", "Typography"},
-    {"backgrounds", "Backgrounds"},
-    {"borders", "Borders"},
-    {"effects", "Effects"},
-    {"filters", "Filters"},
-    {"tables", "Tables"},
-    {"transitions_animation", "Transitions & Animation"},
-    {"transforms", "Transforms"},
-    {"interactivity", "Interactivity"},
-    {"accessibility", "Accessibility"},
-    {"svg", "SVG"}
+    {"layout", "Layout", "Heroicons.inbox_stack"},
+    {"flexbox_grid", "Flexbox & Grid", "Heroicons.inbox_stack"},
+    {"spacing", "Spacing", "Heroicons.inbox_stack"},
+    {"sizing", "Sizing", "Heroicons.inbox_stack"},
+    {"typography", "Typography", "Heroicons.inbox_stack"},
+    {"backgrounds", "Backgrounds", "Heroicons.inbox_stack"},
+    {"borders", "Borders", "Heroicons.inbox_stack"},
+    {"effects", "Effects", "Heroicons.inbox_stack"},
+    {"filters", "Filters", "Heroicons.inbox_stack"},
+    {"tables", "Tables", "Heroicons.inbox_stack"},
+    {"transitions_animation", "Transitions & Animation", "Heroicons.inbox_stack"},
+    {"transforms", "Transforms", "Heroicons.inbox_stack"},
+    {"interactivity", "Interactivity", "Heroicons.inbox_stack"},
+    {"accessibility", "Accessibility", "Heroicons.inbox_stack"},
+    {"svg", "SVG", "Heroicons.inbox_stack"}
   ]
 
   attr :id, :string, required: true
@@ -181,8 +181,12 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     <.modal id={"#{@type}-settings-#{@block_id}"}>
       <p class="text-center font-bold mb-4 text-lg">Please select the section you want to edit</p>
       <div class="grid grid-cols-3 gap-3 text-gray-500 mt-8 mb-10 md:grid-cols-4 lg:grid-cols-5">
-        <.block :for={{id, title} <- tailwind_settings} id={id} title={title}>
-          <Heroicons.inbox_stack class="w-6 h-6 mx-auto stroke-current" />
+        <.block :for={{id, title, module} <- tailwind_settings} id={id} title={title}>
+          <%= Phoenix.LiveView.HTMLEngine.component(
+            Code.eval_string("&#{module}/1") |> elem(0),
+            [class: "w-6 h-6 mx-auto stroke-current"],
+            {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
+          ) %>
         </.block>
       </div>
       <p
