@@ -120,6 +120,10 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, assign(socket, :selected, nil)}
   end
 
+  def handle_event("add_custom_class", %{"id" => _id, "type" => _type}, socket) do
+    {:noreply, socket}
+  end
+
   def handle_event(
         "change_order",
         %{

@@ -6,20 +6,20 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @elements_type ["text", "tabs"]
   @tailwind_settings [
     {"layout", "Layout", "Heroicons.inbox_stack"},
-    {"flexbox_grid", "Flexbox & Grid", "Heroicons.inbox_stack"},
-    {"spacing", "Spacing", "Heroicons.inbox_stack"},
-    {"sizing", "Sizing", "Heroicons.inbox_stack"},
-    {"typography", "Typography", "Heroicons.inbox_stack"},
-    {"backgrounds", "Backgrounds", "Heroicons.inbox_stack"},
-    {"borders", "Borders", "Heroicons.inbox_stack"},
-    {"effects", "Effects", "Heroicons.inbox_stack"},
-    {"filters", "Filters", "Heroicons.inbox_stack"},
-    {"tables", "Tables", "Heroicons.inbox_stack"},
-    {"transitions_animation", "Transitions & Animation", "Heroicons.inbox_stack"},
-    {"transforms", "Transforms", "Heroicons.inbox_stack"},
-    {"interactivity", "Interactivity", "Heroicons.inbox_stack"},
-    {"accessibility", "Accessibility", "Heroicons.inbox_stack"},
-    {"svg", "SVG", "Heroicons.inbox_stack"}
+    {"flexbox_grid", "Flexbox & Grid", "Heroicons.circle_stack"},
+    {"spacing", "Spacing", "Heroicons.square_3_stack_3d"},
+    {"sizing", "Sizing", "Heroicons.swatch"},
+    {"typography", "Typography", "Heroicons.chat_bubble_bottom_center"},
+    {"backgrounds", "Backgrounds", "Heroicons.window"},
+    {"borders", "Borders", "Heroicons.bars_2"},
+    {"effects", "Effects", "Heroicons.light_bulb"},
+    {"filters", "Filters", "Heroicons.scissors"},
+    {"tables", "Tables", "Heroicons.table_cells"},
+    {"transitions_animation", "Transitions & Animation", "Heroicons.sparkles"},
+    {"transforms", "Transforms", "Heroicons.rectangle_stack"},
+    {"interactivity", "Interactivity", "Heroicons.paper_clip"},
+    {"accessibility", "Accessibility", "Heroicons.eye"},
+    {"svg", "SVG", "Heroicons.photo"}
   ]
 
   attr :id, :string, required: true
