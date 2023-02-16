@@ -4,6 +4,23 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   import MishkaTemplateCreatorWeb.CoreComponents
 
   @elements_type ["text", "tabs"]
+  @tailwind_settings [
+    {"layout", "Layout"},
+    {"flexbox_grid", "Flexbox & Grid"},
+    {"spacing", "Spacing"},
+    {"sizing", "Sizing"},
+    {"typography", "Typography"},
+    {"backgrounds", "Backgrounds"},
+    {"borders", "Borders"},
+    {"effects", "Effects"},
+    {"filters", "Filters"},
+    {"tables", "Tables"},
+    {"transitions_animation", "Transitions & Animation"},
+    {"transforms", "Transforms"},
+    {"interactivity", "Interactivity"},
+    {"accessibility", "Accessibility"},
+    {"svg", "SVG"}
+  ]
 
   attr :id, :string, required: true
   attr :title, :string, required: true
@@ -45,7 +62,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         <.block_dark_mod block_id={@id} />
         <.block_settings block_id={@id} />
         <.block_tag block_id={@id} submit={@submit} />
-        <div :if={@tag}> <strong>Tag: </strong><%= @tag %></div>
+        <div :if={@tag}><strong>Tag: </strong><%= @tag %></div>
         <.block_add_separator block_id={@id} />
         <.delete_block block_id={@id} />
         <.block_more block_id={@id} />
@@ -148,13 +165,35 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   attr :block_id, :string, required: true
+  attr :type, :string, required: false, default: "layout"
   attr :custom_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
   @spec block_settings(map) :: Phoenix.LiveView.Rendered.t()
   defp block_settings(assigns) do
+    tailwind_settings = @tailwind_settings
+
     ~H"""
-    <Heroicons.wrench_screwdriver class={@custom_class} />
+    <Heroicons.wrench_screwdriver
+      class={@custom_class}
+      phx-click={show_modal("#{@type}-settings-#{@block_id}")}
+    />
+    <.modal id={"#{@type}-settings-#{@block_id}"}>
+      <p class="text-center font-bold mb-4 text-lg">Please select the section you want to edit</p>
+      <div class="grid grid-cols-3 gap-3 text-gray-500 mt-8 mb-10 md:grid-cols-4 lg:grid-cols-5">
+        <.block :for={{id, title} <- tailwind_settings} id={id} title={title}>
+          <Heroicons.inbox_stack class="w-6 h-6 mx-auto stroke-current" />
+        </.block>
+      </div>
+      <p
+        class="text-center text-sm text-blue-400"
+        phx-click="add_custom_class"
+        phx-value-id={@block_id}
+        phx-value-type={@type}
+      >
+        <span>OR put your custom classes</span>
+      </p>
+    </.modal>
     """
   end
 
@@ -167,8 +206,6 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   @spec block_tag(map) :: Phoenix.LiveView.Rendered.t()
   defp block_tag(assigns) do
-    IO.inspect(assigns)
-
     ~H"""
     <Heroicons.tag class={@custom_class} phx-click={show_modal("#{@type}-tag-#{@block_id}")} />
     <.modal id={"#{@type}-tag-#{@block_id}"}>
