@@ -10,6 +10,8 @@ module.exports = {
     "../lib/*_web.ex",
     "../lib/*_web/**/*.ex",
     "../lib/*_web/**/*.*ex",
+    "../lib/**/**/*.ex",
+    "../lib/**/**/**/*.ex",
   ],
   theme: {
     extend: {

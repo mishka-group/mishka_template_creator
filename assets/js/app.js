@@ -9,18 +9,26 @@ import { customEventCreator } from '../vendor/mishka_template_creator/utilities'
 // } from '../vendor/mishka_template_creator/layout';
 import Sortable from 'sortablejs';
 
-const layoutBlock = document.getElementById('layoutBlock');
+const layoutBlock = document.getElementById('layout-block');
+const elementsBlock = document.getElementById('elements-block');
+const mediaBlock = document.getElementById('media-block');
 const dragLocation = document.getElementById('dragLocation');
 const sortableSpeed = 150;
 
-Sortable.create(layoutBlock, {
-  group: {
-    name: 'LayoutGroup',
-    pull: 'clone',
-    put: false,
-  },
-  animation: sortableSpeed,
-  sort: false,
+[
+  { dom: layoutBlock, name: 'LayoutGroup' },
+  { dom: elementsBlock, name: 'ElementGroup' },
+  { dom: mediaBlock, name: 'MediaGroup' },
+].map((item) => {
+  Sortable.create(item.dom, {
+    group: {
+      name: item.name,
+      pull: 'clone',
+      put: false,
+    },
+    animation: sortableSpeed,
+    sort: false,
+  });
 });
 
 Sortable.create(dragLocation, {
