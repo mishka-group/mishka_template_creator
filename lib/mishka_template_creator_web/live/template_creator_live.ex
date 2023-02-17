@@ -3,6 +3,12 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   use Phoenix.LiveView
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
 
+  def render(assigns) do
+    ~H"""
+    <.dashboard elemens={@elemens} selected={@selected} submit={@submit} />
+    """
+  end
+
   # TODO: create multi layout sections and store in a Genserver or ETS
   # TODO: create multisection in a layout and store them under the layout
   # TODO: Define some rules no to allow drag a layout in a section

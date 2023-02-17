@@ -26,6 +26,14 @@
   @apply absolute -mt-5 bg-[#e1e1e1] hidden flex-row justify-end items-end p-2 text-sm gap-1 text-gray-500 shadow-md rounded-md left-2  group-hover:flex;
 }
 
+.main-body {
+  @apply absolute inset-0 bg-gray-100 z-10 h-full lg:overflow-hidden overflow-x-hidden
+}
+
+.top-nav {
+  @apply flex flex-row w-full bg-white justify-between items-center text-gray-500 border-b border-[rgb(229,229,229)] shadow-md z-10 rounded-b-xl mb-5 p-5
+}
+
 .svg-trash svg path {
   fill: green !important;
 }

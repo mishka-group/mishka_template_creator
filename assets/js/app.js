@@ -94,7 +94,10 @@ Hooks.dragAndDropLocation = {
     this.handleEvent('create_draggable', ({ id, layout }) => {
       const element = document.getElementById(id);
       Sortable.create(element, {
-        group: { name: `${layout}-${id}`, put: ['LayoutGroup'] },
+        group: {
+          name: `${layout}-${id}`,
+          put: ['LayoutGroup', 'ElementGroup', 'MediaGroup'],
+        },
         animation: 150,
         swapThreshold: 0.65,
         onAdd: function (/**Event*/ evt) {

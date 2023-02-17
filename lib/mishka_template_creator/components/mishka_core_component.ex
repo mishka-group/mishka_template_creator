@@ -1,64 +1,30 @@
 defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   use Phoenix.Component
-  alias Phoenix.LiveView.JS
-  alias MishkaTemplateCreator.Components.Elements.Section
-
-  alias MishkaTemplateCreator.Components.Blocks.{
-    AddSeparator,
-    DarkMod,
-    Delete,
-    MobileView,
-    Settings,
-    ShowMore,
-    Tag,
-    ElementMenu
-  }
+  alias MishkaTemplateCreator.Components.Blocks.{Content, Aside}
 
   @elements_type ["text", "tabs"]
 
-  @spec aside_menu(map) :: Phoenix.LiveView.Rendered.t()
-  def aside_menu(assigns) do
-    ~H"""
-    <ElementMenu.aside_menu />
-    """
-  end
-
-  attr :id, :string, required: true
+  attr :elemens, :list, required: true
   attr :selected, :string, required: true
-  attr :tag, :string, default: nil
-  attr :submit, :boolean, default: false
-  attr :on_delete, JS, default: %JS{}
-  attr :on_duplicate, JS, default: %JS{}
-  attr :children, :list, default: []
+  attr :submit, :string, required: true
 
-  @spec layout(map) :: Phoenix.LiveView.Rendered.t()
-  def layout(assigns) do
+  @spec dashboard(map) :: Phoenix.LiveView.Rendered.t()
+  def dashboard(assigns) do
     ~H"""
-    <div class="create-layout group" id={"layout-#{@id}"} data-type="layout">
-      <div class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-1 w-54">
-        <MobileView.block_mobile_view block_id={@id} />
-        <DarkMod.block_dark_mod block_id={@id} />
-        <Settings.block_settings block_id={@id} />
-        <Tag.block_tag block_id={@id} submit={@submit} />
-        <div :if={@tag}><strong>Tag: </strong><%= @tag %></div>
-        <AddSeparator.block_add_separator block_id={@id} />
-        <Delete.delete_block block_id={@id} />
-        <ShowMore.block_more block_id={@id} />
+    <div class="main-body" phx-click="reset">
+      <div id="mishka_top_nav" class="top-nav">
+        <div>Back To/History</div>
+        <div>Main Section</div>
+        <div>Settings</div>
       </div>
       <div
-        id={@id}
-        class={"flex flex-row justify-start items-center w-full space-x-3 px-3 #{if length(@children) == 0, do: "py-10"}"}
-        data-type="layout"
+        id="mishka_content"
+        data-id="mishka_content"
+        class="flex flex-col-reverse mx-auto justify-between items-stretch w-full rounded-t-md lg:flex-row"
+        phx-hook="dragAndDropLocation"
       >
-        <Section.section
-          :for={child <- @children}
-          id={child.id}
-          children={child.children}
-          selected={@selected}
-          parent_id={@id}
-          submit={@submit}
-          tag={Map.get(child, :tag)}
-        />
+        <Content.content elemens={@elemens} selected={@selected} submit={@submit} />
+        <Aside.aside />
       </div>
     </div>
     """
