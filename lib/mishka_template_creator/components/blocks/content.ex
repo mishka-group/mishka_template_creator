@@ -3,7 +3,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Content do
   alias MishkaTemplateCreator.Components.Elements.Layout
 
   attr :elemens, :list, required: true
-  attr :selected, :string, required: true
+  attr :selected_block, :string, required: true
   attr :submit, :string, required: true
 
   @spec content(map) :: Phoenix.LiveView.Rendered.t()
@@ -29,7 +29,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Content do
         :for={%{index: _index, type: _type, id: id, children: children} = el <- @elemens}
         id={id}
         children={children}
-        selected={@selected}
+        selected_block={@selected_block}
         submit={@submit}
         tag={Map.get(el, :tag)}
       />

@@ -5,7 +5,8 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @elements_type ["text", "tabs"]
 
   attr :elemens, :list, required: true
-  attr :selected, :string, required: true
+  attr :selected_block, :string, required: true
+  attr :selected_setting, :map, required: false, default: nil
   attr :submit, :string, required: true
 
   @spec dashboard(map) :: Phoenix.LiveView.Rendered.t()
@@ -23,7 +24,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         class="flex flex-col-reverse mx-auto justify-between items-stretch w-full rounded-t-md lg:flex-row"
         phx-hook="dragAndDropLocation"
       >
-        <Content.content elemens={@elemens} selected={@selected} submit={@submit} />
+        <Content.content elemens={@elemens} selected_block={@selected_block} submit={@submit} />
         <Aside.aside />
       </div>
     </div>

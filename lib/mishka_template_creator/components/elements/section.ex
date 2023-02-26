@@ -11,7 +11,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
 
   attr :id, :string, required: true
   attr :parent_id, :string, required: true
-  attr :selected, :string, required: true
+  attr :selected_block, :string, required: true
   attr :tag, :string, default: nil
   attr :submit, :boolean, default: false
   attr :on_delete, JS, default: %JS{}
@@ -23,14 +23,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   def section(assigns) do
     ~H"""
     <div
-      class={"group relative create-section #{if @selected === @id, do: "bg-white rounded-sm"}"}
+      class={"group relative create-section #{if @selected_block === @id, do: "bg-white rounded-sm"}"}
       id={@id}
       data-type="section"
       phx-click="edit_section"
       phx-value-id={@id}
     >
       <.section_header
-        :if={@selected == @id}
+        :if={@selected_block == @id}
         section_id={@id}
         parent_id={@parent_id}
         submit={@submit}

@@ -10,12 +10,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
     MobileView,
     Settings,
     ShowMore,
-    Tag,
-    ElementMenu
+    Tag
   }
 
   attr :id, :string, required: true
-  attr :selected, :string, required: true
+  attr :selected_block, :string, required: true
   attr :tag, :string, default: nil
   attr :submit, :boolean, default: false
   attr :on_delete, JS, default: %JS{}
@@ -45,7 +44,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
           :for={child <- @children}
           id={child.id}
           children={child.children}
-          selected={@selected}
+          selected_block={@selected_block}
           parent_id={@id}
           submit={@submit}
           tag={Map.get(child, :tag)}

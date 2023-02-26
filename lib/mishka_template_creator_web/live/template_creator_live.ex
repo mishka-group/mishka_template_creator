@@ -5,7 +5,12 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   def render(assigns) do
     ~H"""
-    <.dashboard elemens={@elemens} selected={@selected} submit={@submit} />
+    <.dashboard
+      elemens={@elemens}
+      selected_block={@selected_block}
+      submit={@submit}
+      selected_setting={@selected_setting}
+    />
     """
   end
 
@@ -15,7 +20,9 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # TODO: Define some rules not to allow drag another element in to empty space or layout without creating sections
   # TODO: delete preView when on dragg
   def mount(_params, _, socket) do
-    new_socket = assign(socket, elemens: [], selected: nil, submit: true)
+    new_socket =
+      assign(socket, elemens: [], selected_block: nil, submit: true, selected_setting: nil)
+
     {:ok, new_socket}
   end
 
@@ -114,7 +121,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("edit_section", %{"id" => id}, socket) do
-    {:noreply, assign(socket, :selected, id)}
+    {:noreply, assign(socket, :selected_block, id)}
   end
 
   def handle_event("edit_element", %{"id" => _id}, socket) do
@@ -123,7 +130,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   # This is reset event
   def handle_event("reset", _params, socket) do
-    {:noreply, assign(socket, :selected, nil)}
+    {:noreply, assign(socket, :selected_block, nil)}
   end
 
   def handle_event("add_custom_class", %{"id" => _id, "type" => _type}, socket) do
