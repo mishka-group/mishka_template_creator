@@ -15,25 +15,25 @@ defmodule MishkaTemplateCreator.Components.Blocks.Tag do
     ~H"""
     <Heroicons.tag class={@custom_class} phx-click={show_modal("#{@type}-tag-#{@block_id}")} />
     <.modal id={"#{@type}-tag-#{@block_id}"}>
-      <.simple_form :let={f} for={:user} phx-submit="save_tag" phx-change="validate_tag">
-        <.input field={{f, :tag}} label="Tag Name" id={"field-tag-#{@type}-#{@block_id}"} />
+      <.simple_form for={%{}} as={:tag} phx-submit="save_tag" phx-change="validate_tag">
+        <.input name="tag" label="Tag Name" id={"field-tag-#{@type}-#{@block_id}"} value=""/>
         <p class={"text-sm #{if @submit, do: "text-red-500", else: ""}"}>
           Please use only letters and numbers in naming and also keep in mind that you can only use (<code class="text-pink-400">-</code>) between letters. It should be noted, the tag name must be more than 4 characters.
         </p>
         <.input
-          field={{f, :type}}
+          name="type"
           type="hidden"
           value={@type}
           id={"field-type-#{@type}-#{@block_id}"}
         />
         <.input
-          field={{f, :id}}
+          name="id"
           type="hidden"
           value={@block_id}
           id={"field-id-#{@type}-#{@block_id}"}
         />
         <.input
-          field={{f, :parent_id}}
+          name="parent_id"
           type="hidden"
           value={@parent_id}
           id={"field-parent_id-#{@type}-#{@block_id}"}

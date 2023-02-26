@@ -50,7 +50,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   def handle_event(
         "validate_tag",
-        %{"_target" => _target, "user" => %{"tag" => tag}},
+        %{"_target" => _target, "tag" => tag},
         socket
       ) do
     submit_status =
@@ -62,7 +62,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   def handle_event(
         "save_tag",
-        %{"user" => %{"tag" => tag, "type" => type, "id" => id, "parent_id" => parent_id}},
+        %{"tag" => tag, "type" => type, "id" => id, "parent_id" => parent_id},
         socket
       ) do
     submit_status =
