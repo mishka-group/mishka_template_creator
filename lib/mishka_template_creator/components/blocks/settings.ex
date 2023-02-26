@@ -38,7 +38,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     />
     <.modal id={"#{@type}-settings-#{@block_id}"}>
       <p class="text-center font-bold mb-4 text-lg">Please select the section you want to edit</p>
-      <div class="grid grid-cols-3 gap-3 text-gray-500 mt-8 mb-10 md:grid-cols-4 lg:grid-cols-5">
+      <div class="grid grid-cols-2 gap-3 text-gray-500 mt-8 mb-10 md:grid-cols-4 lg:grid-cols-5">
         <ElementMenu.block_menu
           :for={{id, title, module} <- @tailwind_settings}
           id={id}
