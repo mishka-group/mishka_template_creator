@@ -2,6 +2,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   use Phoenix.Component
   alias Phoenix.LiveView.JS
   import MishkaTemplateCreatorWeb.CoreComponents
+
+  import MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.Components.Blocks.ElementMenu
 
   @tailwind_settings [
@@ -35,13 +37,9 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     ~H"""
     <Heroicons.wrench_screwdriver
       class={@custom_class}
-      phx-click={
-        %JS{}
-        |> JS.push("reset_settings")
-        |> show_modal("#{@type}-settings-#{@block_id}")
-      }
+      phx-click={show_modal("#{@type}-settings-#{@block_id}")}
     />
-    <.modal id={"#{@type}-settings-#{@block_id}"}>
+    <.push_modal id={"#{@type}-settings-#{@block_id}"}>
       <%= if is_nil(@selected_setting) do %>
         <p class="text-center font-bold mb-4 text-lg">Please select the section you want to edit</p>
         <div class="grid grid-cols-2 gap-3 text-gray-500 mt-8 mb-10 md:grid-cols-4 lg:grid-cols-5">
@@ -103,7 +101,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           <.get_form selected_setting={@selected_setting} />
         </div>
       <% end %>
-    </.modal>
+    </.push_modal>
     """
   end
 
