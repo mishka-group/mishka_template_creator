@@ -4,7 +4,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Content do
 
   attr :elemens, :list, required: true
   attr :selected_block, :string, required: true
-  attr :selected_setting, :string, required: true
+  attr :selected_setting, :map, required: true
   attr :submit, :string, required: true
 
   @spec content(map) :: Phoenix.LiveView.Rendered.t()

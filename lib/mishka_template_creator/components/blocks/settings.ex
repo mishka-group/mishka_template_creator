@@ -70,9 +70,61 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           <span>OR put your custom classes</span>
         </p>
       <% else %>
-        <%= @block_id %>
+        <div class="flex flex-col mx-auto w-full">
+          <p class="text-center font-bold text-2xl text-gray-500 mb-6">
+            You can change the default setting of
+            <code class="bg-pink-400 text-white font-normal p-1 rounded-md text-sm text-center">
+              <%= Map.get(@selected_setting, "id") %>
+            </code>
+          </p>
+
+          <div class="flex flex-row gap-2 text-center mx-auto mb-3">
+            <.button
+              phx-click="reset_settings"
+              class="w-24 !bg-white border border-gray-300 shadow-sm text-black hover:bg-gray-400 hover:text-gray-400"
+            >
+              <div class="flex flex-row text-center gap-2">
+                <span>Back</span>
+                <Heroicons.arrow_long_left class="w-6 h-6 stroke-current" />
+              </div>
+            </.button>
+
+            <.button
+              phx-click="reset_settings"
+              class="!bg-white border border-gray-300 shadow-sm text-black hover:bg-gray-400 hover:text-gray-400"
+            >
+              <div class="flex flex-row text-center gap-2">
+                <span>Reset to default</span>
+                <Heroicons.arrow_path class="w-6 h-6 stroke-current" />
+              </div>
+            </.button>
+          </div>
+          <hr />
+          <.get_form selected_setting={@selected_setting} />
+        </div>
       <% end %>
     </.modal>
+    """
+  end
+
+  attr :selected_setting, :map, required: true
+
+  def get_form(assigns) do
+    ~H"""
+    <.simple_form
+      :let={f}
+      for={%{}}
+      as={:setting_form}
+      phx-submit="save_setting"
+      phx-change="validate_setting"
+    >
+      <.input field={f[:setting_form]} label="Tag Name" />
+      <:actions>
+        <.button class="phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80 disabled:bg-gray-400 disabled:text-white disabled:outline-none">
+          Save
+        </.button>
+      </:actions>
+    </.simple_form>
     """
   end
 end
