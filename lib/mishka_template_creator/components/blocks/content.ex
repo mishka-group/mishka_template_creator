@@ -4,6 +4,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Content do
 
   attr :elemens, :list, required: true
   attr :selected_block, :string, required: true
+  attr :selected_setting, :string, required: true
   attr :submit, :string, required: true
 
   @spec content(map) :: Phoenix.LiveView.Rendered.t()
@@ -30,6 +31,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Content do
         id={id}
         children={children}
         selected_block={@selected_block}
+        selected_setting={@selected_setting}
         submit={@submit}
         tag={Map.get(el, :tag)}
       />

@@ -24,6 +24,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
   attr :block_id, :string, required: true
   attr :type, :string, required: false, default: "layout"
+  attr :selected_setting, :map, required: false, default: nil
   attr :custom_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
@@ -34,34 +35,43 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     ~H"""
     <Heroicons.wrench_screwdriver
       class={@custom_class}
-      phx-click={show_modal("#{@type}-settings-#{@block_id}")}
+      phx-click={
+        %JS{}
+        |> JS.push("reset_settings")
+        |> show_modal("#{@type}-settings-#{@block_id}")
+      }
     />
     <.modal id={"#{@type}-settings-#{@block_id}"}>
-      <p class="text-center font-bold mb-4 text-lg">Please select the section you want to edit</p>
-      <div class="grid grid-cols-2 gap-3 text-gray-500 mt-8 mb-10 md:grid-cols-4 lg:grid-cols-5">
-        <ElementMenu.block_menu
-          :for={{id, title, module} <- @tailwind_settings}
-          id={id}
-          title={title}
-          phx-click="selected_setting"
-          phx-value-id={id}
+      <%= if is_nil(@selected_setting) do %>
+        <p class="text-center font-bold mb-4 text-lg">Please select the section you want to edit</p>
+        <div class="grid grid-cols-2 gap-3 text-gray-500 mt-8 mb-10 md:grid-cols-4 lg:grid-cols-5">
+          <ElementMenu.block_menu
+            :for={{id, title, module} <- @tailwind_settings}
+            id={id}
+            title={title}
+            phx-click="selected_setting"
+            phx-value-id={id}
+            phx-value-type={@type}
+            phx-value-block-id={@block_id}
+          >
+            <%= Phoenix.LiveView.HTMLEngine.component(
+              Code.eval_string("&#{module}/1") |> elem(0),
+              [class: "w-6 h-6 mx-auto stroke-current"],
+              {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
+            ) %>
+          </ElementMenu.block_menu>
+        </div>
+        <p
+          class="text-center text-sm text-blue-400"
+          phx-click="add_custom_class"
+          phx-value-id={@block_id}
           phx-value-type={@type}
         >
-          <%= Phoenix.LiveView.HTMLEngine.component(
-            Code.eval_string("&#{module}/1") |> elem(0),
-            [class: "w-6 h-6 mx-auto stroke-current"],
-            {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
-          ) %>
-        </ElementMenu.block_menu>
-      </div>
-      <p
-        class="text-center text-sm text-blue-400"
-        phx-click="add_custom_class"
-        phx-value-id={@block_id}
-        phx-value-type={@type}
-      >
-        <span>OR put your custom classes</span>
-      </p>
+          <span>OR put your custom classes</span>
+        </p>
+      <% else %>
+        <%= @block_id %>
+      <% end %>
     </.modal>
     """
   end

@@ -24,7 +24,12 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         class="flex flex-col-reverse mx-auto justify-between items-stretch w-full rounded-t-md lg:flex-row"
         phx-hook="dragAndDropLocation"
       >
-        <Content.content elemens={@elemens} selected_block={@selected_block} submit={@submit} />
+        <Content.content
+          elemens={@elemens}
+          selected_block={@selected_block}
+          submit={@submit}
+          selected_setting={@selected_setting}
+        />
         <Aside.aside />
       </div>
     </div>
