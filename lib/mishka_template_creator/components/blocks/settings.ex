@@ -6,7 +6,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.Components.Blocks.ElementMenu
 
-  @tailwind_settings [
+  @tailwind_layout_settings [
     {"layout", "Layout", "Heroicons.inbox_stack"},
     {"flexbox_grid", "Flexbox & Grid", "Heroicons.circle_stack"},
     {"spacing", "Spacing", "Heroicons.square_3_stack_3d"},
@@ -24,6 +24,23 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     {"svg", "SVG", "Heroicons.photo"}
   ]
 
+  @tailwind_section_settings [
+    {"layout", "Layout", "Heroicons.inbox_stack"},
+    {"flexbox_grid", "Flexbox & Grid", "Heroicons.circle_stack"},
+    {"spacing", "Spacing", "Heroicons.square_3_stack_3d"},
+    {"sizing", "Sizing", "Heroicons.swatch"},
+    {"typography", "Typography", "Heroicons.chat_bubble_bottom_center"},
+    {"backgrounds", "Backgrounds", "Heroicons.window"},
+    {"borders", "Borders", "Heroicons.bars_2"},
+    {"effects", "Effects", "Heroicons.light_bulb"},
+    {"filters", "Filters", "Heroicons.scissors"},
+    {"tables", "Tables", "Heroicons.table_cells"},
+    {"transitions_animation", "Transitions & Animation", "Heroicons.sparkles"},
+    {"transforms", "Transforms", "Heroicons.rectangle_stack"},
+    {"interactivity", "Interactivity", "Heroicons.paper_clip"},
+    {"accessibility", "Accessibility", "Heroicons.eye"}
+  ]
+
   attr :block_id, :string, required: true
   attr :type, :string, required: false, default: "layout"
   attr :selected_setting, :map, required: false, default: nil
@@ -31,8 +48,13 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   attr :on_click, JS, default: %JS{}
 
   @spec block_settings(map) :: Phoenix.LiveView.Rendered.t()
-  def block_settings(assigns) do
-    assigns = assign(assigns, :tailwind_settings, @tailwind_settings)
+  def block_settings(%{type: type} = assigns) do
+    assigns =
+      assign(
+        assigns,
+        :tailwind_settings,
+        if(type == "layout", do: @tailwind_layout_settings, else: @tailwind_section_settings)
+      )
 
     ~H"""
     <Heroicons.wrench_screwdriver
@@ -72,7 +94,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           <p class="text-center font-bold text-2xl text-gray-500 mb-6">
             You can change the default setting of
             <code class="bg-pink-400 text-white font-normal p-1 rounded-md text-sm text-center">
-              <%= Map.get(@selected_setting, "id") %>
+              <%= get_setting_title(@tailwind_settings, @selected_setting) %>
             </code>
           </p>
 
@@ -125,5 +147,15 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
       </:actions>
     </.simple_form>
     """
+  end
+
+  @spec get_setting_title(list(map), map) :: any
+  def get_setting_title(settings, selected_setting) do
+    Enum.find(settings, fn {id, _title, _des} ->
+      Map.get(selected_setting, "id") == id
+    end)
+    |> elem(1)
+  rescue
+    _e -> ""
   end
 end
