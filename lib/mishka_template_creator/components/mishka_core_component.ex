@@ -14,7 +14,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   @spec dashboard(map) :: Phoenix.LiveView.Rendered.t()
   def dashboard(assigns) do
     ~H"""
-    <div class="main-body" phx-click="reset">
+    <div class="main-body">
       <div id="mishka_top_nav" class="top-nav">
         <div>Back To/History</div>
         <div>Main Section</div>
@@ -71,7 +71,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
               phx-window-keydown={hide_modal(@on_cancel, @id) |> JS.push("reset")}
               phx-key="escape"
               phx-click-away={hide_modal(@on_cancel, @id) |> JS.push("reset")}
-              class="hidden relative rounded-2xl bg-white p-14 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition"
+              class="hidden relative rounded-2xl bg-white p-14 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition z-50"
             >
               <div class="absolute top-6 right-5">
                 <button

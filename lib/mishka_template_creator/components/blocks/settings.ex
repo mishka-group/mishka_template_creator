@@ -7,38 +7,38 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   alias MishkaTemplateCreator.Components.Blocks.ElementMenu
 
   @tailwind_layout_settings [
-    {"layout", "Layout", "Heroicons.inbox_stack"},
-    {"flexbox_grid", "Flexbox & Grid", "Heroicons.circle_stack"},
-    {"spacing", "Spacing", "Heroicons.square_3_stack_3d"},
-    {"sizing", "Sizing", "Heroicons.swatch"},
-    {"typography", "Typography", "Heroicons.chat_bubble_bottom_center"},
-    {"backgrounds", "Backgrounds", "Heroicons.window"},
-    {"borders", "Borders", "Heroicons.bars_2"},
-    {"effects", "Effects", "Heroicons.light_bulb"},
-    {"filters", "Filters", "Heroicons.scissors"},
-    {"tables", "Tables", "Heroicons.table_cells"},
-    {"transitions_animation", "Transitions & Animation", "Heroicons.sparkles"},
-    {"transforms", "Transforms", "Heroicons.rectangle_stack"},
-    {"interactivity", "Interactivity", "Heroicons.paper_clip"},
-    {"accessibility", "Accessibility", "Heroicons.eye"},
-    {"svg", "SVG", "Heroicons.photo"}
+    {"layout", "Layout", "Heroicons.inbox_stack", []},
+    {"flexbox_grid", "Flexbox & Grid", "Heroicons.circle_stack", []},
+    {"spacing", "Spacing", "Heroicons.square_3_stack_3d", []},
+    {"sizing", "Sizing", "Heroicons.swatch", []},
+    {"typography", "Typography", "Heroicons.chat_bubble_bottom_center", []},
+    {"backgrounds", "Backgrounds", "Heroicons.window", []},
+    {"borders", "Borders", "Heroicons.bars_2", []},
+    {"effects", "Effects", "Heroicons.light_bulb", []},
+    {"filters", "Filters", "Heroicons.scissors", []},
+    {"tables", "Tables", "Heroicons.table_cells", []},
+    {"transitions_animation", "Transitions & Animation", "Heroicons.sparkles", []},
+    {"transforms", "Transforms", "Heroicons.rectangle_stack", []},
+    {"interactivity", "Interactivity", "Heroicons.paper_clip", []},
+    {"accessibility", "Accessibility", "Heroicons.eye", []},
+    {"svg", "SVG", "Heroicons.photo", []}
   ]
 
   @tailwind_section_settings [
-    {"layout", "Layout", "Heroicons.inbox_stack"},
-    {"flexbox_grid", "Flexbox & Grid", "Heroicons.circle_stack"},
-    {"spacing", "Spacing", "Heroicons.square_3_stack_3d"},
-    {"sizing", "Sizing", "Heroicons.swatch"},
-    {"typography", "Typography", "Heroicons.chat_bubble_bottom_center"},
-    {"backgrounds", "Backgrounds", "Heroicons.window"},
-    {"borders", "Borders", "Heroicons.bars_2"},
-    {"effects", "Effects", "Heroicons.light_bulb"},
-    {"filters", "Filters", "Heroicons.scissors"},
-    {"tables", "Tables", "Heroicons.table_cells"},
-    {"transitions_animation", "Transitions & Animation", "Heroicons.sparkles"},
-    {"transforms", "Transforms", "Heroicons.rectangle_stack"},
-    {"interactivity", "Interactivity", "Heroicons.paper_clip"},
-    {"accessibility", "Accessibility", "Heroicons.eye"}
+    {"layout", "Layout", "Heroicons.inbox_stack", []},
+    {"flexbox_grid", "Flexbox & Grid", "Heroicons.circle_stack", []},
+    {"spacing", "Spacing", "Heroicons.square_3_stack_3d", []},
+    {"sizing", "Sizing", "Heroicons.swatch", []},
+    {"typography", "Typography", "Heroicons.chat_bubble_bottom_center", []},
+    {"backgrounds", "Backgrounds", "Heroicons.window", []},
+    {"borders", "Borders", "Heroicons.bars_2", []},
+    {"effects", "Effects", "Heroicons.light_bulb", []},
+    {"filters", "Filters", "Heroicons.scissors", []},
+    {"tables", "Tables", "Heroicons.table_cells", []},
+    {"transitions_animation", "Transitions & Animation", "Heroicons.sparkles", []},
+    {"transforms", "Transforms", "Heroicons.rectangle_stack", []},
+    {"interactivity", "Interactivity", "Heroicons.paper_clip", []},
+    {"accessibility", "Accessibility", "Heroicons.eye", []}
   ]
 
   attr :block_id, :string, required: true
@@ -66,7 +66,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
         <p class="text-center font-bold mb-4 text-lg">Please select the section you want to edit</p>
         <div class="grid grid-cols-2 gap-3 text-gray-500 mt-8 mb-10 md:grid-cols-4 lg:grid-cols-5">
           <ElementMenu.block_menu
-            :for={{id, title, module} <- @tailwind_settings}
+            :for={{id, title, module, _settings} <- @tailwind_settings}
             id={id}
             title={title}
             phx-click="selected_setting"
@@ -138,6 +138,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
       as={:setting_form}
       phx-submit="save_setting"
       phx-change="validate_setting"
+      class="z-40"
     >
       <.input field={f[:setting_form]} label="Tag Name" />
       <:actions>
@@ -151,7 +152,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
   @spec get_setting_title(list(map), map) :: any
   def get_setting_title(settings, selected_setting) do
-    Enum.find(settings, fn {id, _title, _des} ->
+    Enum.find(settings, fn {id, _title, _des, _settings} ->
       Map.get(selected_setting, "id") == id
     end)
     |> elem(1)
