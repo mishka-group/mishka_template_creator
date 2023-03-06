@@ -107,6 +107,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
   attr :selected_setting, :map, required: true
 
+  @spec get_form(map) :: Phoenix.LiveView.Rendered.t()
   def get_form(assigns) do
     ~H"""
     <.simple_form

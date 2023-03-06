@@ -14,8 +14,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
   }
 
   attr :id, :string, required: true
-  attr :selected_block, :string, required: true
-  attr :selected_setting, :string, required: true
+  attr :selected_block, :map, required: true
+  attr :selected_setting, :map, required: true
   attr :tag, :string, default: nil
   attr :submit, :boolean, default: false
   attr :on_delete, JS, default: %JS{}
@@ -49,6 +49,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
           parent_id={@id}
           submit={@submit}
           tag={Map.get(child, :tag)}
+          selected_setting={@selected_setting}
         />
       </div>
     </div>

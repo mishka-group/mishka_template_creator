@@ -12,6 +12,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   attr :id, :string, required: true
   attr :parent_id, :string, required: true
   attr :selected_block, :string, required: true
+  attr :selected_setting, :map, required: true
   attr :tag, :string, default: nil
   attr :submit, :boolean, default: false
   attr :on_delete, JS, default: %JS{}
@@ -34,6 +35,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
         section_id={@id}
         parent_id={@parent_id}
         submit={@submit}
+        selected_setting={@selected_setting}
       />
 
       <div :if={@tag} class="section-tag">
@@ -49,12 +51,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   attr :section_id, :string, required: true
   attr :parent_id, :string, required: true
   attr :submit, :boolean, default: false
+  attr :selected_setting, :map, required: true
 
   @spec section_header(map) :: Phoenix.LiveView.Rendered.t()
   defp section_header(assigns) do
     ~H"""
     <div id={"section_header_#{@section_id}"} class="section-header">
-      <Settings.block_settings block_id={@section_id} custom_class="section-icons" />
+      <Settings.block_settings
+        block_id={@section_id}
+        custom_class="section-icons"
+        selected_setting={@selected_setting}
+        type="section"
+      />
       <Tag.block_tag
         block_id={@section_id}
         custom_class="section-icons"
