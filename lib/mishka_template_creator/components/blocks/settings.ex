@@ -8535,23 +8535,6 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
      ]}
   ]
 
-  @tailwind_section_settings [
-    {"layout", "Layout", "Heroicons.inbox_stack", []},
-    {"flexbox_grid", "Flexbox & Grid", "Heroicons.circle_stack", []},
-    {"spacing", "Spacing", "Heroicons.square_3_stack_3d", []},
-    {"sizing", "Sizing", "Heroicons.swatch", []},
-    {"typography", "Typography", "Heroicons.chat_bubble_bottom_center", []},
-    {"backgrounds", "Backgrounds", "Heroicons.window", []},
-    {"borders", "Borders", "Heroicons.bars_2", []},
-    {"effects", "Effects", "Heroicons.light_bulb", []},
-    {"filters", "Filters", "Heroicons.scissors", []},
-    {"tables", "Tables", "Heroicons.table_cells", []},
-    {"transitions_animation", "Transitions & Animation", "Heroicons.sparkles", []},
-    {"transforms", "Transforms", "Heroicons.rectangle_stack", []},
-    {"interactivity", "Interactivity", "Heroicons.paper_clip", []},
-    {"accessibility", "Accessibility", "Heroicons.eye", []}
-  ]
-
   attr :block_id, :string, required: true
   attr :type, :string, required: false, default: "layout"
   attr :selected_setting, :map, required: false, default: nil
@@ -8559,13 +8542,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   attr :on_click, JS, default: %JS{}
 
   @spec block_settings(map) :: Phoenix.LiveView.Rendered.t()
-  def block_settings(%{type: type} = assigns) do
-    assigns =
-      assign(
-        assigns,
-        :tailwind_settings,
-        if(type == "layout", do: @tailwind_layout_settings, else: @tailwind_section_settings)
-      )
+  def block_settings(%{type: _type} = assigns) do
+    assigns = assign(assigns, :tailwind_settings, @tailwind_layout_settings)
 
     ~H"""
     <Heroicons.wrench_screwdriver
