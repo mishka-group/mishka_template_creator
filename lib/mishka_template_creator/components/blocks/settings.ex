@@ -6763,7 +6763,60 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           "table-fixed"
         ], [:hover, :media_queries]}
      ]},
-    {"transitions_animation", "Transitions & Animation", "Heroicons.sparkles", []},
+    {"transitions_animation", "Transitions & Animation", "Heroicons.sparkles",
+     [
+       {"transition-property", "Transition Property",
+        "Utilities for controlling which CSS properties transition.",
+        [
+          "transition-none",
+          "transition-all",
+          "transition",
+          "transition-colors",
+          "transition-opacity",
+          "transition-shadow",
+          "transition-transform"
+        ], [:hover, :media_queries]},
+       {"transition-duration", "Transition Duration",
+        "Utilities for controlling the duration of CSS transitions.",
+        [
+          "duration-75",
+          "duration-100",
+          "duration-150",
+          "duration-200",
+          "duration-300",
+          "duration-500",
+          "duration-700",
+          "duration-1000"
+        ], [:hover, :media_queries]},
+       {"transition-timing-function", "Transition Timing Function",
+        "Utilities for controlling the easing of CSS transitions.",
+        [
+          "ease-linear",
+          "ease-in",
+          "ease-out",
+          "ease-in-out"
+        ], [:hover, :media_queries]},
+       {"transition-delay", "Transition Delay",
+        "Utilities for controlling the delay of CSS transitions.",
+        [
+          "delay-75",
+          "delay-100",
+          "delay-150",
+          "delay-200",
+          "delay-300",
+          "delay-500",
+          "delay-700",
+          "delay-1000"
+        ], [:hover, :media_queries]},
+       {"animation", "Animation", "Utilities for animating elements with CSS animations.",
+        [
+          "animate-none",
+          "animate-spin",
+          "animate-ping",
+          "animate-pulse",
+          "animate-bounce"
+        ], [:hover, :media_queries]}
+     ]},
     {"transforms", "Transforms", "Heroicons.rectangle_stack", []},
     {"interactivity", "Interactivity", "Heroicons.paper_clip", []},
     {"accessibility", "Accessibility", "Heroicons.eye", []},
