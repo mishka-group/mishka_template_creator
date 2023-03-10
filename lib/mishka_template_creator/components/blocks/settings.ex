@@ -6,7 +6,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.Components.Blocks.ElementMenu
 
-  @tailwind_layout_settings [
+  @tailwind_settings [
     {"layout", "Layout", "Heroicons.inbox_stack",
      [
        {"z-Index", "Z-Index", "Utilities for controlling the stack order of an element.",
@@ -8543,7 +8543,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
   @spec block_settings(map) :: Phoenix.LiveView.Rendered.t()
   def block_settings(%{type: _type} = assigns) do
-    assigns = assign(assigns, :tailwind_settings, @tailwind_layout_settings)
+    assigns = assign(assigns, :tailwind_settings, @tailwind_settings)
 
     ~H"""
     <Heroicons.wrench_screwdriver
@@ -8609,7 +8609,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             </.button>
           </div>
           <hr />
-          <.get_form selected_setting={@selected_setting} />
+
+          <.create_form id={@selected_setting["id"]} />
         </div>
       <% end %>
     </.push_modal>
@@ -8649,7 +8650,27 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     _e -> ""
   end
 
-  def create_form(_id) do
+  attr :id, :string, required: true
+
+  defp create_form(%{id: id} = assigns) do
+    assigns =
+      assign(assigns, :selected_setting, Enum.find(@tailwind_settings, &(elem(&1, 0) == id)))
+
+    ~H"""
+    <div class="flex flex-wrap w-full mt-4 gap-2">
+      <.button
+        :for={
+          {field_id, field_title, _field_description, _field_configs, _field_allowed_types} = _el <-
+            elem(@selected_setting, 3)
+        }
+        id={field_id}
+        phx-click="reset_settings"
+        class="!bg-white border border-gray-300 shadow-sm text-black hover:bg-gray-400 hover:text-gray-400"
+      >
+        <%= field_title %>
+      </.button>
+    </div>
+    """
   end
 
   def aggregate_form_data_in_favor_of_tailwind(_form_data) do

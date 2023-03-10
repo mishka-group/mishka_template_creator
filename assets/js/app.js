@@ -3,16 +3,13 @@ import { Socket } from 'phoenix';
 import { LiveSocket } from 'phoenix_live_view';
 import topbar from '../vendor/topbar';
 import { customEventCreator } from '../vendor/mishka_template_creator/utilities';
-// import {
-//   LayoutGroup,
-//   ContentGroup,
-// } from '../vendor/mishka_template_creator/layout';
 import Sortable from 'sortablejs';
 
 const layoutBlock = document.getElementById('layout-block');
 const elementsBlock = document.getElementById('elements-block');
 const mediaBlock = document.getElementById('media-block');
 const dragLocation = document.getElementById('dragLocation');
+const previewHelper = document.getElementById('previewHelper');
 const sortableSpeed = 150;
 
 [
@@ -28,7 +25,30 @@ const sortableSpeed = 150;
     },
     animation: sortableSpeed,
     sort: false,
+    onEnd: function (/**Event*/ evt) {
+      const previewHelper = document.getElementById('previewHelper');
+      if (dragLocation && previewHelper && dragLocation.childElementCount > 0) {
+        document.getElementById('previewHelper').classList.remove('hidden');
+      }
+    },
   });
+});
+
+Sortable.create(previewHelper, {
+  group: {
+    name: 'previewHelper',
+    put: ['LayoutGroup'],
+  },
+  animation: sortableSpeed,
+  sort: false,
+  onChange: function (/**Event*/ evt) {
+    if (
+      dragLocation.childElementCount === 1 ||
+      dragLocation.childElementCount === 0
+    ) {
+      previewHelper.classList.add('hidden');
+    }
+  },
 });
 
 Sortable.create(dragLocation, {
@@ -57,11 +77,9 @@ Sortable.create(dragLocation, {
     });
   },
 });
+
 // Start Hooks object
 let Hooks = {};
-
-// LayoutGroup;
-// ContentGroup;
 
 // Start hooks Functions, this place we put some hooks we defined in elixir side and communicate with backend
 Hooks.dragAndDropLocation = {
@@ -118,6 +136,31 @@ Hooks.dragAndDropLocation = {
           });
         },
       });
+    });
+
+    this.handleEvent('create_preview_helper', ({ status }) => {
+      if (status) {
+        setTimeout(() => {
+          Sortable.create(document.getElementById('previewHelper'), {
+            group: {
+              name: 'previewHelper',
+              put: ['LayoutGroup'],
+            },
+            animation: sortableSpeed,
+            sort: false,
+            onChange: function (/**Event*/ evt) {
+              if (
+                dragLocation.childElementCount === 1 ||
+                dragLocation.childElementCount === 0
+              ) {
+                document
+                  .getElementById('previewHelper')
+                  .classList.add('hidden');
+              }
+            },
+          });
+        }, 100);
+      }
     });
   },
 };

@@ -45,7 +45,20 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("delete", %{"id" => id, "type" => "layout"}, socket) do
-    {:noreply, assign(socket, :elemens, delete_element(socket.assigns.elemens, id, "layout"))}
+    element = delete_element(socket.assigns.elemens, id, "layout")
+
+    new_assign =
+      push_event(socket, "create_preview_helper", %{status: length(element) == 0})
+      |> assign(:elemens, element)
+
+    {:noreply, new_assign}
+  end
+
+  def handle_event("delete", %{"id" => id, "type" => "section", "parent_id" => parent_id}, socket) do
+    new_assign =
+      assign(socket, :elemens, delete_element(socket.assigns.elemens, id, parent_id, "section"))
+
+    {:noreply, new_assign}
   end
 
   def handle_event(
@@ -83,17 +96,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       end
 
     {:noreply, new_socket}
-  end
-
-  def handle_event(
-        "delete",
-        %{"id" => id, "type" => "section", "parent_id" => parent_id},
-        socket
-      ) do
-    new_assign =
-      assign(socket, :elemens, delete_element(socket.assigns.elemens, id, parent_id, "section"))
-
-    {:noreply, new_assign}
   end
 
   def handle_event("tag", %{"id" => id}, socket) do
