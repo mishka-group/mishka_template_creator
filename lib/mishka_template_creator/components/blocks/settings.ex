@@ -8657,18 +8657,36 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
       assign(assigns, :selected_setting, Enum.find(@tailwind_settings, &(elem(&1, 0) == id)))
 
     ~H"""
-    <div class="flex flex-wrap w-full mt-4 gap-2">
-      <.button
-        :for={
-          {field_id, field_title, _field_description, _field_configs, _field_allowed_types} = _el <-
-            elem(@selected_setting, 3)
-        }
-        id={field_id}
-        phx-click="reset_settings"
-        class="!bg-white border border-gray-300 shadow-sm text-black hover:bg-gray-400 hover:text-gray-400"
-      >
-        <%= field_title %>
-      </.button>
+    <div class="flex flex-row w-full max-h-80 overflow-y-scroll">
+      <div class="flex flex-col mt-3 gap-2 w-1/3 border-r h-max pr-3">
+        <.button
+          :for={
+            {field_id, field_title, _field_description, _field_configs, _field_allowed_types} = _el <-
+              elem(@selected_setting, 3)
+          }
+          id={field_id}
+          phx-click="reset_settings"
+          class="!bg-white border-b border-gray-300 shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full rounded-none"
+        >
+          <%= field_title %>
+        </.button>
+      </div>
+      <div class="flex flex-col w-2/3 p-3">
+        <.form_block
+          :let={f}
+          for={%{}}
+          as={:setting_form}
+          phx-submit="save_setting"
+          phx-change="validate_setting"
+        >
+          <.input field={f[:setting_form]} label="Tag Name" />
+          <:actions>
+            <.button class="phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80 disabled:bg-gray-400 disabled:text-white disabled:outline-none">
+              Save
+            </.button>
+          </:actions>
+        </.form_block>
+      </div>
     </div>
     """
   end
