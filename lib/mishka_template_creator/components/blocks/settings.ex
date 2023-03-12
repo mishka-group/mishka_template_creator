@@ -717,17 +717,6 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           "grid-rows-6",
           "grid-rows-none"
         ], [:hover, :media_queries]},
-       {"grid-template-rows", "Grid Template Rows",
-        "Utilities for specifying the rows in a grid layout.",
-        [
-          "grid-rows-1",
-          "grid-rows-2",
-          "grid-rows-3",
-          "grid-rows-4",
-          "grid-rows-5",
-          "grid-rows-6",
-          "grid-rows-none"
-        ], [:hover, :media_queries]},
        {"grid-row", "Grid Row Start / End",
         "Utilities for controlling how elements are sized and placed across grid rows.",
         [
@@ -5685,16 +5674,6 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
         ], [:hover, :media_queries]},
        {"ring-color", "Ring Color", "Utilities for setting the color of outline rings.",
         [
-          "ring-0",
-          "ring-1",
-          "ring-2",
-          "ring",
-          "ring-4",
-          "ring-8",
-          "ring-inset"
-        ], [:hover, :media_queries]},
-       {"ring-color", "Ring Color", "Utilities for setting the color of outline rings.",
-        [
           "ring-inherit",
           "ring-current",
           "ring-transparent",
@@ -8665,26 +8644,16 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
               elem(@selected_setting, 3)
           }
           id={field_id}
-          phx-click="reset_settings"
+          phx-click="select_config"
+          phx-value-id={field_id}
           class="!bg-white border-b border-gray-300 shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full rounded-none"
         >
           <%= field_title %>
         </.button>
       </div>
       <div class="flex flex-col w-2/3 p-3">
-        <.form_block
-          :let={f}
-          for={%{}}
-          as={:setting_form}
-          phx-submit="save_setting"
-          phx-change="validate_setting"
-        >
-          <.input field={f[:setting_form]} label="Tag Name" />
-          <:actions>
-            <.button class="phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80 disabled:bg-gray-400 disabled:text-white disabled:outline-none">
-              Save
-            </.button>
-          </:actions>
+        <.form_block :let={f} for={%{}} as={:config_form} phx-change="save_config">
+          <.input field={f[:config_form]} label="Tag Name" />
         </.form_block>
       </div>
     </div>
