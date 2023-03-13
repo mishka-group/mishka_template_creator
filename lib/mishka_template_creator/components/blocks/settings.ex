@@ -1,8 +1,8 @@
 defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   use Phoenix.Component
   alias Phoenix.LiveView.JS
-  import MishkaTemplateCreatorWeb.CoreComponents
 
+  import MishkaTemplateCreatorWeb.CoreComponents
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.{Components.Blocks.ElementMenu, Data.TailwindSetting}
 
@@ -31,8 +31,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             title={title}
             phx-click="selected_setting"
             phx-value-id={id}
-            phx-value-type={@type}
-            phx-value-block-id={@block_id}
+            phx-value-child={nil}
           >
             <%= Phoenix.LiveView.HTMLEngine.component(
               Code.eval_string("&#{module}/1") |> elem(0),
@@ -81,59 +80,38 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           </div>
           <hr />
 
-          <.create_form id={@selected_setting["id"]} />
+          <.create_form id={@selected_setting["id"]} child={@selected_setting["child"]} />
         </div>
       <% end %>
     </.push_modal>
     """
   end
 
-  attr :selected_setting, :map, required: true
-
-  @spec get_form(map) :: Phoenix.LiveView.Rendered.t()
-  def get_form(assigns) do
-    ~H"""
-    <.simple_form
-      :let={f}
-      for={%{}}
-      as={:setting_form}
-      phx-submit="save_setting"
-      phx-change="validate_setting"
-      class="z-40"
-    >
-      <.input field={f[:setting_form]} label="Tag Name" />
-      <:actions>
-        <.button class="phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80 disabled:bg-gray-400 disabled:text-white disabled:outline-none">
-          Save
-        </.button>
-      </:actions>
-    </.simple_form>
-    """
-  end
-
   attr :id, :string, required: true
+  attr :child, :string, required: false, default: nil
 
-  defp create_form(%{id: id} = assigns) do
-    assigns =
-      assign(assigns, :selected_setting, Enum.find(TailwindSetting.call(), &(elem(&1, 0) == id)))
+  defp create_form(%{id: id, child: child} = assigns) do
+    assigns = assign(assigns, :selected_setting, TailwindSetting.get_form_options(id, child))
 
     ~H"""
     <div class="flex flex-row w-full max-h-80 overflow-y-scroll">
       <div class="flex flex-col mt-3 gap-2 w-1/3 border-r h-max pr-3">
         <.button
           :for={
-            {field_id, field_title, _field_description, _field_configs, _field_allowed_types} = _el <-
-              elem(@selected_setting, 3)
+            {field_id, field_title, _field_description, _field_configs, _field_allowed_types} <-
+              @selected_setting.section
           }
           id={field_id}
-          phx-click="select_config"
-          phx-value-id={field_id}
-          class="!bg-white border-b border-gray-300 shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full rounded-none"
+          phx-click="selected_setting"
+          phx-value-id={id}
+          phx-value-child={field_id}
+          class={"!bg-white border-b #{if field_id == @selected_setting.form_id, do: "border-gray-600", else: "border-gray-300"} shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full rounded-none"}
         >
           <%= field_title %>
         </.button>
       </div>
       <div class="flex flex-col w-2/3 p-3">
+        <%= @selected_setting.form_title %>
         <.form_block :let={f} for={%{}} as={:config_form} phx-change="save_config">
           <.input field={f[:config_form]} label="Tag Name" />
         </.form_block>

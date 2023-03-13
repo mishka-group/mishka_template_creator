@@ -8528,4 +8528,36 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   rescue
     _e -> ""
   end
+
+  def get_form_options(id, nil) do
+    found_section = elem(Enum.find(call(), &(elem(&1, 0) == id)), 3)
+
+    {field_id, field_title, field_description, field_configs, field_allowed_types} =
+      List.first(found_section)
+
+    %{
+      section: found_section,
+      form_id: field_id,
+      form_title: field_title,
+      form_description: field_description,
+      types: field_allowed_types,
+      field_configs: field_configs
+    }
+  end
+
+  def get_form_options(id, child) do
+    found_section = elem(Enum.find(call(), &(elem(&1, 0) == id)), 3)
+
+    {field_id, field_title, field_description, field_configs, field_allowed_types} =
+      Enum.find(found_section, &(elem(&1, 0) == child))
+
+    %{
+      section: found_section,
+      form_id: field_id,
+      form_title: field_title,
+      form_description: field_description,
+      types: field_allowed_types,
+      form_configs: field_configs
+    }
+  end
 end

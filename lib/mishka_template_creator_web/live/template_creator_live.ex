@@ -16,9 +16,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   # TODO: create multi layout sections and store in a Genserver or ETS
   # TODO: create multisection in a layout and store them under the layout
-  # TODO: Define some rules no to allow drag a layout in a section
-  # TODO: Define some rules not to allow drag another element in to empty space or layout without creating sections
-  # TODO: delete preView when on dragg
   def mount(_params, _, socket) do
     new_socket =
       assign(socket, elemens: [], selected_block: nil, submit: true, selected_setting: nil)
@@ -139,11 +136,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
-  def handle_event(
-        "selected_setting",
-        %{"id" => _id, "type" => _type, "block-id" => _block_id} = params,
-        socket
-      ) do
+  def handle_event("selected_setting", params, socket) do
     {:noreply, assign(socket, :selected_setting, params)}
   end
 
