@@ -2,6 +2,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   use Phoenix.Component
   alias Phoenix.LiveView.JS
 
+  import Phoenix.HTML.Form
   import MishkaTemplateCreatorWeb.CoreComponents
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.{Components.Blocks.ElementMenu, Data.TailwindSetting}
@@ -87,7 +88,6 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     """
   end
 
-  import Phoenix.HTML.Form
   attr :id, :string, required: true
   attr :child, :string, required: false, default: nil
 
@@ -96,7 +96,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
     ~H"""
     <div class="flex flex-row w-full max-h-80 overflow-y-scroll">
-      <div class="flex flex-col mt-3 gap-2 w-1/3 border-r h-fit pr-3">
+      <div class="flex flex-col mt-3 gap-2 w-1/3 border-r h-fit pr-3 self-stretch">
         <.button
           :for={
             {field_id, field_title, _field_description, _field_configs, _field_allowed_types} <-
@@ -113,19 +113,66 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           </div>
         </.button>
       </div>
-      <div class="flex flex-col w-2/3 p-3">
+      <div class="flex flex-col w-2/3 p-3 self-stretch">
+        <code class="text-black font-bold p-1 rounded-md text-lg text-center mb-3">
+          <%= @selected_setting.form_id %>
+        </code>
         <h2 class="mb-3 text-sm text-gray-500 leading-6">
           You can apply the following settings on this section. If you don't need to change the settings, you can skip this section.
         </h2>
-        <.form_block :let={f} for={%{}} as={:config_form} phx-change="save_config">
-          <%= multiple_select(
-            f,
-            String.to_atom(@selected_setting.form_id),
-            @selected_setting.form_configs,
-            class: "border !border-gray-300 rounded-md w-full space-y-2"
-          ) %>
+        <.form_block :let={f} for={%{}} as={String.to_atom(@id)} phx-change="save_config">
+          <.aggregate_forms_type_in_favor_of_types f={f} options={@selected_setting} />
         </.form_block>
       </div>
+    </div>
+    """
+  end
+
+  attr :f, :any, required: true
+  attr :options, :map, required: true
+  attr :selected, :any, required: false, default: nil
+  attr :sizes, :list, required: false, default: [:sm, :md, :lg, :xl, :"2xl"]
+
+  @spec aggregate_forms_type_in_favor_of_types(map) :: Phoenix.LiveView.Rendered.t()
+  def aggregate_forms_type_in_favor_of_types(assigns) do
+    ~H"""
+    <.multiple_select
+      :if={:multi_select in @options.types}
+      form={@f}
+      options={@options}
+      selected={@selected}
+    />
+    <.select
+      :if={:multi_select not in @options.types}
+      form={@f}
+      options={@options}
+      selected={@selected}
+    />
+
+    <div class="flex flex-col space-y-3">
+      <h2 :if={:media_queries in @options.types} class="mt-3 text-lg font-semibold">
+        You can set it for different sizes:
+      </h2>
+      <h2 class="mb-3 text-sm text-gray-500 leading-6">
+        To adjust in different sizes, consider the first mobile step or the smallest size and go to larger sizes
+      </h2>
+      <hr />
+      <.multiple_select
+        :for={size <- @sizes}
+        :if={:multi_select in @options.types and :media_queries in @options.types}
+        form={@f}
+        options={@options}
+        id={size}
+        title={size}
+      />
+      <.select
+        :for={size <- @sizes}
+        :if={:multi_select not in @options.types and :media_queries in @options.types}
+        form={@f}
+        options={@options}
+        id={size}
+        title={size}
+      />
     </div>
     """
   end

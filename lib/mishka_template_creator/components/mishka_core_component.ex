@@ -1,5 +1,7 @@
 defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   use Phoenix.Component
+  import Phoenix.HTML.Form
+
   alias MishkaTemplateCreator.Components.Blocks.{Content, Aside}
   alias Phoenix.LiveView.JS
   import MishkaTemplateCreatorWeb.CoreComponents
@@ -115,6 +117,55 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         </div>
       </div>
     </.form>
+    """
+  end
+
+  attr :form, :any, required: true
+  attr :options, :map, required: true
+  attr :selected, :list, required: false, default: nil
+  attr :title, :string, required: false, default: nil
+  attr :id, :atom, required: false, default: nil
+
+  attr :class, :string,
+    required: false,
+    default: "border !border-gray-300 rounded-md w-full space-y-2"
+
+  @spec multiple_select(map) :: Phoenix.LiveView.Rendered.t()
+  def multiple_select(assigns) do
+    ~H"""
+    <h3 :if={@title} class="font-bold"><%= @title %>:</h3>
+    <%= multiple_select(
+      @form,
+      @id || String.to_atom(@options.form_id),
+      @options.form_configs,
+      class: @class,
+      selected: @selected
+    ) %>
+    """
+  end
+
+  attr :form, :any, required: true
+  attr :options, :map, required: true
+  attr :selected, :any, required: false, default: nil
+  attr :title, :string, required: false, default: nil
+  attr :id, :atom, required: false, default: nil
+
+  attr :class, :string,
+    required: false,
+    default: "border !border-gray-300 rounded-md w-full mx-0 my-0"
+
+  @spec select(map) :: Phoenix.LiveView.Rendered.t()
+  def select(assigns) do
+    ~H"""
+    <h3 :if={@title} class="font-bold"><%= @title %>:</h3>
+    <%= select(
+      @form,
+      @id || String.to_atom(@options.form_id),
+      @options.form_configs,
+      class: @class,
+      selected: @selected,
+      prompt: "Choose your config"
+    ) %>
     """
   end
 
