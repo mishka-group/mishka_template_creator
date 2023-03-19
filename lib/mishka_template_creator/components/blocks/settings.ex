@@ -60,7 +60,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           <div class="flex flex-row gap-2 text-center mx-auto mb-3">
             <.button
               phx-click="reset_settings"
-              class="w-24 !bg-white border border-gray-300 shadow-sm text-black hover:bg-gray-400 hover:text-gray-400"
+              class="w-24 !bg-white border border-gray-300 shadow-sm !text-black hover:bg-gray-400 hover:text-gray-400"
             >
               <div class="flex flex-row text-center gap-2">
                 <span>Back</span>
@@ -70,7 +70,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
             <.button
               phx-click="reset_settings"
-              class="!bg-white border border-gray-300 shadow-sm text-black hover:bg-gray-400 hover:text-gray-400"
+              class="!bg-white border border-gray-300 shadow-sm !text-black hover:bg-gray-400 hover:text-gray-400"
             >
               <div class="flex flex-row text-center gap-2">
                 <span>Reset to default</span>
@@ -87,6 +87,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     """
   end
 
+  import Phoenix.HTML.Form
   attr :id, :string, required: true
   attr :child, :string, required: false, default: nil
 
@@ -95,7 +96,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
     ~H"""
     <div class="flex flex-row w-full max-h-80 overflow-y-scroll">
-      <div class="flex flex-col mt-3 gap-2 w-1/3 border-r h-max pr-3">
+      <div class="flex flex-col mt-3 gap-2 w-1/3 border-r h-fit pr-3">
         <.button
           :for={
             {field_id, field_title, _field_description, _field_configs, _field_allowed_types} <-
@@ -105,15 +106,24 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           phx-click="selected_setting"
           phx-value-id={id}
           phx-value-child={field_id}
-          class={"!bg-white border-b #{if field_id == @selected_setting.form_id, do: "border-gray-600", else: "border-gray-300"} shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full rounded-none"}
+          class="!bg-white border-b border-gray-300 shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full !rounded-none"
         >
-          <%= field_title %>
+          <div class={"#{if field_id == @selected_setting.form_id, do: "font-bold", else: "font-normal"}"}>
+            <%= field_title %>
+          </div>
         </.button>
       </div>
       <div class="flex flex-col w-2/3 p-3">
-        <%= @selected_setting.form_title %>
+        <h2 class="mb-3 text-sm text-gray-500 leading-6">
+          You can apply the following settings on this section. If you don't need to change the settings, you can skip this section.
+        </h2>
         <.form_block :let={f} for={%{}} as={:config_form} phx-change="save_config">
-          <.input field={f[:config_form]} label="Tag Name" />
+          <%= multiple_select(
+            f,
+            String.to_atom(@selected_setting.form_id),
+            @selected_setting.form_configs,
+            class: "border !border-gray-300 rounded-md w-full space-y-2"
+          ) %>
         </.form_block>
       </div>
     </div>

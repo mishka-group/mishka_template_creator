@@ -8541,7 +8541,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       form_title: field_title,
       form_description: field_description,
       types: field_allowed_types,
-      field_configs: field_configs
+      form_configs: field_configs
     }
   end
 

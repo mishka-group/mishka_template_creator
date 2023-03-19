@@ -11,7 +11,7 @@
 }
 
 .layout-icons {
-  @apply h-6 w-6 stroke-current cursor-pointer;
+  @apply h-6 w-6 stroke-current cursor-pointer duration-150;
 }
 
 .section-icons {
