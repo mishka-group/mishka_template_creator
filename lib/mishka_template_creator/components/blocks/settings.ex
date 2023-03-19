@@ -2,7 +2,6 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   use Phoenix.Component
   alias Phoenix.LiveView.JS
 
-  import Phoenix.HTML.Form
   import MishkaTemplateCreatorWeb.CoreComponents
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.{Components.Blocks.ElementMenu, Data.TailwindSetting}
@@ -104,7 +103,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           }
           id={field_id}
           phx-click="selected_setting"
-          phx-value-id={id}
+          phx-value-id={@id}
           phx-value-child={field_id}
           class="!bg-white border-b border-gray-300 shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full !rounded-none"
         >
@@ -162,7 +161,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
         :if={:multi_select in @options.types and :media_queries in @options.types}
         form={@f}
         options={@options}
-        id={size}
+        form_id={size}
         title={size}
       />
       <.select
@@ -170,7 +169,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
         :if={:multi_select not in @options.types and :media_queries in @options.types}
         form={@f}
         options={@options}
-        id={size}
+        form_id={size}
         title={size}
       />
     </div>

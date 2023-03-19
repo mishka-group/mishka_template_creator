@@ -124,7 +124,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   attr :options, :map, required: true
   attr :selected, :list, required: false, default: nil
   attr :title, :string, required: false, default: nil
-  attr :id, :atom, required: false, default: nil
+  attr :form_id, :atom, required: false, default: nil
 
   attr :class, :string,
     required: false,
@@ -136,7 +136,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     <h3 :if={@title} class="font-bold"><%= @title %>:</h3>
     <%= multiple_select(
       @form,
-      @id || String.to_atom(@options.form_id),
+      @form_id || String.to_atom(@options.form_id),
       @options.form_configs,
       class: @class,
       selected: @selected
@@ -148,7 +148,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   attr :options, :map, required: true
   attr :selected, :any, required: false, default: nil
   attr :title, :string, required: false, default: nil
-  attr :id, :atom, required: false, default: nil
+  attr :form_id, :atom, required: false, default: nil
 
   attr :class, :string,
     required: false,
@@ -160,7 +160,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     <h3 :if={@title} class="font-bold"><%= @title %>:</h3>
     <%= select(
       @form,
-      @id || String.to_atom(@options.form_id),
+      @form_id || String.to_atom(@options.form_id),
       @options.form_configs,
       class: @class,
       selected: @selected,
