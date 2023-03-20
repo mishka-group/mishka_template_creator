@@ -94,34 +94,36 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     assigns = assign(assigns, :selected_setting, TailwindSetting.get_form_options(id, child))
 
     ~H"""
-    <div class="flex flex-row w-full max-h-80 overflow-y-scroll">
-      <div class="flex flex-col mt-3 gap-2 w-1/3 border-r pr-3 h-fit">
-        <.button
-          :for={
-            {field_id, field_title, _field_description, _field_configs, _field_allowed_types} <-
-              @selected_setting.section
-          }
-          id={field_id}
-          phx-click="selected_setting"
-          phx-value-id={@id}
-          phx-value-child={field_id}
-          class="!bg-white border-b border-gray-300 shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full !rounded-none"
-        >
-          <div class={"#{if field_id == @selected_setting.form_id, do: "font-bold", else: "font-normal"}"}>
-            <%= field_title %>
-          </div>
-        </.button>
-      </div>
-      <div class="flex flex-col w-2/3 p-3 self-stretch">
-        <code class="text-black font-bold p-1 rounded-md text-lg text-center mb-3">
-          <%= @selected_setting.form_id %>
-        </code>
-        <h2 class="mb-3 text-sm text-gray-500 leading-6">
-          You can apply the following settings on this section. If you don't need to change the settings, you can skip this section.
-        </h2>
-        <.form_block :let={f} for={%{}} as={String.to_atom(@id)} phx-change="save_config">
-          <.aggregate_forms_type_in_favor_of_types f={f} options={@selected_setting} />
-        </.form_block>
+    <div class="max-h-80 overflow-y-scroll">
+      <div class="flex flex-row w-full">
+        <div class="flex flex-col mt-3 gap-2 w-1/3 border-r pr-3">
+          <.button
+            :for={
+              {field_id, field_title, _field_description, _field_configs, _field_allowed_types} <-
+                @selected_setting.section
+            }
+            id={field_id}
+            phx-click="selected_setting"
+            phx-value-id={@id}
+            phx-value-child={field_id}
+            class="!bg-white border-b border-gray-300 shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full !rounded-none"
+          >
+            <div class={"#{if field_id == @selected_setting.form_id, do: "font-bold", else: "font-normal"}"}>
+              <%= field_title %>
+            </div>
+          </.button>
+        </div>
+        <div class="flex flex-col w-2/3 p-3 self-stretch">
+          <code class="text-black font-bold p-1 rounded-md text-lg text-center mb-3">
+            <%= @selected_setting.form_id %>
+          </code>
+          <h2 class="mb-3 text-sm text-gray-500 leading-6">
+            You can apply the following settings on this section. If you don't need to change the settings, you can skip this section.
+          </h2>
+          <.form_block :let={f} for={%{}} as={String.to_atom(@id)} phx-change="save_config">
+            <.aggregate_forms_type_in_favor_of_types f={f} options={@selected_setting} />
+          </.form_block>
+        </div>
       </div>
     </div>
     """
