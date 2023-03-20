@@ -144,6 +144,24 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     """
   end
 
+
+  attr :form, :any, required: true
+  attr :options, :map, required: true
+  attr :selected, :list, required: false, default: nil
+  attr :title, :string, required: false, default: nil
+  attr :form_id, :atom, required: false, default: nil
+
+  def search_multiple_select(assigns) do
+    # It should have a text search
+    # It should have on-change to search
+    # It should show 10 or 20 result if user clicks
+    # It should show 10 or 20 result if user search
+    # It should be clickable and add the item user wants
+    ~H"""
+
+    """
+  end
+
   attr :form, :any, required: true
   attr :options, :map, required: true
   attr :selected, :any, required: false, default: nil

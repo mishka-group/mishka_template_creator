@@ -33,7 +33,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             phx-value-id={id}
             phx-value-child={nil}
           >
-            <%= Phoenix.LiveView.HTMLEngine.component(
+            <%= Phoenix.LiveView.TagEngine.component(
               Code.eval_string("&#{module}/1") |> elem(0),
               [class: "w-6 h-6 mx-auto stroke-current"],
               {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
@@ -95,7 +95,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
     ~H"""
     <div class="flex flex-row w-full max-h-80 overflow-y-scroll">
-      <div class="flex flex-col mt-3 gap-2 w-1/3 border-r h-fit pr-3 self-stretch">
+      <div class="flex flex-col mt-3 gap-2 w-1/3 border-r pr-3 h-fit">
         <.button
           :for={
             {field_id, field_title, _field_description, _field_configs, _field_allowed_types} <-

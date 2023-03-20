@@ -38,7 +38,7 @@ defmodule MishkaTemplateCreator.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.4", only: :dev},
-      {:phoenix_live_view, "~> 0.18.16"},
+      {:phoenix_live_view, "~> 0.18.18"},
       {:heroicons, "~> 0.5.2"},
       {:floki, ">= 0.34.2", only: :test},
       {:phoenix_live_dashboard, "~> 0.7.2"},
