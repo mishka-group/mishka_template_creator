@@ -8,7 +8,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   alias MishkaTemplateCreator.{
     Components.Blocks.ElementMenu,
     Data.TailwindSetting,
-    Components.MultiSelectComponent
+    Components.ConfigSelector
   }
 
   attr :block_id, :string, required: true
@@ -135,7 +135,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             <%= @selected_setting.form_id %>
           </code>
           <.live_component
-            module={MultiSelectComponent}
+            module={ConfigSelector}
             id={"#{Ecto.UUID.generate}-#{@id}"}
             selected_setting={@selected_setting}
           />

@@ -163,8 +163,18 @@ Hooks.dragAndDropLocation = {
       }
     });
 
-    this.handleEvent('show_select_result', ({ points }) => {
-      console.log(points)
+    this.handleEvent('show_selected_results', ({ results, id, myself }) => {
+      const resDOM = document.querySelector(`#${id}`);
+      resDOM.innerHTML = '';
+
+      results.map((item) => {
+        const el = `
+        <p class="cursor-pointer px-1 py-1 duration-200 hover:bg-gray-300 hover:rounded-md hover:duration-100 text-black text-sm" phx-click="select" phx-value-config="${item}" phx-target="${myself}">
+          ${item}
+        </p>
+        `;
+        resDOM.innerHTML += el;
+      });
     });
   },
 };
