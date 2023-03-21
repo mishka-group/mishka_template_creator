@@ -102,7 +102,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
         <div class="flex flex-col mt-3 gap-2 w-1/3 border-r pr-3 overflow-y-scroll max-h-80">
           <.button
             :for={{field_id, field_title} <- @selected_setting.section}
-            id={field_id}
+            id={"#{Ecto.UUID.generate}-#{field_id}"}
             phx-click="selected_setting"
             phx-value-id={@id}
             phx-value-child={field_id}

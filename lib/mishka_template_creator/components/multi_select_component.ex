@@ -8,11 +8,12 @@ defmodule MishkaTemplateCreator.Components.MultiSelectComponent do
       <form phx-change="query" phx-target={@myself}>
         <input
           class="border !border-gray-300 rounded-md w-full mx-0 my-0 focus:text-black focus:ring-2 focus:ring-orange-300 focus:!border-transparent"
-          id="select_search"
+          id={"select_search-#{@id}"}
           name="select_search"
           type="search"
           phx-click="click"
           phx-target={@myself}
+          autocomplete="off"
         />
       </form>
 
@@ -26,9 +27,9 @@ defmodule MishkaTemplateCreator.Components.MultiSelectComponent do
         </div>
       </div>
 
-      <div class="flex flex-col mt-2 border border-gray-300 rounded-md px-4 py-2 mb-2">
+      <div class="flex flex-col mt-2 border border-gray-300 rounded-md px-4 py-2 mb-2 max-h-36 overflow-y-scroll">
         <p
-          :for={item <- [1, 2, 3, 4]}
+          :for={item <- [1, 2, 3, 4, 8, 9, 10, 11]}
           class="cursor-pointer px-1 py-1 duration-200 hover:bg-gray-300 hover:rounded-md hover:duration-100"
         >
           select item <%= item %>
