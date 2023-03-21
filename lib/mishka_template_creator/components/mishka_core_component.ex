@@ -73,7 +73,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
               phx-window-keydown={hide_modal(@on_cancel, @id) |> JS.push("reset")}
               phx-key="escape"
               phx-click-away={hide_modal(@on_cancel, @id) |> JS.push("reset")}
-              class="hidden relative rounded-2xl bg-white p-14 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition z-50"
+              class="hidden relative rounded-2xl bg-white px-5 py-5 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition z-50"
             >
               <div class="absolute top-6 right-5">
                 <button
@@ -141,24 +141,6 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       class: @class,
       selected: @selected
     ) %>
-    """
-  end
-
-
-  attr :form, :any, required: true
-  attr :options, :map, required: true
-  attr :selected, :list, required: false, default: nil
-  attr :title, :string, required: false, default: nil
-  attr :form_id, :atom, required: false, default: nil
-
-  def search_multiple_select(assigns) do
-    # It should have a text search
-    # It should have on-change to search
-    # It should show 10 or 20 result if user clicks
-    # It should show 10 or 20 result if user search
-    # It should be clickable and add the item user wants
-    ~H"""
-
     """
   end
 

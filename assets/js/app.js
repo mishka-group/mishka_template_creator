@@ -162,6 +162,10 @@ Hooks.dragAndDropLocation = {
         }, 100);
       }
     });
+
+    this.handleEvent('show_select_result', ({ points }) => {
+      console.log(points)
+    });
   },
 };
 

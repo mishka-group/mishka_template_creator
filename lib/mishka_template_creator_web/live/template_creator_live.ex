@@ -148,6 +148,10 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
+  def handle_event("search_config", _params, socket) do
+    {:noreply, socket}
+  end
+
   def handle_event(
         "change_order",
         %{

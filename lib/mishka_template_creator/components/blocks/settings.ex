@@ -78,6 +78,9 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
               </div>
             </.button>
           </div>
+          <h2 class="mb-3 text-sm text-gray-500 leading-6 text-center">
+            You can apply the following settings on this section. If you don't need to change the settings, you can skip this section.
+          </h2>
           <hr />
 
           <.create_form id={@selected_setting["id"]} child={@selected_setting["child"]} />
@@ -94,14 +97,11 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     assigns = assign(assigns, :selected_setting, TailwindSetting.get_form_options(id, child))
 
     ~H"""
-    <div class="max-h-80 overflow-y-scroll">
+    <div class="max-h-[22rem] overflow-y-scroll">
       <div class="flex flex-row w-full">
-        <div class="flex flex-col mt-3 gap-2 w-1/3 border-r pr-3">
+        <div class="flex flex-col mt-3 gap-2 w-1/3 border-r pr-3 overflow-y-scroll max-h-80">
           <.button
-            :for={
-              {field_id, field_title, _field_description, _field_configs, _field_allowed_types} <-
-                @selected_setting.section
-            }
+            :for={{field_id, field_title} <- @selected_setting.section}
             id={field_id}
             phx-click="selected_setting"
             phx-value-id={@id}
@@ -113,67 +113,17 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             </div>
           </.button>
         </div>
-        <div class="flex flex-col w-2/3 p-3 self-stretch">
-          <code class="text-black font-bold p-1 rounded-md text-lg text-center mb-3">
+        <div class="flex flex-col w-3/4 px-3 self-stretch">
+          <code class="text-black font-bold p-1 rounded-md text-lg text-center mb-1">
             <%= @selected_setting.form_id %>
           </code>
-          <h2 class="mb-3 text-sm text-gray-500 leading-6">
-            You can apply the following settings on this section. If you don't need to change the settings, you can skip this section.
-          </h2>
-          <.form_block :let={f} for={%{}} as={String.to_atom(@id)} phx-change="save_config">
-            <.aggregate_forms_type_in_favor_of_types f={f} options={@selected_setting} />
-          </.form_block>
+          <.live_component
+            module={MishkaTemplateCreator.Components.MultiSelectComponent}
+            id={"#{Ecto.UUID.generate}-#{@id}"}
+            selected_setting={@selected_setting}
+          />
         </div>
       </div>
-    </div>
-    """
-  end
-
-  attr :f, :any, required: true
-  attr :options, :map, required: true
-  attr :selected, :any, required: false, default: nil
-  attr :sizes, :list, required: false, default: [:sm, :md, :lg, :xl, :"2xl"]
-
-  @spec aggregate_forms_type_in_favor_of_types(map) :: Phoenix.LiveView.Rendered.t()
-  def aggregate_forms_type_in_favor_of_types(assigns) do
-    ~H"""
-    <.multiple_select
-      :if={:multi_select in @options.types}
-      form={@f}
-      options={@options}
-      selected={@selected}
-    />
-    <.select
-      :if={:multi_select not in @options.types}
-      form={@f}
-      options={@options}
-      selected={@selected}
-    />
-
-    <div class="flex flex-col space-y-3">
-      <h2 :if={:media_queries in @options.types} class="mt-3 text-lg font-semibold">
-        You can set it for different sizes:
-      </h2>
-      <h2 class="mb-3 text-sm text-gray-500 leading-6">
-        To adjust in different sizes, consider the first mobile step or the smallest size and go to larger sizes
-      </h2>
-      <hr />
-      <.multiple_select
-        :for={size <- @sizes}
-        :if={:multi_select in @options.types and :media_queries in @options.types}
-        form={@f}
-        options={@options}
-        form_id={size}
-        title={size}
-      />
-      <.select
-        :for={size <- @sizes}
-        :if={:multi_select not in @options.types and :media_queries in @options.types}
-        form={@f}
-        options={@options}
-        form_id={size}
-        title={size}
-      />
     </div>
     """
   end

@@ -8536,7 +8536,11 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       List.first(found_section)
 
     %{
-      section: found_section,
+      section:
+        Enum.map(found_section, fn {field_id, field_title, _field_description, _field_configs,
+                                    _field_allowed_types} ->
+          {field_id, field_title}
+        end),
       form_id: field_id,
       form_title: field_title,
       form_description: field_description,
@@ -8552,7 +8556,11 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       Enum.find(found_section, &(elem(&1, 0) == child))
 
     %{
-      section: found_section,
+      section:
+        Enum.map(found_section, fn {field_id, field_title, _field_description, _field_configs,
+                                    _field_allowed_types} ->
+          {field_id, field_title}
+        end),
       form_id: field_id,
       form_title: field_title,
       form_description: field_description,

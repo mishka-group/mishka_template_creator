@@ -18,6 +18,10 @@
   @apply h-5 w-6 stroke-current cursor-pointer;
 }
 
+.search-select-icons {
+  @apply h-4 w-5 stroke-current cursor-pointer;
+}
+
 .section-header {
   @apply absolute -mt-5 bg-[#e1e1e1] flex flex-row justify-end items-end p-2 text-sm gap-1 text-gray-500 shadow-md rounded-md right-2;
 }
