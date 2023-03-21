@@ -4,7 +4,12 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
   import MishkaTemplateCreatorWeb.CoreComponents
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
-  alias MishkaTemplateCreator.{Components.Blocks.ElementMenu, Data.TailwindSetting}
+
+  alias MishkaTemplateCreator.{
+    Components.Blocks.ElementMenu,
+    Data.TailwindSetting,
+    Components.MultiSelectComponent
+  }
 
   attr :block_id, :string, required: true
   attr :type, :string, required: false, default: "layout"
@@ -13,7 +18,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   attr :on_click, JS, default: %JS{}
 
   @spec block_settings(map) :: Phoenix.LiveView.Rendered.t()
-  def block_settings(%{type: _type} = assigns) do
+  def block_settings(%{type: _type, block_id: _block_id} = assigns) do
     assigns = assign(assigns, :tailwind_settings, TailwindSetting.call())
 
     ~H"""
@@ -83,7 +88,12 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           </h2>
           <hr />
 
-          <.create_form id={@selected_setting["id"]} child={@selected_setting["child"]} />
+          <.create_form
+            id={@selected_setting["id"]}
+            child={@selected_setting["child"]}
+            type={@type}
+            block_id={@block_id}
+          />
         </div>
       <% end %>
     </.push_modal>
@@ -91,10 +101,17 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   end
 
   attr :id, :string, required: true
+  attr :type, :string, required: true
+  attr :block_id, :string, required: true
   attr :child, :string, required: false, default: nil
 
-  defp create_form(%{id: id, child: child} = assigns) do
-    assigns = assign(assigns, :selected_setting, TailwindSetting.get_form_options(id, child))
+  defp create_form(%{id: id, child: child, type: type, block_id: block_id} = assigns) do
+    assigns =
+      assign(
+        assigns,
+        :selected_setting,
+        TailwindSetting.get_form_options(id, child, type, block_id)
+      )
 
     ~H"""
     <div class="max-h-[22rem] overflow-y-scroll">
@@ -118,7 +135,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             <%= @selected_setting.form_id %>
           </code>
           <.live_component
-            module={MishkaTemplateCreator.Components.MultiSelectComponent}
+            module={MultiSelectComponent}
             id={"#{Ecto.UUID.generate}-#{@id}"}
             selected_setting={@selected_setting}
           />

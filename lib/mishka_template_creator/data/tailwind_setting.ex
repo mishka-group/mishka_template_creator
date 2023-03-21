@@ -8529,7 +8529,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     _e -> ""
   end
 
-  def get_form_options(id, nil) do
+  def get_form_options(id, nil, block_type, block_id) do
     found_section = elem(Enum.find(call(), &(elem(&1, 0) == id)), 3)
 
     {field_id, field_title, field_description, field_configs, field_allowed_types} =
@@ -8545,11 +8545,13 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       form_title: field_title,
       form_description: field_description,
       types: field_allowed_types,
-      form_configs: field_configs
+      form_configs: field_configs,
+      block_type: block_type,
+      block_id: block_id
     }
   end
 
-  def get_form_options(id, child) do
+  def get_form_options(id, child, block_type, block_id) do
     found_section = elem(Enum.find(call(), &(elem(&1, 0) == id)), 3)
 
     {field_id, field_title, field_description, field_configs, field_allowed_types} =
@@ -8565,7 +8567,23 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       form_title: field_title,
       form_description: field_description,
       types: field_allowed_types,
-      form_configs: field_configs
+      form_configs: field_configs,
+      block_type: block_type,
+      block_id: block_id
     }
+  end
+
+  @spec type_create(list(atom())) :: list(atom())
+  def type_create(types) do
+    created_types =
+      Enum.map(types, fn item ->
+        case item do
+          :media_queries -> [:sm, :md, :lg, :xl, :"2xl"]
+          type -> [type]
+        end
+      end)
+      |> Enum.concat()
+
+    [:none, :dark] ++ created_types
   end
 end
