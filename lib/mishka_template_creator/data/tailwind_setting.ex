@@ -8596,7 +8596,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       class
       |> String.split(":")
       |> case do
-        [h | [c | _t]] when h in ["sm", "md", "lg", "xl", "2xl", "dark"] -> c
+        [h | [c | _t]] when h in ["sm", "md", "lg", "xl", "2xl", "dark", "hover"] -> c
         [h | _t] -> h
       end
 
