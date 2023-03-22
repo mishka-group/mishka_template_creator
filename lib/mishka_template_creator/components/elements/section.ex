@@ -19,6 +19,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   attr :on_duplicate, JS, default: %JS{}
   attr :rest, :global
   attr :children, :list, default: []
+  attr :class, :string, default: nil
 
   @spec section(map) :: Phoenix.LiveView.Rendered.t()
   def section(assigns) do
@@ -36,6 +37,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
         parent_id={@parent_id}
         submit={@submit}
         selected_setting={@selected_setting}
+        class={@class}
       />
 
       <div :if={@tag} class="section-tag">
