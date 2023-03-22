@@ -17,8 +17,6 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
           id={"select_search-#{@id}"}
           name="select_search"
           type="search"
-          phx-click="click"
-          phx-target={@myself}
           autocomplete="off"
         />
 
@@ -73,10 +71,6 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
   end
 
   @impl true
-  def handle_event("click", %{"value" => _value}, socket) do
-    {:noreply, socket}
-  end
-
   def handle_event("query", %{"select_search" => value, "myself" => myself}, socket) do
     form_configs = socket.assigns.selected_setting.form_configs
 
@@ -102,8 +96,15 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
     {:noreply, socket}
   end
 
-  def handle_event("save", params, socket) do
-    IO.inspect(params)
+  def handle_event("save", %{"extra_config" => extra_config, "config" => config}, socket) do
+    %{block_id: block_id, block_type: block_type} = socket.assigns.selected_setting
+
+    send(
+      self(),
+      {"add_element_config",
+       %{block_id: block_id, block_type: block_type, extra_config: extra_config, config: config}}
+    )
+
     {:noreply, socket}
   end
 

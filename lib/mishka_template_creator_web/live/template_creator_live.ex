@@ -3,6 +3,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   use Phoenix.LiveView
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
 
+  @impl true
   def render(assigns) do
     ~H"""
     <.dashboard
@@ -16,6 +17,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   # TODO: create multi layout sections and store in a Genserver or ETS
   # TODO: create multisection in a layout and store them under the layout
+  @impl true
   def mount(_params, _, socket) do
     new_socket =
       assign(socket, elemens: [], selected_block: nil, submit: true, selected_setting: nil)
@@ -23,6 +25,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:ok, new_socket}
   end
 
+  @impl true
   def handle_event(
         "dropped_element",
         %{"index" => index, "type" => type, "parent" => parent, "parent_id" => parent_id},
@@ -144,14 +147,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, assign(socket, :selected_setting, nil)}
   end
 
-  def handle_event("save_config", _params, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("search_config", _params, socket) do
-    {:noreply, socket}
-  end
-
   def handle_event(
         "change_order",
         %{
@@ -167,6 +162,12 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       |> change_order(current_index, new_index, parent_id, type)
 
     {:noreply, assign(socket, elemens: elemens)}
+  end
+
+  @impl true
+  def handle_info({"add_element_config", selected_config}, socket) do
+    IO.inspect(selected_config)
+    {:noreply, socket}
   end
 
   def update_elements(nil, socket, _, _), do: {:noreply, socket}
