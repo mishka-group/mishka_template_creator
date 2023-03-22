@@ -10,7 +10,7 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
 
   @impl true
   def update(assigns, socket) do
-    new_sock = push_event(socket, "set_extra_config", %{})
+    new_sock = push_event(socket, "set_extra_config", %{id: assigns.id})
     {:ok, assign(new_sock, assigns)}
   end
 
@@ -27,7 +27,7 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
           autocomplete="off"
         />
 
-        <input type="hidden" id="myself" name="myself" value={@myself} />
+        <input type="hidden" id={"#{@id}-myself"} name="myself" value={@myself} />
       </form>
 
       <div :if={!is_nil(@class)} class="flex flex-wrap my-2 gap-2">
@@ -73,7 +73,7 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
           phx-click="set_extra_config"
           phx-value-config={item}
           phx-target={@myself}
-          id={"extra-config-#{item}"}
+          id={"#{@id}-extra-config-#{item}"}
         >
           <%= item %>
         </span>
@@ -108,7 +108,13 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
 
     send(
       self(),
-      {"delete_element_config", %{block_id: block_id, block_type: block_type, config: config}}
+      {"delete_element_config",
+       %{
+         block_id: block_id,
+         block_type: block_type,
+         config: config,
+         parent_id: socket.assigns.parent_id
+       }}
     )
 
     {:noreply, socket}
@@ -120,13 +126,19 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
     send(
       self(),
       {"add_element_config",
-       %{block_id: block_id, block_type: block_type, extra_config: extra_config, config: config}}
+       %{
+         block_id: block_id,
+         block_type: block_type,
+         extra_config: extra_config,
+         config: config,
+         parent_id: socket.assigns.parent_id
+       }}
     )
 
     {:noreply, socket}
   end
 
   def handle_event("set_extra_config", %{"config" => config}, socket) do
-    {:noreply, push_event(socket, "set_extra_config", %{config: config})}
+    {:noreply, push_event(socket, "set_extra_config", %{config: config, id: socket.assigns.id})}
   end
 end

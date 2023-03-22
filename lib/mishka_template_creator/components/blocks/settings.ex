@@ -12,7 +12,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   }
 
   attr :block_id, :string, required: true
-  attr :class, :string, default: nil
+  attr :class, :string, required: false, default: nil
+  attr :parent_id, :string, required: false, default: nil
   attr :type, :string, required: false, default: "layout"
   attr :selected_setting, :map, required: false, default: nil
   attr :icon_class, :string, required: false, default: "layout-icons"
@@ -95,6 +96,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             type={@type}
             block_id={@block_id}
             class={@class}
+            parent_id={@parent_id}
           />
         </div>
       <% end %>
@@ -106,7 +108,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   attr :type, :string, required: true
   attr :block_id, :string, required: true
   attr :child, :string, required: false, default: nil
-  attr :class, :string, default: nil
+  attr :parent_id, :string, required: false, default: nil
+  attr :class, :string, required: false, default: nil
 
   defp create_form(%{id: id, child: child, type: type, block_id: block_id} = assigns) do
     assigns =
@@ -139,9 +142,10 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           </code>
           <.live_component
             module={ConfigSelector}
-            id={"#{@child}-#{@id}"}
+            id={"#{@type}-#{@block_id}-#{@id}-#{@child || List.first(@selected_setting.form_configs)}"}
             selected_setting={@selected_setting}
             class={@class}
+            parent_id={@parent_id}
           />
         </div>
       </div>

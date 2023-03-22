@@ -159,8 +159,13 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   @impl true
   def handle_info({"add_element_config", selected_config}, socket) do
-    %{block_id: block_id, block_type: block_type, config: config, extra_config: extra} =
-      selected_config
+    %{
+      block_id: block_id,
+      block_type: block_type,
+      config: config,
+      extra_config: extra,
+      parent_id: parent_id
+    } = selected_config
 
     new_assign =
       assign(
@@ -169,7 +174,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
           add_element_config(
             socket.assigns.elemens,
             block_id,
-            "parent_id",
+            parent_id,
             TailwindSetting.create_class(extra, config),
             block_type
           )
@@ -179,13 +184,14 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_info({"delete_element_config", selected_config}, socket) do
-    %{block_id: block_id, block_type: block_type, config: config} = selected_config
+    %{block_id: block_id, block_type: block_type, config: config, parent_id: parent_id} =
+      selected_config
 
     new_assign =
       assign(
         socket,
         elemens:
-          delete_element_config(socket.assigns.elemens, block_id, "parent_id", config, block_type)
+          delete_element_config(socket.assigns.elemens, block_id, parent_id, config, block_type)
       )
 
     {:noreply, new_assign}

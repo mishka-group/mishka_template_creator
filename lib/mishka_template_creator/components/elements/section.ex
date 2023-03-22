@@ -64,6 +64,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
         selected_setting={@selected_setting}
         type="section"
         class={@class}
+        parent_id={@parent_id}
       />
       <Tag.block_tag
         block_id={@section_id}

@@ -343,6 +343,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         layout
       end
     end)
+    |> IO.inspect()
   end
 
   def delete_element_config(elements, id, _parent_id, class, "layout") do
