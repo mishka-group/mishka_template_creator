@@ -8586,4 +8586,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
 
     [:none, :dark] ++ created_types
   end
+
+  def create_class("none", class), do: class
+  def create_class(extra, class), do: "#{extra}:#{class}"
 end

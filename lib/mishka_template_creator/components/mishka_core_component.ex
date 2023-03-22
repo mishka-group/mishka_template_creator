@@ -323,6 +323,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
       if layout.id == id, do: Map.merge(layout, %{class: new_class}), else: layout
     end)
+    |> IO.inspect()
   end
 
   def add_element_config(elements, id, parent_id, class, "section") do

@@ -2,6 +2,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # In Phoenix v1.6+ apps, the line below should be: use MyAppWeb, :live_view
   use Phoenix.LiveView
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
+  alias MishkaTemplateCreator.Data.TailwindSetting
 
   @impl true
   def render(assigns) do
@@ -158,8 +159,23 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   @impl true
   def handle_info({"add_element_config", selected_config}, socket) do
-    IO.inspect(selected_config)
-    {:noreply, socket}
+    %{block_id: block_id, block_type: block_type, config: config, extra_config: extra} =
+      selected_config
+
+    new_assign =
+      assign(
+        socket,
+        elemens:
+          add_element_config(
+            socket.assigns.elemens,
+            block_id,
+            "parent_id",
+            TailwindSetting.create_class(extra, config),
+            block_type
+          )
+      )
+
+    {:noreply, new_assign}
   end
 
   def handle_info({"delete_element_config", selected_config}, socket) do

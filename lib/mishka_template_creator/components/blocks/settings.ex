@@ -136,7 +136,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           </code>
           <.live_component
             module={ConfigSelector}
-            id={"#{Ecto.UUID.generate}-#{@id}"}
+            id={"#{@child}-#{@id}"}
             selected_setting={@selected_setting}
           />
         </div>
