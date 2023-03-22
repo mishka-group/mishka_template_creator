@@ -186,10 +186,16 @@ Hooks.dragAndDropLocation = {
       const perConDOM = document.querySelector(
         `#extra-config-${stateLessConfig}`
       );
-      const conDOM = document.querySelector(`#extra-config-${config}`);
-      perConDOM.classList.remove('bg-gray-200');
-      conDOM.classList.add('bg-gray-200');
-      stateLessConfig = config;
+      if (config) {
+        const conDOM = document.querySelector(`#extra-config-${config}`);
+        perConDOM.classList.remove('bg-gray-200');
+        conDOM.classList.add('bg-gray-200');
+        stateLessConfig = config;
+      } else {
+        const conDOM = document.querySelector(`#extra-config-none`);
+        conDOM.classList.remove('bg-gray-200');
+        perConDOM.classList.add('bg-gray-200');
+      }
     });
 
     this.handleEvent('get_extra_config', ({ config, myself }) => {

@@ -4,7 +4,14 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
 
   @impl true
   def mount(socket) do
+    IO.inspect("we are here")
     {:ok, push_event(socket, "clean_extra_config", %{})}
+  end
+
+  @impl true
+  def update(assigns, socket) do
+    new_sock = push_event(socket, "set_extra_config", %{})
+    {:ok, assign(new_sock, assigns)}
   end
 
   @impl true
@@ -23,12 +30,12 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
         <input type="hidden" id="myself" name="myself" value={@myself} />
       </form>
 
-      <div class="flex flex-wrap my-2 gap-2">
+      <div :if={!is_nil(@class)} class="flex flex-wrap my-2 gap-2">
         <div
-          :for={item <- [1, 2, 3, 4, 5, 6, 7, 8, 9]}
+          :for={item <- @class}
           class="flex flex-row justify-start items-start py-1 px-3 bg-gray-200 rounded-md gap-2 text-black text-sm"
         >
-          <span><%= "h-#{item}" %></span>
+          <span><%= "#{item}" %></span>
           <Heroicons.trash
             class="search-select-icons mt-1"
             phx-click="delete"

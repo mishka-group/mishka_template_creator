@@ -34,6 +34,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Content do
         selected_setting={@selected_setting}
         submit={@submit}
         tag={Map.get(el, :tag)}
+        class={Map.get(el, :class)}
       />
     </div>
     """

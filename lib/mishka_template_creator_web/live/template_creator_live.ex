@@ -179,8 +179,16 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_info({"delete_element_config", selected_config}, socket) do
-    IO.inspect(selected_config)
-    {:noreply, socket}
+    %{block_id: block_id, block_type: block_type, config: config} = selected_config
+
+    new_assign =
+      assign(
+        socket,
+        elemens:
+          delete_element_config(socket.assigns.elemens, block_id, "parent_id", config, block_type)
+      )
+
+    {:noreply, new_assign}
   end
 
   def update_elements(nil, socket, _, _), do: {:noreply, socket}

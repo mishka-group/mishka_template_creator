@@ -52,6 +52,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   attr :parent_id, :string, required: true
   attr :submit, :boolean, default: false
   attr :selected_setting, :map, required: true
+  attr :class, :string, default: nil
 
   @spec section_header(map) :: Phoenix.LiveView.Rendered.t()
   defp section_header(assigns) do
@@ -59,9 +60,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
     <div id={"section_header_#{@section_id}"} class="section-header">
       <Settings.block_settings
         block_id={@section_id}
-        custom_class="section-icons"
+        icon_class="section-icons"
         selected_setting={@selected_setting}
         type="section"
+        class={@class}
       />
       <Tag.block_tag
         block_id={@section_id}

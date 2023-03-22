@@ -12,9 +12,10 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   }
 
   attr :block_id, :string, required: true
+  attr :class, :string, default: nil
   attr :type, :string, required: false, default: "layout"
   attr :selected_setting, :map, required: false, default: nil
-  attr :custom_class, :string, required: false, default: "layout-icons"
+  attr :icon_class, :string, required: false, default: "layout-icons"
   attr :on_click, JS, default: %JS{}
 
   @spec block_settings(map) :: Phoenix.LiveView.Rendered.t()
@@ -23,7 +24,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
     ~H"""
     <Heroicons.wrench_screwdriver
-      class={@custom_class}
+      class={@icon_class}
       phx-click={show_modal("#{@type}-settings-#{@block_id}")}
     />
     <.push_modal id={"#{@type}-settings-#{@block_id}"}>
@@ -93,6 +94,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             child={@selected_setting["child"]}
             type={@type}
             block_id={@block_id}
+            class={@class}
           />
         </div>
       <% end %>
@@ -104,6 +106,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   attr :type, :string, required: true
   attr :block_id, :string, required: true
   attr :child, :string, required: false, default: nil
+  attr :class, :string, default: nil
 
   defp create_form(%{id: id, child: child, type: type, block_id: block_id} = assigns) do
     assigns =
@@ -138,6 +141,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             module={ConfigSelector}
             id={"#{@child}-#{@id}"}
             selected_setting={@selected_setting}
+            class={@class}
           />
         </div>
       </div>

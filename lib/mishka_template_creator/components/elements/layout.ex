@@ -17,6 +17,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
   attr :selected_block, :map, required: true
   attr :selected_setting, :map, required: true
   attr :tag, :string, default: nil
+  attr :class, :string, default: nil
   attr :submit, :boolean, default: false
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
@@ -29,7 +30,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
       <div class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-1 w-54">
         <MobileView.block_mobile_view block_id={@id} />
         <DarkMod.block_dark_mod block_id={@id} />
-        <Settings.block_settings block_id={@id} selected_setting={@selected_setting} />
+        <Settings.block_settings block_id={@id} selected_setting={@selected_setting} class={@class}/>
         <Tag.block_tag block_id={@id} submit={@submit} />
         <div :if={@tag}><strong>Tag: </strong><%= @tag %></div>
         <AddSeparator.block_add_separator block_id={@id} />
@@ -49,6 +50,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
           parent_id={@id}
           submit={@submit}
           tag={Map.get(child, :tag)}
+          class={Map.get(child, :class)}
           selected_setting={@selected_setting}
         />
       </div>
