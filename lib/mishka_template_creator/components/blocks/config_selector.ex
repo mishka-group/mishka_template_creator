@@ -4,7 +4,6 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
 
   @impl true
   def mount(socket) do
-    IO.inspect("we are here")
     {:ok, push_event(socket, "clean_extra_config", %{})}
   end
 
@@ -33,6 +32,7 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
       <div :if={!is_nil(@class)} class="flex flex-wrap my-2 gap-2">
         <div
           :for={item <- @class}
+          :if={TailwindSetting.is_class?(item, @selected_setting.form_configs)}
           class="flex flex-row justify-start items-start py-1 px-3 bg-gray-200 rounded-md gap-2 text-black text-sm"
         >
           <span><%= "#{item}" %></span>

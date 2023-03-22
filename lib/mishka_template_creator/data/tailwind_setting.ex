@@ -8589,4 +8589,17 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
 
   def create_class("none", class), do: class
   def create_class(extra, class), do: "#{extra}:#{class}"
+
+  @spec is_class?(binary, list(String.t())) :: boolean
+  def is_class?(class, configs) do
+    converted_class =
+      class
+      |> String.split(":")
+      |> case do
+        [h | [c | _t]] when h in ["sm", "md", "lg", "xl", "2xl", "dark"] -> c
+        [h | _t] -> h
+      end
+
+    Enum.member?(configs, converted_class)
+  end
 end
