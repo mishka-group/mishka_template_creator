@@ -61,11 +61,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_assign}
   end
 
-  def handle_event(
-        "validate_tag",
-        %{"_target" => _target, "tag" => %{"tag" => tag}},
-        socket
-      ) do
+  def handle_event("validate_tag", %{"tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3
@@ -96,10 +92,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       end
 
     {:noreply, new_socket}
-  end
-
-  def handle_event("tag", %{"id" => id}, socket) do
-    {:noreply, push_event(socket, "tag", %{id: id})}
   end
 
   def handle_event("add_separator", %{"id" => _id}, socket) do
@@ -170,7 +162,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
-  @impl true
   def handle_info({"delete_element_config", selected_config}, socket) do
     IO.inspect(selected_config)
     {:noreply, socket}

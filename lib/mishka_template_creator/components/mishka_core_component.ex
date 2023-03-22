@@ -316,6 +316,60 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
+  def add_element_config(elements, id, _parent_id, class, "layout") do
+    Enum.map(elements, fn %{type: "layout"} = layout ->
+      new_class =
+        if is_nil(Map.get(layout, :class)), do: [class], else: Map.get(layout, :class) ++ [class]
+
+      if layout.id == id, do: Map.merge(layout, %{class: new_class}), else: layout
+    end)
+  end
+
+  def add_element_config(elements, id, parent_id, class, "section") do
+    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
+      if layout.id == parent_id do
+        edited_list =
+          children
+          |> Enum.map(fn el ->
+            new_class =
+              if is_nil(Map.get(el, :class)), do: [class], else: Map.get(el, :class) ++ [class]
+
+            if el.id == id, do: Map.merge(el, %{class: new_class}), else: el
+          end)
+
+        %{layout | children: edited_list}
+      else
+        layout
+      end
+    end)
+  end
+
+  def delete_element_config(elements, id, _parent_id, class, "layout") do
+    Enum.map(elements, fn %{type: "layout"} = layout ->
+      if layout.id == id,
+        do: Map.merge(layout, %{class: Enum.reject(layout.class, &(&1 == class))}),
+        else: layout
+    end)
+  end
+
+  def delete_element_config(elements, id, parent_id, class, "section") do
+    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
+      if layout.id == parent_id do
+        edited_list =
+          children
+          |> Enum.map(fn el ->
+            if el.id == id,
+              do: Map.merge(el, %{class: Enum.reject(layout.class, &(&1 == class))}),
+              else: el
+          end)
+
+        %{layout | children: edited_list}
+      else
+        layout
+      end
+    end)
+  end
+
   @spec sort_elements_list(list, boolean) :: list
   def sort_elements_list(list, auto \\ true) do
     list

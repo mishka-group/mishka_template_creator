@@ -173,7 +173,7 @@ Hooks.dragAndDropLocation = {
 
         results.map((item) => {
           const el = `
-        <p class="cursor-pointer px-1 py-1 duration-200 hover:bg-gray-300 hover:rounded-md hover:duration-100 text-black text-sm" phx-click="select" phx-value-config="${item}" phx-target="${myself}">
+        <p class="cursor-pointer px-1 py-1 duration-200 hover:bg-gray-300 hover:rounded-md hover:duration-100 text-black text-sm" phx-click="select" phx-value-config="${item}" phx-target="${myself}" phx-value-myself="${myself}">
           ${item}
         </p>
         `;
@@ -200,7 +200,7 @@ Hooks.dragAndDropLocation = {
     });
 
     this.handleEvent('clean_extra_config', () => {
-      stateLessConfig = "none";
+      stateLessConfig = 'none';
     });
   },
 };
