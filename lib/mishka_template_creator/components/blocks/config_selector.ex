@@ -25,11 +25,16 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
 
       <div class="flex flex-wrap my-2 gap-2">
         <div
-          :for={item <- [1, 2, 3]}
+          :for={item <- [1, 2, 3, 4, 5, 6, 7, 8, 9]}
           class="flex flex-row justify-start items-start py-1 px-3 bg-gray-200 rounded-md gap-2 text-black text-sm"
         >
           <span><%= "h-#{item}" %></span>
-          <Heroicons.trash class="search-select-icons mt-1" phx-click="delete" phx-target={@myself} />
+          <Heroicons.trash
+            class="search-select-icons mt-1"
+            phx-click="delete"
+            phx-value-config={item}
+            phx-target={@myself}
+          />
         </div>
       </div>
 
@@ -91,8 +96,14 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
     {:noreply, push_event(socket, "get_extra_config", %{config: config, myself: myself})}
   end
 
-  def handle_event("delete", params, socket) do
-    IO.inspect(params)
+  def handle_event("delete", %{"config" => config}, socket) do
+    %{block_id: block_id, block_type: block_type} = socket.assigns.selected_setting
+
+    send(
+      self(),
+      {"delete_element_config", %{block_id: block_id, block_type: block_type, config: config}}
+    )
+
     {:noreply, socket}
   end
 

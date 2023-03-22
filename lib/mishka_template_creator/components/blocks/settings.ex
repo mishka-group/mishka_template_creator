@@ -114,7 +114,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
       )
 
     ~H"""
-    <div class="max-h-[22rem] overflow-y-scroll">
+    <div class="max-h-[24rem] overflow-y-scroll">
       <div class="flex flex-row w-full">
         <div class="flex flex-col mt-3 gap-2 w-1/3 border-r pr-3 overflow-y-scroll max-h-80">
           <.button

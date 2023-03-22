@@ -170,6 +170,12 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_info({"delete_element_config", selected_config}, socket) do
+    IO.inspect(selected_config)
+    {:noreply, socket}
+  end
+
   def update_elements(nil, socket, _, _), do: {:noreply, socket}
 
   def update_elements(new_element, socket, parent, event) do
