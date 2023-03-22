@@ -5,6 +5,7 @@ import topbar from '../vendor/topbar';
 import { customEventCreator } from '../vendor/mishka_template_creator/utilities';
 import Sortable from 'sortablejs';
 
+let stateLessConfig = 'none';
 const layoutBlock = document.getElementById('layout-block');
 const elementsBlock = document.getElementById('elements-block');
 const mediaBlock = document.getElementById('media-block');
@@ -163,18 +164,43 @@ Hooks.dragAndDropLocation = {
       }
     });
 
-    this.handleEvent('show_selected_results', ({ results, id, myself }) => {
-      const resDOM = document.querySelector(`#${id}`);
-      resDOM.innerHTML = '';
+    this.handleEvent(
+      'show_selected_results',
+      ({ results, id, myself, count }) => {
+        const resDOM = document.querySelector(`#${id}`);
+        document.querySelector(`#count-${id}`).innerHTML = count;
+        resDOM.innerHTML = '';
 
-      results.map((item) => {
-        const el = `
+        results.map((item) => {
+          const el = `
         <p class="cursor-pointer px-1 py-1 duration-200 hover:bg-gray-300 hover:rounded-md hover:duration-100 text-black text-sm" phx-click="select" phx-value-config="${item}" phx-target="${myself}">
           ${item}
         </p>
         `;
-        resDOM.innerHTML += el;
+          resDOM.innerHTML += el;
+        });
+      }
+    );
+
+    this.handleEvent('set_extra_config', ({ config }) => {
+      const perConDOM = document.querySelector(
+        `#extra-config-${stateLessConfig}`
+      );
+      const conDOM = document.querySelector(`#extra-config-${config}`);
+      perConDOM.classList.remove('bg-gray-200');
+      conDOM.classList.add('bg-gray-200');
+      stateLessConfig = config;
+    });
+
+    this.handleEvent('get_extra_config', ({ config, myself }) => {
+      this.pushEventTo(myself, 'save', {
+        extra_config: stateLessConfig,
+        config: config,
       });
+    });
+
+    this.handleEvent('clean_extra_config', () => {
+      stateLessConfig = "none";
     });
   },
 };

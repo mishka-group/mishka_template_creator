@@ -2,7 +2,12 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
   use Phoenix.LiveComponent
   alias MishkaTemplateCreator.Data.TailwindSetting
 
-  @spec render(map()) :: Phoenix.LiveView.Rendered.t()
+  @impl true
+  def mount(socket) do
+    {:ok, push_event(socket, "clean_extra_config", %{})}
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
     <div class="ConfigSelectorComponent">
@@ -40,21 +45,25 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
           phx-click="select"
           phx-value-config={item}
           phx-target={@myself}
+          phx-value-myself={@myself}
         >
           <%= item %>
         </p>
       </div>
       <span class="text-blue-400 mt-4 text-xs hover:text-blue-500">
-        There are <%= length(@selected_setting.form_configs) %> results for this section, please find by searching ...
+        There are
+        <span id={"count-config-#{@id}"}><%= length(@selected_setting.form_configs) %></span>
+        results for this section, please find by searching ...
       </span>
 
       <div class="flex flex-wrap w-full gap-2 text-center justify-start items-center mt-3 text-black">
         <span
           :for={item <- TailwindSetting.type_create(@selected_setting.types)}
-          class="cursor-pointer border border-gray-300 p-1 w-10 rounded-md text-xs hover:bg-gray-200 hover:duration-150 duration-300"
-          phx-click="extra_config"
+          class={"#{if item == :none, do: "bg-gray-200"} cursor-pointer border border-gray-300 p-1 w-10 rounded-md text-xs hover:bg-gray-200 hover:duration-150 duration-300"}
+          phx-click="set_extra_config"
           phx-value-config={item}
           phx-target={@myself}
+          id={"extra-config-#{item}"}
         >
           <%= item %>
         </span>
@@ -63,6 +72,7 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
     """
   end
 
+  @impl true
   def handle_event("click", %{"value" => _value}, socket) do
     {:noreply, socket}
   end
@@ -73,19 +83,18 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
     results =
       form_configs
       |> Enum.filter(&String.contains?(&1, value))
-      |> Enum.take(10)
 
     {:noreply,
      push_event(socket, "show_selected_results", %{
-       results: results,
+       results: results |> Enum.take(10),
        id: "config-#{socket.assigns.id}",
-       myself: myself
+       myself: myself,
+       count: length(results)
      })}
   end
 
-  def handle_event("select", %{"config" => config}, socket) do
-    IO.inspect(config)
-    {:noreply, socket}
+  def handle_event("select", %{"config" => config, "myself" => myself}, socket) do
+    {:noreply, push_event(socket, "get_extra_config", %{config: config, myself: myself})}
   end
 
   def handle_event("delete", params, socket) do
@@ -93,8 +102,12 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
     {:noreply, socket}
   end
 
-  def handle_event("extra_config", %{"config" => config}, socket) do
-    IO.inspect(config)
+  def handle_event("save", params, socket) do
+    IO.inspect(params)
     {:noreply, socket}
+  end
+
+  def handle_event("set_extra_config", %{"config" => config}, socket) do
+    {:noreply, push_event(socket, "set_extra_config", %{config: config})}
   end
 end
