@@ -9,7 +9,6 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
 
   @impl true
   def update(assigns, socket) do
-    IO.inspect(assigns.class)
     new_sock = push_event(socket, "set_extra_config", %{id: assigns.id})
     {:ok, assign(new_sock, assigns)}
   end

@@ -4,6 +4,18 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.Data.TailwindSetting
 
+  # TODO: create multi layout sections and store in a Genserver or ETS
+  # TODO: create multisection in a layout and store them under the layout
+  # TODO: we need to create sample html to let tailwind scan classes deployment/templates/:template_name
+
+  @impl true
+  def mount(_params, _, socket) do
+    new_socket =
+      assign(socket, elemens: [], selected_block: nil, submit: true, selected_setting: nil)
+
+    {:ok, new_socket}
+  end
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -14,16 +26,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       selected_setting={@selected_setting}
     />
     """
-  end
-
-  # TODO: create multi layout sections and store in a Genserver or ETS
-  # TODO: create multisection in a layout and store them under the layout
-  @impl true
-  def mount(_params, _, socket) do
-    new_socket =
-      assign(socket, elemens: [], selected_block: nil, submit: true, selected_setting: nil)
-
-    {:ok, new_socket}
   end
 
   @impl true
