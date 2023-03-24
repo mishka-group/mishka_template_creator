@@ -215,6 +215,12 @@ Hooks.dragAndDropLocation = {
         html: bodyDOM.innerHTML,
       });
     });
+
+    this.handleEvent('clean_layout_default_style', ({ block_id }) => {
+      const layoutDOM = document.getElementById(`layout-${block_id}`);
+      layoutDOM.classList.toggle('create-layout');
+      layoutDOM.classList.toggle('create-layout-pure');
+    });
   },
 };
 
