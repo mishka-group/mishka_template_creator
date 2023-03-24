@@ -12,6 +12,8 @@ module.exports = {
     "../lib/*_web/**/*.*ex",
     "../lib/**/**/*.ex",
     "../lib/**/**/**/*.ex",
+    "../deployment/templates/*.html",
+    "../deployment/templates/**/*.html",
   ],
   theme: {
     extend: {

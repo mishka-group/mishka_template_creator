@@ -41,12 +41,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
       </div>
       <div
         id={@id}
-        class={
-          if !is_nil(@class),
-            do: Enum.join(@class, " "),
-            else:
-              "flex flex-row justify-start items-center w-full space-x-3 px-3 #{if length(@children) == 0, do: "py-10"}"
-        }
+        class={Enum.join(@class, " ")}
         data-type="layout"
       >
         <Section.section

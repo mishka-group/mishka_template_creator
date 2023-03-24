@@ -359,7 +359,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
           children
           |> Enum.map(fn el ->
             if el.id == id,
-              do: Map.merge(el, %{class: Enum.reject(layout.class, &(&1 == class))}),
+              do: Map.merge(el, %{class: Enum.reject(el.class, &(&1 == class))}),
               else: el
           end)
 

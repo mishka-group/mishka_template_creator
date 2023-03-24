@@ -25,7 +25,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   def section(assigns) do
     ~H"""
     <div
-      class={"group relative create-section #{if @selected_block === @id, do: "bg-white rounded-sm"}"}
+      class={"group relative #{Enum.join(@class, " ")} #{if @selected_block === @id, do: "bg-white rounded-sm"}"}
       id={@id}
       data-type="section"
       phx-click="edit_section"
