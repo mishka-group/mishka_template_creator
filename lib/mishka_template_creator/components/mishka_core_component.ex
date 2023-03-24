@@ -2,7 +2,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   use Phoenix.Component
   import Phoenix.HTML.Form
 
-  alias MishkaTemplateCreator.Components.Blocks.{Content, Aside}
+  alias MishkaTemplateCreator.Components.Blocks.{Content, Aside, History}
   alias Phoenix.LiveView.JS
   import MishkaTemplateCreatorWeb.CoreComponents
 
@@ -18,7 +18,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     ~H"""
     <div class="main-body">
       <div id="mishka_top_nav" class="top-nav">
-        <div>Back To/History</div>
+        <.live_component module={History} id="template-history" elemens={@elemens} />
         <div>Main Section</div>
         <div>Settings</div>
       </div>

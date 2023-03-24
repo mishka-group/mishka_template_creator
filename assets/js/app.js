@@ -208,6 +208,13 @@ Hooks.dragAndDropLocation = {
     this.handleEvent('clean_extra_config', () => {
       stateLessConfig = 'none';
     });
+
+    this.handleEvent('create_sample_html', ({ myself }) => {
+      const bodyDOM = document.querySelector('body');
+      this.pushEventTo(myself, 'save', {
+        html: bodyDOM.innerHTML,
+      });
+    });
   },
 };
 
