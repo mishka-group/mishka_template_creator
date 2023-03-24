@@ -1,7 +1,7 @@
 defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   use Phoenix.Component
   import Phoenix.HTML.Form
-
+  alias MishkaTemplateCreator.Data.TailwindSetting
   alias MishkaTemplateCreator.Components.Blocks.{Content, Aside, History}
   alias Phoenix.LiveView.JS
   import MishkaTemplateCreatorWeb.CoreComponents
@@ -174,10 +174,10 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
     cond do
       type == "layout" and parent == "dragLocation" ->
-        Map.merge(params, %{id: id, children: []})
+        Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_layout()})
 
       type == "section" and parent == "layout" ->
-        Map.merge(params, %{id: id, children: []})
+        Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_section()})
 
       type in @elements_type and parent == "section" ->
         Map.merge(params, %{id: id, children: []})

@@ -26,7 +26,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
   @spec layout(map) :: Phoenix.LiveView.Rendered.t()
   def layout(assigns) do
     ~H"""
-    <div class="create-layout group" id={"layout-#{@id}"} data-type="layout">
+    <div
+      class={"create-layout group"}
+      id={"layout-#{@id}"}
+      data-type="layout"
+    >
       <div class="flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-1 w-54">
         <MobileView.block_mobile_view block_id={@id} />
         <DarkMod.block_dark_mod block_id={@id} />
@@ -39,7 +43,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
       </div>
       <div
         id={@id}
-        class={"flex flex-row justify-start items-center w-full space-x-3 px-3 #{if length(@children) == 0, do: "py-10"}"}
+        class={if !is_nil(@class), do: Enum.join(@class, " "), else: "flex flex-row justify-start items-center w-full space-x-3 px-3 #{if length(@children) == 0, do: "py-10"}"}
         data-type="layout"
       >
         <Section.section

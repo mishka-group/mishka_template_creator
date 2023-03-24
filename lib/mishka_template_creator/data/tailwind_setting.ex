@@ -596,6 +596,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
          {"flex-direction", "Flex Direction",
           "Utilities for controlling the direction of flex items.",
           [
+            "flex",
             "flex-row",
             "flex-row-reverse",
             "flex-col",
@@ -8601,5 +8602,33 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       end
 
     Enum.member?(configs, converted_class)
+  end
+
+  def default_layout() do
+    [
+      "flex",
+      "flex-row",
+      "justify-start",
+      "items-center",
+      "w-full",
+      "space-x-3",
+      "px-3",
+      "py-10"
+    ]
+  end
+
+  def default_section() do
+    [
+      "flex",
+      "flex-col",
+      "justify-between",
+      "items-stretch",
+      "min-h-[200px]",
+      "w-full",
+      "border",
+      "border-dashed",
+      "border-gray-400",
+      "p-1"
+    ]
   end
 end

@@ -10,7 +10,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   @impl true
   def mount(_params, _, socket) do
-    if connected?(socket), do: Process.send_after(self(), :update, 30000)
+    if connected?(socket), do: Process.send_after(self(), :save_db, 10000)
 
     new_socket =
       assign(socket, elemens: [], selected_block: nil, submit: true, selected_setting: nil)
@@ -201,8 +201,9 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_assign}
   end
 
-  def handle_info(:update, socket) do
-    Process.send_after(self(), :update, 30000)
+  def handle_info(:save_db, socket) do
+    # TODO: it should be saved in DB
+    Process.send_after(self(), :save_db, 10000)
     {:noreply, socket}
   end
 
