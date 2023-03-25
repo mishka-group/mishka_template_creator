@@ -54,6 +54,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       id={@id}
       phx-mounted={@show && show_modal(@id)}
       phx-remove={hide_modal(@id)}
+      data-reset={reset_push_modal(@on_cancel, @id)}
       class="relative z-50 hidden"
     >
       <div id={"#{@id}-bg"} class="fixed inset-0 bg-zinc-50/90 transition-opacity" aria-hidden="true" />
@@ -70,14 +71,14 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
             <.focus_wrap
               id={"#{@id}-container"}
               phx-mounted={@show && show_modal(@id)}
-              phx-window-keydown={hide_modal(@on_cancel, @id) |> JS.push("reset")}
+              phx-window-keydown={JS.exec("data-reset", to: "##{@id}")}
               phx-key="escape"
-              phx-click-away={hide_modal(@on_cancel, @id) |> JS.push("reset")}
+              phx-click-away={JS.exec("data-reset", to: "##{@id}")}
               class="hidden relative rounded-2xl bg-white px-5 py-5 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition z-50"
             >
               <div class="absolute top-6 right-5">
                 <button
-                  phx-click={hide_modal(@on_cancel, @id) |> JS.push("reset")}
+                  phx-click={JS.exec("data-reset", to: "##{@id}")}
                   type="button"
                   class="-m-3 flex-none p-3 opacity-20 hover:opacity-40"
                   aria-label="close"
@@ -344,6 +345,30 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
+  def add_element_config(elements, id, _parent_id, classes, "layout", :string_classes) do
+    Enum.map(elements, fn %{type: "layout"} = layout ->
+      if layout.id == id,
+        do: Map.merge(layout, %{class: String.split(classes, " ")}),
+        else: layout
+    end)
+  end
+
+  def add_element_config(elements, id, parent_id, classes, "section", :string_classes) do
+    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
+      if layout.id == parent_id do
+        edited_list =
+          children
+          |> Enum.map(fn el ->
+            if el.id == id, do: Map.merge(el, %{class: String.split(classes, " ")}), else: el
+          end)
+
+        %{layout | children: edited_list}
+      else
+        layout
+      end
+    end)
+  end
+
   def delete_element_config(elements, id, _parent_id, class, "layout") do
     Enum.map(elements, fn %{type: "layout"} = layout ->
       if layout.id == id,
@@ -376,5 +401,14 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     |> Enum.with_index(0)
     |> Enum.sort_by(&if(auto, do: elem(&1, 0).index, else: elem(&1, 1)))
     |> Enum.map(fn {map, index} -> Map.put(map, :index, index) end)
+  end
+
+  defp reset_push_modal(on_cancel, id) do
+    hide_modal(on_cancel, id)
+    |> JS.show(to: "#setting_modal")
+    |> JS.show(to: "#setting_modal_custom_class_start")
+    |> JS.hide(to: "#setting_modal_custom_class_back")
+    |> JS.hide(to: "#custom_class-form")
+    |> JS.push("reset")
   end
 end

@@ -162,6 +162,33 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   @impl true
+  def handle_info(
+        {"add_element_config",
+         %{
+           "block_type" => block_type,
+           "block_id" => block_id,
+           "custom_classes" => custom_classes,
+           "parent_id" => parent_id
+         }},
+        socket
+      ) do
+    new_assign =
+      assign(
+        socket,
+        elemens:
+          add_element_config(
+            socket.assigns.elemens,
+            block_id,
+            parent_id,
+            custom_classes,
+            block_type,
+            :string_classes
+          )
+      )
+
+    {:noreply, new_assign}
+  end
+
   def handle_info({"add_element_config", selected_config}, socket) do
     %{
       block_id: block_id,

@@ -7,6 +7,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
   alias MishkaTemplateCreator.{
     Components.Blocks.ElementMenu,
+    Components.Blocks.CustomClass,
     Data.TailwindSetting,
     Components.ConfigSelector
   }
@@ -30,31 +31,50 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     />
     <.push_modal id={"#{@type}-settings-#{@block_id}"}>
       <%= if is_nil(@selected_setting) do %>
-        <p class="text-center font-bold mb-4 text-lg">Please select the section you want to edit</p>
-        <div class="grid grid-cols-2 gap-3 text-gray-500 mt-8 mb-10 md:grid-cols-4 lg:grid-cols-5">
-          <ElementMenu.block_menu
-            :for={{id, title, module, _settings} <- @tailwind_settings}
-            id={id}
-            title={title}
-            phx-click="selected_setting"
-            phx-value-id={id}
-            phx-value-child={nil}
-          >
-            <%= Phoenix.LiveView.TagEngine.component(
-              Code.eval_string("&#{module}/1") |> elem(0),
-              [class: "w-6 h-6 mx-auto stroke-current"],
-              {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
-            ) %>
-          </ElementMenu.block_menu>
+        <div id="setting_modal">
+          <p class="text-center font-bold mb-4 text-lg">Please select the section you want to edit</p>
+          <div class="grid grid-cols-2 gap-3 text-gray-500 mt-8 mb-5 md:grid-cols-4 lg:grid-cols-5">
+            <ElementMenu.block_menu
+              :for={{id, title, module, _settings} <- @tailwind_settings}
+              id={id}
+              title={title}
+              phx-click="selected_setting"
+              phx-value-id={id}
+              phx-value-child={nil}
+            >
+              <%= Phoenix.LiveView.TagEngine.component(
+                Code.eval_string("&#{module}/1") |> elem(0),
+                [class: "w-6 h-6 mx-auto stroke-current"],
+                {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
+              ) %>
+            </ElementMenu.block_menu>
+          </div>
         </div>
+
         <p
           class="text-center text-sm text-blue-400"
-          phx-click="add_custom_class"
+          phx-click={
+            JS.toggle(to: "#setting_modal")
+            |> JS.toggle(to: "#setting_modal_custom_class_start")
+            |> JS.toggle(to: "#setting_modal_custom_class_back")
+            |> JS.toggle(to: "#custom_class-form")
+          }
           phx-value-id={@block_id}
           phx-value-type={@type}
         >
-          <span>OR put your custom classes</span>
+          <span id="setting_modal_custom_class_start">OR put your custom classes</span>
+          <span id="setting_modal_custom_class_back" class="hidden">Back to settings</span>
         </p>
+        <div id="custom_class-form" class="hidden">
+        <.live_component
+          module={CustomClass}
+          id={"custom_class-#{@type}-#{@block_id}"}
+          parent_id={@parent_id}
+          block_id={@block_id}
+          type={@type}
+          class={@class}
+        />
+        </div>
       <% else %>
         <div class="flex flex-col mx-auto w-full">
           <p class="text-center font-bold text-2xl text-gray-500 mb-6">
