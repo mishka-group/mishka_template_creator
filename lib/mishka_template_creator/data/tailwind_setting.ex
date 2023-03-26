@@ -1,4 +1,25 @@
 defmodule MishkaTemplateCreator.Data.TailwindSetting do
+  @pseudo_classes [
+    "sm",
+    "md",
+    "lg",
+    "xl",
+    "2xl",
+    "dark",
+    "hover",
+    "before",
+    "after",
+    "focus",
+    "active",
+    "group-hover",
+    "visited",
+    "disabled",
+    "first",
+    "last",
+    "odd",
+    "even"
+  ]
+
   @spec call :: [
           {String.t(), String.t(), String.t(),
            [{String.t(), String.t(), String.t(), list(String.t()), list(atom())}]}
@@ -8708,7 +8729,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       |> String.split(":")
       |> case do
         [h | [c | _t]]
-        when h in ["sm", "md", "lg", "xl", "2xl", "dark", "hover", "before", "after"] ->
+        when h in @pseudo_classes ->
           c
 
         [h | _t] ->
