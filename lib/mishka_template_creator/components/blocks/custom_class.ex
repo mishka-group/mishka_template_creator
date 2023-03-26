@@ -2,6 +2,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
   use Phoenix.LiveComponent
   import MishkaTemplateCreatorWeb.CoreComponents
   import Phoenix.HTML.Form
+  alias MishkaTemplateCreator.Data.TailwindSetting
 
   @impl true
   def mount(socket) do
@@ -12,7 +13,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
   def render(assigns) do
     ~H"""
     <div id={@id}>
-    <p class="text-xs text-gray-400 text-center w-full mx-auto mt-4 mb-0">
+      <p class="text-xs text-gray-400 text-center w-full mx-auto mt-4 mb-0">
         In this section, you can edit or view all the classes selected for this block, and it is also possible to easily enter commands manually and quickly. Of course, this is more suitable for people who have mastered Tailwind.
       </p>
 
@@ -48,10 +49,21 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
 
   @impl true
   def handle_event("add", %{"custom_class" => custom_class}, socket) do
-    send(
-      self(),
-      {"add_element_config", Map.merge(custom_class, %{"parent_id" => socket.assigns.parent_id})}
-    )
+    custom_class["custom_classes"]
+    |> String.split(" ")
+    |> Enum.map(&TailwindSetting.is_class?(&1, TailwindSetting.get_all_config()))
+    |> Enum.member?(false)
+    |> case do
+      true ->
+        nil
+
+      _ ->
+        send(
+          self(),
+          {"add_element_config",
+           Map.merge(custom_class, %{"parent_id" => socket.assigns.parent_id})}
+        )
+    end
 
     {:noreply, socket}
   end

@@ -646,6 +646,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
          {"grid-template-columns", "Grid Template Columns",
           "Utilities for specifying the columns in a grid layout.",
           [
+            "grid",
             "grid-cols-1",
             "grid-cols-2",
             "grid-cols-3",
@@ -709,6 +710,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
          {"grid-template-rows", "Grid Template Rows",
           "Utilities for specifying the rows in a grid layout.",
           [
+            "grid",
             "grid-rows-1",
             "grid-rows-2",
             "grid-rows-3",
@@ -8591,6 +8593,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   def create_class("none", class), do: class
   def create_class(extra, class), do: "#{extra}:#{class}"
 
+  # TODO: It should support 2 or 3 pre config like `md:hover:text-green-100`
   @spec is_class?(binary, list(String.t())) :: boolean
   def is_class?(class, configs) do
     converted_class =
@@ -8604,6 +8607,19 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     Enum.member?(configs, converted_class)
   end
 
+  @spec get_all_config :: list(String.t())
+  def get_all_config() do
+    Enum.map(call(), fn {_, _, _, list} -> list end)
+    |> Enum.concat()
+    |> Enum.map(fn {_, _, _, config, _} -> config end)
+    |> Enum.concat()
+    |> Enum.uniq()
+  end
+
+  @spec is_configs_member?(String.t()) :: boolean
+  def is_configs_member?(config), do: Enum.member?(get_all_config(), config)
+
+  @spec default_layout :: list(String.t())
   def default_layout() do
     [
       "flex",
@@ -8617,6 +8633,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     ]
   end
 
+  @spec default_section :: list(String.t())
   def default_section() do
     [
       "flex",
