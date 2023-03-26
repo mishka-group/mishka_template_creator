@@ -13,7 +13,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
   def render(assigns) do
     ~H"""
     <div id={@id}>
-      <p class="text-xs text-gray-400 text-center w-full mx-auto mt-4 mb-0">
+      <p class="text-xs text-gray-400 text-center w-full mx-auto mt-4 mb-0 leading-4">
         In this section, you can edit or view all the classes selected for this block, and it is also possible to easily enter commands manually and quickly. Of course, this is more suitable for people who have mastered Tailwind.
       </p>
 
@@ -21,10 +21,11 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
         <%= textarea(f, :custom_classes,
           label: "Custom Classes:",
           class: "w-full",
+          id: "#{Ecto.UUID.generate()}",
           value: Enum.join(@class, " ")
         ) %>
-        <.input field={f[:block_type]} type="hidden" value={@type} />
-        <.input field={f[:block_id]} type="hidden" value={@block_id} />
+        <.input field={f[:block_type]} type="hidden" value={@type} id={"#{Ecto.UUID.generate()}"}/>
+        <.input field={f[:block_id]} type="hidden" value={@block_id} id={"#{Ecto.UUID.generate()}"}/>
       </.simple_form>
 
       <div :if={!is_nil(@class)} class="flex flex-wrap my-2 gap-2">

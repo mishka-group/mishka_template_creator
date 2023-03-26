@@ -31,7 +31,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
     />
     <.push_modal id={"#{@type}-settings-#{@block_id}"}>
       <%= if is_nil(@selected_setting) do %>
-        <div id="setting_modal">
+        <div class="setting_modal">
           <p class="text-center font-bold mb-4 text-lg">Please select the section you want to edit</p>
           <div class="grid grid-cols-2 gap-3 text-gray-500 mt-8 mb-5 md:grid-cols-4 lg:grid-cols-5">
             <ElementMenu.block_menu
@@ -54,18 +54,18 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
         <p
           class="text-center text-sm text-blue-400"
           phx-click={
-            JS.toggle(to: "#setting_modal")
-            |> JS.toggle(to: "#setting_modal_custom_class_start")
-            |> JS.toggle(to: "#setting_modal_custom_class_back")
-            |> JS.toggle(to: "#custom_class-form")
+            JS.toggle(to: ".setting_modal")
+            |> JS.toggle(to: ".setting_modal_custom_class_start")
+            |> JS.toggle(to: ".setting_modal_custom_class_back")
+            |> JS.toggle(to: ".custom_class-form")
           }
           phx-value-id={@block_id}
           phx-value-type={@type}
         >
-          <span id="setting_modal_custom_class_start">OR put your custom classes</span>
-          <span id="setting_modal_custom_class_back" class="hidden">Back to settings</span>
+          <span class="setting_modal_custom_class_start">OR put your custom classes</span>
+          <span class="setting_modal_custom_class_back hidden">Back to settings</span>
         </p>
-        <div id="custom_class-form" class="hidden">
+        <div class="custom_class-form hidden">
         <.live_component
           module={CustomClass}
           id={"custom_class-#{@type}-#{@block_id}"}
@@ -84,7 +84,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             </code>
           </p>
 
-          <div class="flex flex-row gap-2 text-center mx-auto mb-3">
+          <div class="flex flex-row gap-2 text-center mx-auto mb-3 justify-center items-center">
             <.button
               phx-click="reset_settings"
               class="w-24 !bg-white border border-gray-300 shadow-sm !text-black hover:bg-gray-400 hover:text-gray-400"

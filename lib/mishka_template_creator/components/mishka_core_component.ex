@@ -405,10 +405,10 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   defp reset_push_modal(on_cancel, id) do
     hide_modal(on_cancel, id)
-    |> JS.show(to: "#setting_modal")
-    |> JS.show(to: "#setting_modal_custom_class_start")
-    |> JS.hide(to: "#setting_modal_custom_class_back")
-    |> JS.hide(to: "#custom_class-form")
+    |> JS.show(to: ".setting_modal")
+    |> JS.show(to: ".setting_modal_custom_class_start")
+    |> JS.hide(to: ".setting_modal_custom_class_back")
+    |> JS.hide(to: ".custom_class-form")
     |> JS.push("reset")
   end
 end
