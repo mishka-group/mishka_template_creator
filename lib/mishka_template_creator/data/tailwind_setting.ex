@@ -8784,22 +8784,27 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   def create_class("none", class), do: class
   def create_class(extra, class), do: "#{extra}:#{class}"
 
-  # TODO: It should support 2 or 3 pre config like `md:hover:text-green-100`
   @spec is_class?(binary, list(String.t())) :: boolean
   def is_class?(class, configs) do
     converted_class =
       class
       |> String.split(":")
       |> case do
-        [h | [c | _t]]
-        when h in @pseudo_classes ->
+        [h | [c | [sc | _t]]] when h in @pseudo_classes and c in @pseudo_classes ->
+          sc
+
+        [h | [c | _t]] when h in @pseudo_classes ->
           c
 
         [h | _t] ->
           h
       end
 
-    Enum.member?(configs, converted_class)
+    [
+      Enum.member?(configs, converted_class),
+      Enum.member?(arbitrary_values(), convert_arbitrary_value(converted_class))
+    ]
+    |> Enum.member?(true)
   end
 
   @spec get_all_config :: list(String.t())
@@ -8842,5 +8847,11 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       "border-gray-400",
       "p-1"
     ]
+  end
+
+  @spec convert_arbitrary_value(String.t()) :: nil | String.t()
+  def convert_arbitrary_value(config) do
+    [h | t] = String.split(config, "-[")
+    if t != [], do: "#{h}-[x]", else: nil
   end
 end
