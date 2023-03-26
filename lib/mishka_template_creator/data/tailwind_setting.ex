@@ -16,8 +16,69 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     "disabled",
     "first",
     "last",
+    "only",
     "odd",
-    "even"
+    "even",
+    "first-child",
+    "required",
+    "valid",
+    "invalid",
+    "in-range",
+    "out-of-range",
+    "placeholder",
+    "placeholder-shown",
+    "autofill",
+    "selection",
+    "focus-within",
+    "focus-visible",
+    "target",
+    "empty",
+    "enabled",
+    "only-child",
+    "first-of-type",
+    "last-of-type",
+    "only-of-type",
+    "read-only",
+    "first-letter",
+    "indeterminate",
+    "default",
+    "checked",
+    "group-focus",
+    "group-active",
+    "group-odd",
+    "peer-invalid",
+    "peer-checked",
+    "file",
+    "marker",
+    "first-line",
+    "backdrop",
+    "motion-reduce",
+    "motion-safe",
+    "contrast-more",
+    "contrast-less",
+    "portrait",
+    "landscape",
+    "print",
+    "supports-grid",
+    "aria-checked",
+    "aria-disabled",
+    "aria-expanded",
+    "aria-hidden",
+    "aria-pressed",
+    "aria-readonly",
+    "aria-required",
+    "aria-selected",
+    "data-checked",
+    "ltr",
+    "rtl",
+    "open"
+  ]
+
+  @pseudo_arbitrary_classes [
+    "supports-[x]",
+    "aria-[x]",
+    "group-aria-[x]",
+    "data-[x]"
   ]
 
   @spec call :: [
@@ -8646,7 +8707,9 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       "scroll-p-[x]",
       "will-change-[x]",
       "fill-[x]",
-      "stroke-[x]"
+      "stroke-[x]",
+      "group-[x]",
+      "peer-[x]"
     ]
   end
 
