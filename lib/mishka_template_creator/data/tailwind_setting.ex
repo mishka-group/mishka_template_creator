@@ -8522,6 +8522,113 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     ]
   end
 
+  def arbitrary_values do
+    [
+      "aspect-[x]",
+      "columns-[x]",
+      "object-[x]",
+      "top-[x]",
+      "right-[x]",
+      "bottom-[x]",
+      "left-[x]",
+      "z-[x]",
+      "basis-[x]",
+      "flex-[x]",
+      "grow-[x]",
+      "shrink-[x]",
+      "order-[x]",
+      "grid-cols-[x]",
+      "col-[x]",
+      "grid-rows-[x]",
+      "row-[x]",
+      "auto-cols-[x]",
+      "auto-rows-[x]",
+      "gap-[x]",
+      "p-[x]",
+      "m-[x]",
+      "space-y-[x]",
+      "space-x-[x]",
+      "w-[x]",
+      "min-w-[x]",
+      "max-w-[x]",
+      "h-[x]",
+      "min-h-[x]",
+      "max-h-[x]",
+      "font-[x]",
+      "text-[x]",
+      "tracking-[x]",
+      "leading-[x]",
+      "list-[x]",
+      "decoration-[x]",
+      "underline-offset-[x]",
+      "indent-[x]",
+      "align-[x]",
+      "content-[x]",
+      "bg-[x]",
+      "from-[x]",
+      "rounded-[x]",
+      "rounded-r-[x]",
+      "rounded-l-[x]",
+      "rounded-b-[x]",
+      "rounded-t-[x]",
+      "rounded-tr-[x]",
+      "rounded-tl-[x]",
+      "rounded-br-[x]",
+      "rounded-bl-[x]",
+      "border-t-[x]",
+      "border-l-[x]",
+      "border-r-[x]",
+      "border-b-[x]",
+      "border-[x]",
+      "divide-x-[x]",
+      "divide-y-[x]",
+      "divide-[x]",
+      "outline-[x]",
+      "outline-offset-[x]",
+      "ring-[x]",
+      "ring-offset-[x]",
+      "shadow-[x]",
+      "opacity-[x]",
+      "blur-[x]",
+      "brightness-[x]",
+      "contrast-[x]",
+      "drop-shadow-[x]",
+      "grayscale-[x]",
+      "hue-rotate-[x]",
+      "invert-[x]",
+      "saturate-[x]",
+      "sepia-[x]",
+      "backdrop-blur-[x]",
+      "backdrop-brightness-[x]",
+      "backdrop-contrast-[x]",
+      "backdrop-grayscale-[x]",
+      "backdrop-hue-rotate-[x]",
+      "backdrop-invert-[x]",
+      "backdrop-opacity-[x]",
+      "backdrop-saturate-[x]",
+      "backdrop-sepia-[x]",
+      "border-spacing-[x]",
+      "transition-[x]",
+      "duration-[x]",
+      "ease-[x]",
+      "delay-[x]",
+      "animate-[x]",
+      "scale-[x]",
+      "rotate-[x]",
+      "translate-y-[x]",
+      "skew-y-[x]",
+      "origin-[x]",
+      "accent-[x]",
+      "cursor-[x]",
+      "caret-[x]",
+      "scroll-m-[x]",
+      "scroll-p-[x]",
+      "will-change-[x]",
+      "fill-[x]",
+      "stroke-[x]"
+    ]
+  end
+
   @spec get_title(list(map), map) :: any
   def get_title(settings, selected_setting) do
     Enum.find(settings, fn {id, _title, _des, _settings} ->
@@ -8600,8 +8707,12 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       class
       |> String.split(":")
       |> case do
-        [h | [c | _t]] when h in ["sm", "md", "lg", "xl", "2xl", "dark", "hover"] -> c
-        [h | _t] -> h
+        [h | [c | _t]]
+        when h in ["sm", "md", "lg", "xl", "2xl", "dark", "hover", "before", "after"] ->
+          c
+
+        [h | _t] ->
+          h
       end
 
     Enum.member?(configs, converted_class)
