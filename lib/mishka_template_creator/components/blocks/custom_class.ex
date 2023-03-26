@@ -6,7 +6,15 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
 
   @impl true
   def mount(socket) do
+    IO.inspect("w are here mount")
     {:ok, socket}
+  end
+
+  @impl true
+  def update(assigns, socket) do
+    IO.inspect("w are here")
+    new_sock = push_event(socket, "set_focus", %{customClasses: "custom-classes"})
+    {:ok, assign(new_sock, assigns)}
   end
 
   @impl true
@@ -20,7 +28,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
       <.simple_form :let={f} for={%{}} as={:custom_class} phx-change="add" phx-target={@myself}>
         <%= textarea(f, :custom_classes,
           label: "Custom Classes:",
-          class: "w-full",
+          class: "custom-classes w-full",
           id: "#{Ecto.UUID.generate()}",
           value: Enum.join(@class, " ")
         ) %>

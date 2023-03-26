@@ -221,6 +221,14 @@ Hooks.dragAndDropLocation = {
       layoutDOM.classList.toggle('create-layout');
       layoutDOM.classList.toggle('create-layout-pure');
     });
+    
+    this.handleEvent('set_focus', ({ customClasses }) => {
+      const formDOM = document.querySelector(`.${customClasses}`)
+      if (formDOM) {
+        formDOM.focus()
+        formDOM.setSelectionRange(-1, -1);
+      }
+    });
   },
 };
 
