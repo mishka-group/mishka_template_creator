@@ -221,13 +221,13 @@ Hooks.dragAndDropLocation = {
       layoutDOM.classList.toggle('create-layout');
       layoutDOM.classList.toggle('create-layout-pure');
     });
-    
+
     this.handleEvent('set_focus', ({ customClasses }) => {
-      const formDOM = document.querySelector(`.${customClasses}`)
-      if (formDOM) {
-        formDOM.focus()
-        formDOM.setSelectionRange(-1, -1);
-      }
+      const formsDOM = document.querySelectorAll(`.${customClasses}`);
+      formsDOM.forEach((item) => {
+        item.focus();
+        item.setSelectionRange(-1, -1);
+      });
     });
   },
 };
