@@ -74,6 +74,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     "open"
   ]
 
+  # TODO: we should cover these command in another version
   @pseudo_arbitrary_classes [
     "supports-[x]",
     "aria-[x]",
@@ -8778,7 +8779,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       end)
       |> Enum.concat()
 
-    [:none, :dark] ++ created_types
+    [:none, :dark] ++ created_types ++ [:hover]
   end
 
   def create_class("none", class), do: class
@@ -8786,25 +8787,29 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
 
   @spec is_class?(binary, list(String.t())) :: boolean
   def is_class?(class, configs) do
-    converted_class =
-      class
-      |> String.split(":")
-      |> case do
-        [h | [c | [sc | _t]]] when h in @pseudo_classes and c in @pseudo_classes ->
-          sc
-
-        [h | [c | _t]] when h in @pseudo_classes ->
-          c
-
-        [h | _t] ->
-          h
-      end
+    converted_class = class_spliter(class)
 
     [
       Enum.member?(configs, converted_class),
       Enum.member?(arbitrary_values(), convert_arbitrary_value(converted_class))
     ]
     |> Enum.member?(true)
+  end
+
+  def is_class?(class, configs, :is_section) do
+    converted_class = class_spliter(class)
+
+    case Enum.member?(configs, converted_class) do
+      true ->
+        true
+
+      false ->
+        try_arbitrary_value =
+          String.replace(convert_arbitrary_value(converted_class) || "", "[x]", "")
+
+        try_arbitrary_value != "" and
+          !is_nil(Enum.find(configs, &String.contains?(&1, try_arbitrary_value)))
+    end
   end
 
   @spec get_all_config :: list(String.t())
@@ -8853,5 +8858,20 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   def convert_arbitrary_value(config) do
     [h | t] = String.split(config, "-[")
     if t != [], do: "#{h}-[x]", else: nil
+  end
+
+  defp class_spliter(class) do
+    class
+    |> String.split(":")
+    |> case do
+      [h | [c | [sc | _t]]] when h in @pseudo_classes and c in @pseudo_classes ->
+        sc
+
+      [h | [c | _t]] when h in @pseudo_classes ->
+        c
+
+      [h | _t] ->
+        h
+    end
   end
 end

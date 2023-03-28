@@ -32,7 +32,7 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
       <div :if={!is_nil(@class)} class="flex flex-wrap my-2 gap-2">
         <div
           :for={item <- @class}
-          :if={TailwindSetting.is_class?(item, @selected_setting.form_configs)}
+          :if={TailwindSetting.is_class?(item, @selected_setting.form_configs, :is_section)}
           class="flex flex-row justify-start items-start py-1 px-3 bg-gray-200 rounded-md gap-2 text-black text-sm"
         >
           <span><%= "#{item}" %></span>
