@@ -91,17 +91,22 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   attr :on_duplicate, JS, default: %JS{}
   attr :rest, :global
 
-  def element(%{rest: %{type: "text"}} = assigns) do
-    ~H"""
-    <p data-type="text" id={"text-#{@id}"} phx-click="edit_element" phx-value-id={"text-#{@id}"}>
-      text
-    </p>
-    """
-  end
+  def element(%{rest: %{type: type}} = assigns) do
+    atom_created =
+      Module.safe_concat(
+        "Elixir.MishkaTemplateCreator.Components.Elements",
+        String.capitalize(type)
+      )
 
-  def element(%{rest: %{type: "tabs"}} = assigns) do
+    assigns = assign(assigns, :block_module, atom_created)
+
     ~H"""
-    <p data-type="tabs" id={"tabs-#{@id}"}>tabs</p>
+    <.live_component module={@block_module} id={@id} />
     """
+  rescue
+    _e ->
+      ~H"""
+
+      """
   end
 end
