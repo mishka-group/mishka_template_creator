@@ -173,6 +173,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   def create_element(%{type: type, index: _index, parent: parent, parent_id: _parent_id} = params) do
     id = Ecto.UUID.generate()
+    blocks = Enum.filter(Elements.elements(:all, :id), &(&1 not in ["section", "layout"]))
 
     cond do
       type == "layout" and parent == "dragLocation" ->
@@ -181,7 +182,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       type == "section" and parent == "layout" ->
         Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_section()})
 
-      type in Elements.elements(:all, :id) and parent == "section" ->
+      type in blocks and parent == "section" ->
         Map.merge(params, %{id: id, children: []})
 
       true ->
