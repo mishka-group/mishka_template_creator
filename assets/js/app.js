@@ -57,6 +57,7 @@ Sortable.create(dragLocation, {
     name: 'ContentGroup',
     put: ['LayoutGroup'],
   },
+  filter: '.unsortable',
   animation: sortableSpeed,
   swapThreshold: 0.65,
   onAdd: function (/**Event*/ evt) {

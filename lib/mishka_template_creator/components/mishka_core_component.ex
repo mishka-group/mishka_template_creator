@@ -56,7 +56,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       phx-mounted={@show && show_modal(@id)}
       phx-remove={hide_modal(@id)}
       data-reset={reset_push_modal(@on_cancel, @id)}
-      class="relative z-50 hidden"
+      class="unsortable relative z-50 hidden"
     >
       <div id={"#{@id}-bg"} class="fixed inset-0 bg-zinc-50/90 transition-opacity" aria-hidden="true" />
       <div

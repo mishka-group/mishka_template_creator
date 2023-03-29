@@ -18,7 +18,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Content do
       <div
         :if={@elemens == []}
         id="previewHelper"
-        class="flex flex-col justify-center items-center w-full border border-dashed border-gray-300 h-80 text-center object-center font-bold text-xl hover:border-blue-500 hover:duration-1000 hover:rounded-md rounded-sm duration-300 hover:text-blue-600 space-y-10"
+        class="unsortable flex flex-col justify-center items-center w-full border border-dashed border-gray-300 h-80 text-center object-center font-bold text-xl hover:border-blue-500 hover:duration-1000 hover:rounded-md rounded-sm duration-300 hover:text-blue-600 space-y-10"
       >
         <div>
           <Heroicons.arrow_down_tray class="w-32 h-32 stroke-current" />
