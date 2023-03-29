@@ -1,12 +1,13 @@
 defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   use Phoenix.Component
   import Phoenix.HTML.Form
+  import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias MishkaTemplateCreator.Components.Blocks.{Content, Aside, History}
   alias Phoenix.LiveView.JS
-  import MishkaTemplateCreatorWeb.CoreComponents
+  alias MishkaTemplateCreator.Data.Elements
 
-  @elements_type ["text", "tabs"]
+  @elements Elements.elements(:all, :id)
 
   attr :elemens, :list, required: true
   attr :selected_block, :string, required: true
@@ -180,7 +181,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       type == "section" and parent == "layout" ->
         Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_section()})
 
-      type in @elements_type and parent == "section" ->
+      type in Elements.elements(:all, :id) and parent == "section" ->
         Map.merge(params, %{id: id, children: []})
 
       true ->
@@ -251,8 +252,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
-  def change_order(elements, current_index, new_index, parent_id, type)
-      when type in @elements_type do
+  def change_order(elements, current_index, new_index, parent_id, type) when type in @elements do
     Enum.map(elements, fn %{type: "layout", children: children} = layout ->
       updated_children =
         Enum.map(children, fn data ->

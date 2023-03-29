@@ -1,33 +1,6 @@
 defmodule MishkaTemplateCreator.Components.Blocks.ElementMenu do
   use Phoenix.Component
-
-  @layout_items [
-    {"layout", "Layout", "Heroicons.inbox_stack"},
-    {"section", "Section", "Heroicons.inbox_stack"},
-    {"text", "Text", "Heroicons.inbox_stack"},
-    {"tabs", "Tabs", "Heroicons.inbox_stack"},
-    {"columns", "Columns", "Heroicons.inbox_stack"},
-    {"table", "Table", "Heroicons.inbox_stack"},
-    {"accordion", "Accordion", "Heroicons.inbox_stack"}
-  ]
-  @elements_items [
-    {"alerts", "Alerts", "Heroicons.inbox_stack"},
-    {"quotes", "Quotes", "Heroicons.inbox_stack"},
-    {"buttons", "Buttons", "Heroicons.inbox_stack"},
-    {"links", "Links", "Heroicons.inbox_stack"},
-    {"code", "Code", "Heroicons.inbox_stack"},
-    {"notes", "Notes", "Heroicons.inbox_stack"}
-  ]
-  @media_items [
-    {"image", "Image", "Heroicons.inbox_stack"},
-    {"video", "Video", "Heroicons.inbox_stack"},
-    {"gallery", "Gallery", "Heroicons.inbox_stack"},
-    {"thumbnails", "Thumbnails", "Heroicons.inbox_stack"},
-    {"audio", "Audio", "Heroicons.inbox_stack"},
-    {"file", "File", "Heroicons.inbox_stack"},
-    {"pdf", "PDF", "Heroicons.inbox_stack"},
-    {"comparison", "Comparison", "Heroicons.inbox_stack"}
-  ]
+  alias MishkaTemplateCreator.Data.Elements
 
   attr :id, :string, required: true
   attr :title, :string, required: true
@@ -77,17 +50,17 @@ defmodule MishkaTemplateCreator.Components.Blocks.ElementMenu do
   def aside_menu(assigns) do
     assigns =
       assign(assigns,
-        layout_items: @layout_items,
-        elements_items: @elements_items,
-        media_items: @media_items
+        layout_items: Elements.elements(:layout_items),
+        elements_items: Elements.elements(:elements_items),
+        media_items: Elements.elements(:media_items)
       )
 
     ~H"""
-    <.items id="layout" items={@layout_items} title="Layout" />
+    <.items id="layout" items={Elements.elements(:layout_items)} title="Layout" />
     <hr />
-    <.items id="elements" items={@elements_items} title="Elements" />
+    <.items id="elements" items={Elements.elements(:elements_items)} title="Elements" />
     <hr />
-    <.items id="media" items={@media_items} title="Media" />
+    <.items id="media" items={Elements.elements(:media_items)} title="Media" />
     """
   end
 
