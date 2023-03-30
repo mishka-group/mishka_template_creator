@@ -1,6 +1,7 @@
 defmodule MishkaTemplateCreator.Components.ConfigSelector do
   use Phoenix.LiveComponent
   alias MishkaTemplateCreator.Data.TailwindSetting
+  alias Phoenix.LiveView.JS
 
   @impl true
   def mount(socket) do
@@ -19,11 +20,12 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
     <div class="ConfigSelectorComponent">
       <form phx-change="query" phx-target={@myself}>
         <input
-          class="border !border-gray-300 rounded-md w-full mx-0 my-0 focus:text-black focus:ring-2 focus:ring-orange-300 focus:!border-transparent"
+          class="border !border-gray-300 rounded-md w-full mx-0 my-0 focus:text-black focus:ring-2 focus:ring-orange-300 focus:!border-transparent z-20"
           id={"select_search-#{@id}"}
           name="select_search"
           type="search"
           autocomplete="off"
+          phx-click={JS.focus(to: "#select_search-#{@id}")}
         />
 
         <input type="hidden" id={"#{@id}-myself"} name="myself" value={@myself} />
