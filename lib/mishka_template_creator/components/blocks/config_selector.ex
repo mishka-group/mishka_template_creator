@@ -69,11 +69,10 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
       <div class="flex flex-wrap w-full gap-2 text-center justify-start items-center mt-3 text-black">
         <span
           :for={item <- TailwindSetting.type_create(@selected_setting.types)}
-          class={"#{if item == :none, do: "bg-gray-200"} cursor-pointer border border-gray-300 p-1 w-10 rounded-md text-xs hover:bg-gray-200 hover:duration-150 duration-300"}
+          class={"#{@id}-extra-config-#{item} #{if item == :none, do: "bg-gray-200"} cursor-pointer border border-gray-300 p-1 w-10 rounded-md text-xs hover:bg-gray-200 hover:duration-150 duration-300"}
           phx-click="set_extra_config"
           phx-value-config={item}
           phx-target={@myself}
-          id={"#{@id}-extra-config-#{item}"}
         >
           <%= item %>
         </span>

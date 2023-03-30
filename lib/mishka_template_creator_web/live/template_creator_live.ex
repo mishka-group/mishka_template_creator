@@ -103,14 +103,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
-  def handle_event("settings", %{"id" => _id}, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("reset", %{"id" => _id}, socket) do
-    {:noreply, socket}
-  end
-
   def handle_event("dark_mod", %{"id" => _id}, socket) do
     {:noreply, socket}
   end
@@ -130,10 +122,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # This is reset event
   def handle_event("reset", _params, socket) do
     {:noreply, assign(socket, selected_block: nil, selected_setting: nil)}
-  end
-
-  def handle_event("add_custom_class", %{"id" => _id, "type" => _type}, socket) do
-    {:noreply, socket}
   end
 
   def handle_event("selected_setting", params, socket) do

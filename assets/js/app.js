@@ -185,15 +185,15 @@ Hooks.dragAndDropLocation = {
 
     this.handleEvent('set_extra_config', ({ config, id }) => {
       const perConDOM = document.querySelector(
-        `#${id}-extra-config-${stateLessConfig}`
+        `.${id}-extra-config-${stateLessConfig}`
       );
       if (config) {
-        const conDOM = document.querySelector(`#${id}-extra-config-${config}`);
+        const conDOM = document.querySelector(`.${id}-extra-config-${config}`);
         perConDOM.classList.remove('bg-gray-200');
         conDOM.classList.add('bg-gray-200');
         stateLessConfig = config;
       } else {
-        const conDOM = document.querySelector(`#${id}-extra-config-none`);
+        const conDOM = document.querySelector(`.${id}-extra-config-none`);
         conDOM.classList.remove('bg-gray-200');
         perConDOM.classList.add('bg-gray-200');
       }

@@ -29,6 +29,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
 
   @impl true
   def handle_event("edit_element", %{"id" => _id}, socket) do
+    IO.inspect("We are here")
     {:noreply, socket}
   end
 end
