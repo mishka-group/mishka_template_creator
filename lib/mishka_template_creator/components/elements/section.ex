@@ -17,9 +17,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   attr :submit, :boolean, default: false
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
-  attr :rest, :global
   attr :children, :list, default: []
   attr :class, :string, default: nil
+  attr :rest, :global
 
   @spec section(map) :: Phoenix.LiveView.Rendered.t()
   def section(assigns) do
@@ -45,7 +45,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
         <%= @tag %>
       </div>
 
-      <.element :for={child <- @children} type={child.type} id={child.id} />
+      <.element :for={child <- @children} id={child.id} element={child} type={child.type} />
     </div>
     """
   end
@@ -87,6 +87,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   end
 
   attr :id, :string, required: true
+  attr :element, :map, required: true
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
   attr :rest, :global
@@ -101,7 +102,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
     assigns = assign(assigns, :block_module, atom_created)
 
     ~H"""
-    <.live_component module={@block_module} id={@id} />
+    <.live_component module={@block_module} id={@id} element={@element} />
     """
   rescue
     _e ->

@@ -8824,8 +8824,8 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   @spec is_configs_member?(String.t()) :: boolean
   def is_configs_member?(config), do: Enum.member?(get_all_config(), config)
 
-  @spec default_layout :: list(String.t())
-  def default_layout() do
+  @spec default_element(String.t()) :: list(String.t())
+  def default_element("layout") do
     [
       "flex",
       "flex-row",
@@ -8838,8 +8838,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     ]
   end
 
-  @spec default_section :: list(String.t())
-  def default_section() do
+  def default_element("section") do
     [
       "flex",
       "flex-col",
@@ -8852,6 +8851,10 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       "border-gray-400",
       "p-1"
     ]
+  end
+
+  def default_element("text") do
+    ["text-black", "w-full", "p-2"]
   end
 
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()

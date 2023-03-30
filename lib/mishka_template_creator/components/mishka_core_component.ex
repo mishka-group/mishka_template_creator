@@ -177,13 +177,13 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
     cond do
       type == "layout" and parent == "dragLocation" ->
-        Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_layout()})
+        Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_element(type)})
 
       type == "section" and parent == "layout" ->
-        Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_section()})
+        Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_element(type)})
 
       type in blocks and parent == "section" ->
-        Map.merge(params, %{id: id, children: []})
+        Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_element(type)})
 
       true ->
         nil

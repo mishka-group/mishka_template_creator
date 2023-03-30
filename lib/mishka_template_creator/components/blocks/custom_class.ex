@@ -12,7 +12,6 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
 
   @impl true
   def update(assigns, socket) do
-    IO.inspect("w are here")
     new_sock = push_event(socket, "set_focus", %{customClasses: "custom-classes"})
     {:ok, assign(new_sock, assigns)}
   end
