@@ -13,7 +13,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   attr(:selected_block, :string, required: true)
   attr(:selected_setting, :map, required: false, default: nil)
   attr(:submit, :string, required: true)
-  attr(:select_form, :string, required: false, default: nil)
+  attr(:selected_form, :string, required: false, default: nil)
 
   @spec dashboard(map) :: Phoenix.LiveView.Rendered.t()
   def dashboard(assigns) do
@@ -36,7 +36,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
           submit={@submit}
           selected_setting={@selected_setting}
         />
-        <Aside.aside select_form={@select_form}/>
+        <Aside.aside selected_form={@selected_form} />
       </div>
     </div>
     """

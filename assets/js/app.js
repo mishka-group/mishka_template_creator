@@ -230,6 +230,13 @@ Hooks.dragAndDropLocation = {
         item.setSelectionRange(-1, -1);
       });
     });
+
+    this.handleEvent('get_element_parent_id', ({ id, myself }) => {
+      const elementDOM = document.getElementById(`${id}`);
+      this.pushEventTo(myself, 'set_element_form', {
+        layout_id: elementDOM.parentNode.id,
+      });
+    });
   },
 };
 

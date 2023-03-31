@@ -23,8 +23,10 @@ defmodule MishkaTemplateCreator.Components.Blocks.History do
   def handle_event("save", %{"html" => html}, socket) do
     # TODO: It should check directory exists
     # TODO: Create html file
-    Path.join("deployment", ["templates/test1.html"]) # name should be selected by user
+    # name should be selected by user
+    Path.join("deployment", ["templates/test1.html"])
     |> File.write(html)
+
     {:noreply, socket}
   end
 end

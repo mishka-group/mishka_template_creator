@@ -66,14 +66,14 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           <span class="setting_modal_custom_class_back hidden">Back to settings</span>
         </p>
         <div class="custom_class-form hidden">
-        <.live_component
-          module={CustomClass}
-          id={"custom_class-#{@type}-#{@block_id}"}
-          parent_id={@parent_id}
-          block_id={@block_id}
-          type={@type}
-          class={@class}
-        />
+          <.live_component
+            module={CustomClass}
+            id={"custom_class-#{@type}-#{@block_id}"}
+            parent_id={@parent_id}
+            block_id={@block_id}
+            type={@type}
+            class={@class}
+          />
         </div>
       <% else %>
         <div class="flex flex-col mx-auto w-full">

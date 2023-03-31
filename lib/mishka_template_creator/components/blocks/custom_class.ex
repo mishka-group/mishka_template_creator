@@ -31,8 +31,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
           id: "#{Ecto.UUID.generate()}",
           value: Enum.join(@class, " ")
         ) %>
-        <.input field={f[:block_type]} type="hidden" value={@type} id={"#{Ecto.UUID.generate()}"}/>
-        <.input field={f[:block_id]} type="hidden" value={@block_id} id={"#{Ecto.UUID.generate()}"}/>
+        <.input field={f[:block_type]} type="hidden" value={@type} id={"#{Ecto.UUID.generate()}"} />
+        <.input field={f[:block_id]} type="hidden" value={@block_id} id={"#{Ecto.UUID.generate()}"} />
       </.simple_form>
 
       <div :if={!is_nil(@class)} class="flex flex-wrap my-2 gap-2">

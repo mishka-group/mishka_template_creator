@@ -39,11 +39,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
         <.live_component module={PureParent} id={"clear-#{@id}"} block_id={@id} />
         <ShowMore.block_more block_id={@id} />
       </div>
-      <div
-        id={@id}
-        class={Enum.join(@class, " ")}
-        data-type="layout"
-      >
+      <div id={@id} class={Enum.join(@class, " ")} data-type="layout">
         <Section.section
           :for={child <- @children}
           id={child.id}

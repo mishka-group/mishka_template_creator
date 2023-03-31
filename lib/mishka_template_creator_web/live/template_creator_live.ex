@@ -13,11 +13,16 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
     new_socket =
       assign(socket,
-        elemens: [], # JSON of elements
-        selected_block: nil, # Selected element for section
-        submit: true, # Tag submit status to let user push data or not, can be integrated inside a live component
-        selected_setting: nil, # This is a selected settings of an element, returns a map
-        select_form: nil # It is going to be used inside Aside component, returns component name as a string
+        # JSON of elements
+        elemens: [],
+        # Selected element for section
+        selected_block: nil,
+        # Tag submit status to let user push data or not, can be integrated inside a live component
+        submit: true,
+        # This is a selected settings of an element, returns a map
+        selected_setting: nil,
+        # It is going to be used inside Aside component, returns component name as a map
+        selected_form: nil
       )
 
     {:ok, new_socket}
@@ -31,7 +36,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       selected_block={@selected_block}
       submit={@submit}
       selected_setting={@selected_setting}
-      select_form={@select_form}
+      selected_form={@selected_form}
     />
     """
   end
@@ -216,6 +221,10 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       )
 
     {:noreply, new_assign}
+  end
+
+  def handle_info({"set_element_form", params}, socket) do
+    {:noreply, assign(socket, :selected_form, params)}
   end
 
   def handle_info(:save_db, socket) do
