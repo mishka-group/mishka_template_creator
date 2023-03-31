@@ -5,7 +5,18 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
   attr(:selected_form, :string, required: false, default: nil)
 
   @spec aside(map) :: Phoenix.LiveView.Rendered.t()
-  def aside(assigns) do
+  def aside(%{selected_form: selected_form} = assigns) do
+    atom_created =
+      if !is_nil(selected_form),
+        do:
+          Module.safe_concat(
+            "Elixir.MishkaTemplateCreator.Components.Elements",
+            String.capitalize(selected_form.element_type)
+          ),
+        else: nil
+
+    assigns = assign(assigns, block_module: atom_created)
+
     ~H"""
     <div class="flex flex-col w-[95%] h-[300px] mx-auto bg-white border-t-0 border-l border-r border-b border-[rgb(229,229,229)] rounded-t-md md:pb-20 overflow-y-scroll overflow-x-hidden lg:w-5/12 lg:h-screen lg:mx-0 xl:w-4/12">
       <div
@@ -41,6 +52,14 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
       </div>
 
       <ElementMenu.aside_menu :if={is_nil(@selected_form)} />
+
+      <.live_component
+        :if={!is_nil(@selected_form)}
+        module={@block_module}
+        id={@selected_form.element_id <> "-form"}
+        selected_form={@selected_form}
+        render_type="form"
+      />
     </div>
     """
   end

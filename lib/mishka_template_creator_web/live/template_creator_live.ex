@@ -14,7 +14,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     new_socket =
       assign(socket,
         # JSON of elements
-        elemens: [],
+        elements: [],
         # Selected element for section
         selected_block: nil,
         # Tag submit status to let user push data or not, can be integrated inside a live component
@@ -32,7 +32,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   def render(assigns) do
     ~H"""
     <.dashboard
-      elemens={@elemens}
+      elements={@elements}
       selected_block={@selected_block}
       submit={@submit}
       selected_setting={@selected_setting}
@@ -61,18 +61,18 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("delete", %{"id" => id, "type" => "layout"}, socket) do
-    element = delete_element(socket.assigns.elemens, id, "layout")
+    element = delete_element(socket.assigns.elements, id, "layout")
 
     new_assign =
       push_event(socket, "create_preview_helper", %{status: length(element) == 0})
-      |> assign(:elemens, element)
+      |> assign(:elements, element)
 
     {:noreply, new_assign}
   end
 
   def handle_event("delete", %{"id" => id, "type" => "section", "parent_id" => parent_id}, socket) do
     new_assign =
-      assign(socket, :elemens, delete_element(socket.assigns.elemens, id, parent_id, "section"))
+      assign(socket, :elements, delete_element(socket.assigns.elements, id, parent_id, "section"))
 
     {:noreply, new_assign}
   end
@@ -99,7 +99,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
         {true, tag} ->
           assign(
             socket,
-            elemens: add_tag(socket.assigns.elemens, id, parent_id, tag, type),
+            elements: add_tag(socket.assigns.elements, id, parent_id, tag, type),
             submit: true
           )
 
@@ -149,11 +149,11 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
         },
         socket
       ) do
-    elemens =
-      socket.assigns.elemens
+    elements =
+      socket.assigns.elements
       |> change_order(current_index, new_index, parent_id, type)
 
-    {:noreply, assign(socket, elemens: elemens)}
+    {:noreply, assign(socket, elements: elements)}
   end
 
   @impl true
@@ -170,9 +170,9 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     new_assign =
       assign(
         socket,
-        elemens:
+        elements:
           add_element_config(
-            socket.assigns.elemens,
+            socket.assigns.elements,
             block_id,
             parent_id,
             custom_classes,
@@ -196,9 +196,9 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     new_assign =
       assign(
         socket,
-        elemens:
+        elements:
           add_element_config(
-            socket.assigns.elemens,
+            socket.assigns.elements,
             block_id,
             parent_id,
             TailwindSetting.create_class(extra, config),
@@ -216,8 +216,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     new_assign =
       assign(
         socket,
-        elemens:
-          delete_element_config(socket.assigns.elemens, block_id, parent_id, config, block_type)
+        elements:
+          delete_element_config(socket.assigns.elements, block_id, parent_id, config, block_type)
       )
 
     {:noreply, new_assign}
@@ -236,12 +236,12 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   def update_elements(nil, socket, _, _), do: {:noreply, socket}
 
   def update_elements(new_element, socket, parent, event) do
-    elemens =
-      socket.assigns.elemens
+    elements =
+      socket.assigns.elements
       |> elements_reevaluation(new_element, parent)
       |> sort_elements_list()
 
-    new_socket = assign(socket, elemens: elemens)
+    new_socket = assign(socket, elements: elements)
 
     push_element =
       if new_element.type not in ["layout", "section"],

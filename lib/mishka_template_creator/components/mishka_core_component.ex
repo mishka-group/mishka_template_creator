@@ -9,7 +9,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   @elements Elements.elements(:all, :id)
 
-  attr(:elemens, :list, required: true)
+  attr(:elements, :list, required: true)
   attr(:selected_block, :string, required: true)
   attr(:selected_setting, :map, required: false, default: nil)
   attr(:submit, :string, required: true)
@@ -20,7 +20,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     ~H"""
     <div class="main-body">
       <div id="mishka_top_nav" class="top-nav">
-        <.live_component module={History} id="template-history" elemens={@elemens} />
+        <.live_component module={History} id="template-history" elements={@elements} />
         <div>Main Section</div>
         <div>Settings</div>
       </div>
@@ -31,7 +31,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         phx-hook="dragAndDropLocation"
       >
         <Content.content
-          elemens={@elemens}
+          elements={@elements}
           selected_block={@selected_block}
           submit={@submit}
           selected_setting={@selected_setting}

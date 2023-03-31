@@ -9,17 +9,17 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
     Tag
   }
 
-  attr :id, :string, required: true
-  attr :parent_id, :string, required: true
-  attr :selected_block, :string, required: true
-  attr :selected_setting, :map, required: true
-  attr :tag, :string, default: nil
-  attr :submit, :boolean, default: false
-  attr :on_delete, JS, default: %JS{}
-  attr :on_duplicate, JS, default: %JS{}
-  attr :children, :list, default: []
-  attr :class, :string, default: nil
-  attr :rest, :global
+  attr(:id, :string, required: true)
+  attr(:parent_id, :string, required: true)
+  attr(:selected_block, :string, required: true)
+  attr(:selected_setting, :map, required: true)
+  attr(:tag, :string, default: nil)
+  attr(:submit, :boolean, default: false)
+  attr(:on_delete, JS, default: %JS{})
+  attr(:on_duplicate, JS, default: %JS{})
+  attr(:children, :list, default: [])
+  attr(:class, :string, default: nil)
+  attr(:rest, :global)
 
   @spec section(map) :: Phoenix.LiveView.Rendered.t()
   def section(assigns) do
@@ -50,11 +50,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
     """
   end
 
-  attr :section_id, :string, required: true
-  attr :parent_id, :string, required: true
-  attr :submit, :boolean, default: false
-  attr :selected_setting, :map, required: true
-  attr :class, :string, default: nil
+  attr(:section_id, :string, required: true)
+  attr(:parent_id, :string, required: true)
+  attr(:submit, :boolean, default: false)
+  attr(:selected_setting, :map, required: true)
+  attr(:class, :string, default: nil)
 
   @spec section_header(map) :: Phoenix.LiveView.Rendered.t()
   defp section_header(assigns) do
@@ -86,11 +86,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
     """
   end
 
-  attr :id, :string, required: true
-  attr :element, :map, required: true
-  attr :on_delete, JS, default: %JS{}
-  attr :on_duplicate, JS, default: %JS{}
-  attr :rest, :global
+  attr(:id, :string, required: true)
+  attr(:element, :map, required: true)
+  attr(:on_delete, JS, default: %JS{})
+  attr(:on_duplicate, JS, default: %JS{})
+  attr(:rest, :global)
 
   def element(%{rest: %{type: type}} = assigns) do
     atom_created =
@@ -102,7 +102,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
     assigns = assign(assigns, :block_module, atom_created)
 
     ~H"""
-    <.live_component module={@block_module} id={@id} element={@element} render_type="call" />
+    <.live_component module={@block_module} id={@id  <> "-call"} element={@element} render_type="call" />
     """
   rescue
     _e ->
