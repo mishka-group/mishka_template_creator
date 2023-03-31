@@ -6,14 +6,19 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   # TODO: create multi layout sections and store in a Genserver or ETS
   # TODO: create multisection in a layout and store them under the layout
-  # TODO: we need to create sample html to let tailwind scan classes deployment/templates/:template_name
 
   @impl true
   def mount(_params, _, socket) do
     if connected?(socket), do: Process.send_after(self(), :save_db, 10000)
 
     new_socket =
-      assign(socket, elemens: [], selected_block: nil, submit: true, selected_setting: nil)
+      assign(socket,
+        elemens: [], # JSON of elements
+        selected_block: nil, # Selected element for section
+        submit: true, # Tag submit status to let user push data or not, can be integrated inside a live component
+        selected_setting: nil, # This is a selected settings of an element, returns a map
+        select_form: nil # It is going to be used inside Aside component, returns component name as a string
+      )
 
     {:ok, new_socket}
   end
@@ -26,6 +31,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       selected_block={@selected_block}
       submit={@submit}
       selected_setting={@selected_setting}
+      select_form={@select_form}
     />
     """
   end
@@ -113,10 +119,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   def handle_event("edit_section", %{"id" => id}, socket) do
     {:noreply, assign(socket, :selected_block, id)}
-  end
-
-  def handle_event("edit_element", %{"id" => _id}, socket) do
-    {:noreply, socket}
   end
 
   # This is reset event

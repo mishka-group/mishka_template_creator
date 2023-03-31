@@ -9,10 +9,11 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   @elements Elements.elements(:all, :id)
 
-  attr :elemens, :list, required: true
-  attr :selected_block, :string, required: true
-  attr :selected_setting, :map, required: false, default: nil
-  attr :submit, :string, required: true
+  attr(:elemens, :list, required: true)
+  attr(:selected_block, :string, required: true)
+  attr(:selected_setting, :map, required: false, default: nil)
+  attr(:submit, :string, required: true)
+  attr(:select_form, :string, required: false, default: nil)
 
   @spec dashboard(map) :: Phoenix.LiveView.Rendered.t()
   def dashboard(assigns) do
@@ -35,18 +36,18 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
           submit={@submit}
           selected_setting={@selected_setting}
         />
-        <Aside.aside />
+        <Aside.aside select_form={@select_form}/>
       </div>
     </div>
     """
   end
 
   # This is overwriting for modal, we add some `push_event` to it when it is closed or opened
-  attr :id, :string, required: true
-  attr :show, :boolean, default: false
-  attr :on_cancel, JS, default: %JS{}
+  attr(:id, :string, required: true)
+  attr(:show, :boolean, default: false)
+  attr(:on_cancel, JS, default: %JS{})
 
-  slot :inner_block, required: true
+  slot(:inner_block, required: true)
 
   @spec push_modal(map) :: Phoenix.LiveView.Rendered.t()
   def push_modal(assigns) do
@@ -99,15 +100,16 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   # This is overwriting for simple form
-  attr :for, :any, required: true, doc: "the datastructure for the form"
-  attr :as, :any, default: nil, doc: "the server side parameter to collect all input under"
+  attr(:for, :any, required: true, doc: "the datastructure for the form")
+  attr(:as, :any, default: nil, doc: "the server side parameter to collect all input under")
 
-  attr :rest, :global,
+  attr(:rest, :global,
     include: ~w(autocomplete name rel action enctype method novalidate target),
     doc: "the arbitrary HTML attributes to apply to the form tag"
+  )
 
-  slot :inner_block, required: true
-  slot :actions, doc: "the slot for form actions, such as a submit button"
+  slot(:inner_block, required: true)
+  slot(:actions, doc: "the slot for form actions, such as a submit button")
 
   def form_block(assigns) do
     ~H"""
@@ -122,15 +124,16 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     """
   end
 
-  attr :form, :any, required: true
-  attr :options, :map, required: true
-  attr :selected, :list, required: false, default: nil
-  attr :title, :string, required: false, default: nil
-  attr :form_id, :atom, required: false, default: nil
+  attr(:form, :any, required: true)
+  attr(:options, :map, required: true)
+  attr(:selected, :list, required: false, default: nil)
+  attr(:title, :string, required: false, default: nil)
+  attr(:form_id, :atom, required: false, default: nil)
 
-  attr :class, :string,
+  attr(:class, :string,
     required: false,
     default: "border !border-gray-300 rounded-md w-full space-y-2"
+  )
 
   @spec multiple_select(map) :: Phoenix.LiveView.Rendered.t()
   def multiple_select(assigns) do
@@ -146,15 +149,16 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     """
   end
 
-  attr :form, :any, required: true
-  attr :options, :map, required: true
-  attr :selected, :any, required: false, default: nil
-  attr :title, :string, required: false, default: nil
-  attr :form_id, :atom, required: false, default: nil
+  attr(:form, :any, required: true)
+  attr(:options, :map, required: true)
+  attr(:selected, :any, required: false, default: nil)
+  attr(:title, :string, required: false, default: nil)
+  attr(:form_id, :atom, required: false, default: nil)
 
-  attr :class, :string,
+  attr(:class, :string,
     required: false,
     default: "border !border-gray-300 rounded-md w-full mx-0 my-0"
+  )
 
   @spec select(map) :: Phoenix.LiveView.Rendered.t()
   def select(assigns) do
