@@ -34,6 +34,28 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     ~H"""
     <div>
       <Aside.aside_settings id={"text-#{@id}"}>
+        <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 items-center mx-auto mb-4">
+          <ul class="flex flex-wrap -mb-px items-center">
+            <li class="mr-2">
+              <a
+                href="#"
+                class="inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg"
+                aria-current="page"
+              >
+                Quick edit
+              </a>
+            </li>
+            <li class="mr-2">
+              <a
+                href="#"
+                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 active"
+              >
+                Advanced edit
+              </a>
+            </li>
+          </ul>
+        </div>
+
         <Aside.aside_accordion id={"text-#{@id}"} title="Change Text">
           <div class="flex flex-col w-full items-center justify-center pb-5">
             <%= textarea(:text_component, :text,

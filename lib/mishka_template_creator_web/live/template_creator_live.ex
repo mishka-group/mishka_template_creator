@@ -140,7 +140,11 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("back_to_blocks", _params, socket) do
-    {:noreply, assign(socket, :selected_form, nil)}
+    new_socket =
+      assign(socket, :selected_form, nil)
+      |> push_event("redefine_blocks_drag_and_drop", %{})
+
+    {:noreply, new_socket}
   end
 
   def handle_event(

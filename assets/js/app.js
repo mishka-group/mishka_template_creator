@@ -6,34 +6,42 @@ import { customEventCreator } from '../vendor/mishka_template_creator/utilities'
 import Sortable from 'sortablejs';
 
 let stateLessConfig = 'none';
-const layoutBlock = document.getElementById('layout-block');
-const elementsBlock = document.getElementById('elements-block');
-const mediaBlock = document.getElementById('media-block');
 const dragLocation = document.getElementById('dragLocation');
 const previewHelper = document.getElementById('previewHelper');
 const sortableSpeed = 150;
 
-[
-  { dom: layoutBlock, name: 'LayoutGroup' },
-  { dom: elementsBlock, name: 'ElementGroup' },
-  { dom: mediaBlock, name: 'MediaGroup' },
-].map((item) => {
-  Sortable.create(item.dom, {
-    group: {
-      name: item.name,
-      pull: 'clone',
-      put: false,
-    },
-    animation: sortableSpeed,
-    sort: false,
-    onEnd: function (/**Event*/ evt) {
-      const previewHelper = document.getElementById('previewHelper');
-      if (dragLocation && previewHelper && dragLocation.childElementCount > 0) {
-        document.getElementById('previewHelper').classList.remove('hidden');
-      }
-    },
+function defineBlocksDragAndDrop() {
+  const layoutBlock = document.getElementById('layout-block');
+  const elementsBlock = document.getElementById('elements-block');
+  const mediaBlock = document.getElementById('media-block');
+  [
+    { dom: layoutBlock, name: 'LayoutGroup' },
+    { dom: elementsBlock, name: 'ElementGroup' },
+    { dom: mediaBlock, name: 'MediaGroup' },
+  ].map((item) => {
+    Sortable.create(item.dom, {
+      group: {
+        name: item.name,
+        pull: 'clone',
+        put: false,
+      },
+      animation: sortableSpeed,
+      sort: false,
+      onEnd: function (/**Event*/ evt) {
+        const previewHelper = document.getElementById('previewHelper');
+        if (
+          dragLocation &&
+          previewHelper &&
+          dragLocation.childElementCount > 0
+        ) {
+          document.getElementById('previewHelper').classList.remove('hidden');
+        }
+      },
+    });
   });
-});
+}
+
+defineBlocksDragAndDrop();
 
 Sortable.create(previewHelper, {
   group: {
@@ -236,6 +244,10 @@ Hooks.dragAndDropLocation = {
       this.pushEventTo(myself, 'set_element_form', {
         layout_id: elementDOM.parentNode.id,
       });
+    });
+
+    this.handleEvent('redefine_blocks_drag_and_drop', () => {
+      defineBlocksDragAndDrop();
     });
   },
 };
