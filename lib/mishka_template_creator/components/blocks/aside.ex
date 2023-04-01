@@ -35,7 +35,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
         </div>
         <div>
           <Heroicons.x_mark
-            class="w-6 h-6 mx-auto stroke-current"
+            class="w-6 h-6 mx-auto stroke-current mt-1"
             phx-click={
               JS.hide(to: "#aside")
               |> JS.remove_class("text-gray-800", to: "#blocks_stack")
@@ -104,6 +104,45 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
         <%= render_slot(@inner_block) %>
       </div>
     </div>
+    """
+  end
+
+  attr(:id, :string, required: true)
+  attr(:title, :string, required: true)
+  slot(:inner_block, required: true)
+
+  @spec aside_accordion(map) :: Phoenix.LiveView.Rendered.t()
+  def aside_accordion(%{title: title} = assigns) do
+    assigns = assign(assigns, title_alias: String.replace(title, " ", "-"))
+
+    ~H"""
+    <section class="flex flex-col w-full px-3 mx-auto">
+      <div class="flex flex-row w-full justify-between items-center border-b border-gray-300 pb-3">
+        <span class="font-bold"><%= @title %>:</span>
+        <span>
+          <Heroicons.chevron_double_up
+            class={"#{@title_alias}-up w-4 h-auto cursor-pointer"}
+            phx-click={
+              JS.toggle()
+              |> JS.show(to: ".#{@title_alias}-down")
+              |> JS.hide(to: ".#{@id}-#{@title_alias}-content")
+            }
+          />
+          <Heroicons.chevron_double_down
+            class={"#{@title_alias}-down w-4 h-auto cursor-pointer hidden"}
+            phx-click={
+              JS.toggle()
+              |> JS.show(to: ".#{@title_alias}-up")
+              |> JS.show(to: ".#{@id}-#{@title_alias}-content")
+            }
+          />
+        </span>
+      </div>
+
+      <div class={"#{@id}-#{@title_alias}-content flex flex-col pt-2 duration-200"}>
+        <%= render_slot(@inner_block) %>
+      </div>
+    </section>
     """
   end
 end

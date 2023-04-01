@@ -1,6 +1,7 @@
 defmodule MishkaTemplateCreator.Components.Elements.Text do
   use Phoenix.LiveComponent
   alias MishkaTemplateCreator.Components.Blocks.Aside
+  alias Phoenix.LiveView.JS
 
   @impl true
   def mount(socket) do
@@ -14,8 +15,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
 
   @impl true
   def render(%{render_type: "call"} = assigns) do
-    IO.inspect(assigns.element)
-
     ~H"""
     <div
       data-type="text"
@@ -35,8 +34,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     ~H"""
     <div>
       <Aside.aside_settings id={"text-#{@id}"}>
-        <p>test</p>
-        <p>test</p>
+        <Aside.aside_accordion id={"text-#{@id}"} title="Alignment">
+          sss
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion id={"text-#{@id}"} title="Font Style">
+          sss
+        </Aside.aside_accordion>
       </Aside.aside_settings>
     </div>
     """
