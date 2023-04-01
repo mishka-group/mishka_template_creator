@@ -139,6 +139,10 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, assign(socket, :selected_setting, nil)}
   end
 
+  def handle_event("back_to_blocks", _params, socket) do
+    {:noreply, assign(socket, :selected_form, nil)}
+  end
+
   def handle_event(
         "change_order",
         %{

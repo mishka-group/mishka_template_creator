@@ -102,7 +102,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
     assigns = assign(assigns, :block_module, atom_created)
 
     ~H"""
-    <.live_component module={@block_module} id={@id  <> "-call"} element={@element} render_type="call" />
+    <.live_component
+      module={@block_module}
+      id={@id  <> "-call"}
+      element={@element}
+      render_type="call"
+    />
     """
   rescue
     _e ->

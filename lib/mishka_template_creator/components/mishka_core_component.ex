@@ -22,7 +22,19 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       <div id="mishka_top_nav" class="top-nav">
         <.live_component module={History} id="template-history" elements={@elements} />
         <div>Main Section</div>
-        <div>Settings</div>
+        <div class="flex flex-row gap-2">
+          <Heroicons.trash class="w-7 h-auto cursor-pointer" />
+          <Heroicons.inbox_arrow_down class="w-7 h-auto cursor-pointer" />
+          <Heroicons.computer_desktop class="w-7 h-auto cursor-pointer" />
+          <Heroicons.square_3_stack_3d
+            class="w-7 h-auto text-gray-800 cursor-pointer"
+            id="blocks_stack"
+            phx-click={
+              JS.show(to: "#aside")
+              |> JS.add_class("text-gray-800")
+            }
+          />
+        </div>
       </div>
       <div
         id="mishka_content"

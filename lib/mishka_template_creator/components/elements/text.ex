@@ -1,5 +1,6 @@
 defmodule MishkaTemplateCreator.Components.Elements.Text do
   use Phoenix.LiveComponent
+  alias MishkaTemplateCreator.Components.Blocks.Aside
 
   @impl true
   def mount(socket) do
@@ -32,8 +33,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   @impl true
   def render(%{render_type: "form"} = assigns) do
     ~H"""
-    <div data-type="text" id={"text-#{@id}"}>
-      this is form
+    <div>
+      <Aside.aside_settings id={"text-#{@id}"}>
+        <p>test</p>
+        <p>test</p>
+      </Aside.aside_settings>
     </div>
     """
   end
