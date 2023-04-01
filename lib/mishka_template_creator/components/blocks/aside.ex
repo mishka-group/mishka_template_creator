@@ -116,9 +116,9 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
     assigns = assign(assigns, title_alias: String.replace(title, " ", "-"))
 
     ~H"""
-    <section class="flex flex-col w-full px-3 mx-auto">
-      <div class="flex flex-row w-full justify-between items-center border-b border-gray-300 pb-3">
-        <span class="font-bold"><%= @title %>:</span>
+    <section class="flex flex-col w-full px-3 mx-auto border-b border-gray-300">
+      <div class="flex flex-row w-full justify-between items-center pb-3">
+        <span class="font-bold select-none"><%= @title %>:</span>
         <span>
           <Heroicons.chevron_double_up
             class={"#{@title_alias}-up w-4 h-auto cursor-pointer"}
@@ -139,7 +139,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
         </span>
       </div>
 
-      <div class={"#{@id}-#{@title_alias}-content flex flex-col pt-2 duration-200"}>
+      <div class={"#{@id}-#{@title_alias}-content flex flex-col pt-2 duration-200 w-full"}>
         <%= render_slot(@inner_block) %>
       </div>
     </section>
