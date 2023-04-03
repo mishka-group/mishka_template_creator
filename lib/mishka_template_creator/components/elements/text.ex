@@ -10,6 +10,28 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   end
 
   @impl true
+  def update(
+        %{id: id, render_type: render_type, selected_form: selected_form, elements: elements},
+        socket
+      ) do
+    element =
+      MishkaCoreComponent.find_element(
+        elements,
+        selected_form.element_id,
+        selected_form.section_id,
+        selected_form.layout_id,
+        selected_form.element_type
+      )
+
+    {:ok,
+     assign(socket,
+       id: id,
+       render_type: render_type,
+       selected_form: selected_form,
+       element: element
+     )}
+  end
+
   def update(assigns, socket) do
     {:ok, assign(socket, assigns)}
   end
@@ -34,6 +56,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   def render(%{render_type: "form"} = assigns) do
     ~H"""
     <div>
+      <% IO.inspect(@element) %>
       <Aside.aside_settings id={"text-#{@id}"}>
         <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 items-center mx-auto mb-4">
           <ul class="flex flex-wrap -mb-px items-center">
