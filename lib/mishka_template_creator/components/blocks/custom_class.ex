@@ -6,7 +6,6 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
 
   @impl true
   def mount(socket) do
-    IO.inspect("w are here mount")
     {:ok, socket}
   end
 
