@@ -334,6 +334,32 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
+  def add_tag(elements, id, parent_id, layout_id, tag, type) when type in @elements do
+    Enum.map(elements, fn
+      %{type: "layout", id: ^layout_id, children: children} = selected_layout ->
+        edited_list =
+          children
+          |> Enum.map(fn
+            %{type: "section", id: ^parent_id, children: children} ->
+              Enum.map(children, fn
+                %{type: ^type, id: ^id} = selected_element ->
+                  Map.merge(selected_element, %{tag: tag})
+
+                element ->
+                  element
+              end)
+
+            section ->
+              section
+          end)
+
+        %{selected_layout | children: edited_list}
+
+      layout ->
+        layout
+    end)
+  end
+
   def add_element_config(elements, id, _parent_id, class, "layout") do
     Enum.map(elements, fn %{type: "layout"} = layout ->
       new_class =

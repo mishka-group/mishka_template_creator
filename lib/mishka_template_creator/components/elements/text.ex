@@ -56,7 +56,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   def render(%{render_type: "form"} = assigns) do
     ~H"""
     <div>
-      <% IO.inspect(@element) %>
       <Aside.aside_settings id={"text-#{@id}"}>
         <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 items-center mx-auto mb-4">
           <ul class="flex flex-wrap -mb-px items-center">
