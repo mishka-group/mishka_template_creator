@@ -2,6 +2,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   use Phoenix.LiveComponent
   alias MishkaTemplateCreator.Components.Blocks.Aside
   import Phoenix.HTML.Form
+  alias MishkaTemplateCreatorWeb.MishkaCoreComponent
 
   @impl true
   def mount(socket) do

@@ -157,6 +157,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
         },
         socket
       ) do
+        IO.inspect(socket.assigns.elements)
     elements =
       socket.assigns.elements
       |> change_order(current_index, new_index, parent_id, type)

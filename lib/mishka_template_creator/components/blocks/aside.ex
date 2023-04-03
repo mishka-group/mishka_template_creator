@@ -4,6 +4,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
   alias Phoenix.LiveView.JS
 
   attr(:selected_form, :string, required: false, default: nil)
+  attr(:elements, :list, required: true)
 
   @spec aside(map) :: Phoenix.LiveView.Rendered.t()
   def aside(%{selected_form: selected_form} = assigns) do
@@ -70,6 +71,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
           id={@selected_form.element_id <> "-form"}
           selected_form={@selected_form}
           render_type="form"
+          elements={@elements}
         />
       </div>
     </div>
