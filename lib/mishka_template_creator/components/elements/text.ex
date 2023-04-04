@@ -80,23 +80,42 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
         </div>
 
         <Aside.aside_accordion id={"text-#{@id}"} title="Change Text">
-          <div class="flex flex-col w-full items-center justify-center pb-5">
-            <%= textarea(:text_component, :text,
-              class:
-                "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-              id: "#{Ecto.UUID.generate()}",
-              rows: "4"
-            ) %>
-          </div>
+          <MishkaCoreComponent.custom_simple_form
+            :let={f}
+            for={%{}}
+            as={:text_edit}
+            phx-change="text_edit"
+            phx-target={@myself}
+            class="w-full m-0 p-0 flex flex-col"
+          >
+            <div class="flex flex-col w-full items-center justify-center pb-5">
+              <%= textarea(f, :text,
+                class:
+                  "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                id: "#{Ecto.UUID.generate()}",
+                rows: "4"
+              ) %>
+            </div>
+          </MishkaCoreComponent.custom_simple_form>
         </Aside.aside_accordion>
 
         <Aside.aside_accordion id={"text-#{@id}"} title="Alignment">
           <div class="flex flex-col w-full items-center justify-center">
             <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
-              <li class="px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer">
+              <li
+                class="px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer"
+                phx-click="text_alignment"
+                phx-value-type="start"
+                phx-target={@myself}
+              >
                 <Heroicons.bars_3_center_left class="w-6 h-6" />
               </li>
-              <li class="px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer">
+              <li
+                class="px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer"
+                phx-click="text_alignment"
+                phx-value-type="center"
+                phx-target={@myself}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="w-6 h-6"
@@ -110,10 +129,20 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                   />
                 </svg>
               </li>
-              <li class="px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer">
+              <li
+                class="px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer"
+                phx-click="text_alignment"
+                phx-value-type="end"
+                phx-target={@myself}
+              >
                 <Heroicons.bars_3_bottom_right class="w-6 h-6" />
               </li>
-              <li class="px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer">
+              <li
+                class="px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"
+                phx-click="text_alignment"
+                phx-value-type="justify"
+                phx-target={@myself}
+              >
                 <Heroicons.bars_3 class="w-6 h-6" />
               </li>
             </ul>
@@ -122,7 +151,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
           <div class="flex flex-col mt-2 pb-1 justify-between w-full">
             <p class="w-full text-start font-bold text-lg select-none">Direction:</p>
             <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
-              <li class="px-3 py-1 border border-gray-300 rounded-l-md hover:bg-gray-200 cursor-pointer">
+              <li
+                class="px-3 py-1 border border-gray-300 rounded-l-md hover:bg-gray-200 cursor-pointer"
+                phx-click="text_direction"
+                phx-value-type="LTR"
+                phx-target={@myself}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
@@ -132,7 +166,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                   <path d="M2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm5 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6zm0 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6zm-5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm.79-5.373c.112-.078.26-.17.444-.275L3.524 6c-.122.074-.272.17-.452.287-.18.117-.35.26-.51.428a2.425 2.425 0 0 0-.398.562c-.11.207-.164.438-.164.692 0 .36.072.65.217.873.144.219.385.328.72.328.215 0 .383-.07.504-.211a.697.697 0 0 0 .188-.463c0-.23-.07-.404-.211-.521-.137-.121-.326-.182-.568-.182h-.282c.024-.203.065-.37.123-.498a1.38 1.38 0 0 1 .252-.37 1.94 1.94 0 0 1 .346-.298zm2.167 0c.113-.078.262-.17.445-.275L5.692 6c-.122.074-.272.17-.452.287-.18.117-.35.26-.51.428a2.425 2.425 0 0 0-.398.562c-.11.207-.164.438-.164.692 0 .36.072.65.217.873.144.219.385.328.72.328.215 0 .383-.07.504-.211a.697.697 0 0 0 .188-.463c0-.23-.07-.404-.211-.521-.137-.121-.326-.182-.568-.182h-.282a1.75 1.75 0 0 1 .118-.492c.058-.13.144-.254.257-.375a1.94 1.94 0 0 1 .346-.3z" />
                 </svg>
               </li>
-              <li class="px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer">
+              <li
+                class="px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"
+                phx-click="text_direction"
+                phx-value-type="RTL"
+                phx-target={@myself}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
@@ -147,44 +186,42 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
         </Aside.aside_accordion>
 
         <Aside.aside_accordion id={"text-#{@id}"} title="Font Style">
-          <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-            <span class="w-3/5">Font:</span>
-            <div class="w-full">
-              <select
-                id="countries"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1"
-              >
-                <option selected>Choose a font</option>
-                <option value="US">United States</option>
-                <option value="CA">Canada</option>
-                <option value="FR">France</option>
-                <option value="DE">Germany</option>
-              </select>
+          <MishkaCoreComponent.custom_simple_form
+            :let={f}
+            for={%{}}
+            as={:font_style}
+            phx-change="tag"
+            phx-target={@myself}
+            class="w-full m-0 p-0 flex flex-col"
+          >
+            <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+              <span class="w-3/5">Font:</span>
+              <div class="w-full">
+                <%= select(f, :font, ["font-sans", "font-serif", "font-mono"],
+                  class:
+                    "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1"
+                ) %>
+              </div>
             </div>
-          </div>
-          <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-            <span class="w-3/5">Size:</span>
-            <div class="flex flex-row w-full gap-2 items-center">
-              <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">10</span>
-              <input
-                id="Size"
-                type="range"
-                min="1"
-                max="48"
-                value="10"
-                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-              />
+            <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+              <span class="w-3/5">Size:</span>
+              <div class="flex flex-row w-full gap-2 items-center">
+                <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">10</span>
+                <%= range_input(f, :font_size,
+                  min: "1",
+                  max: "48",
+                  value: "10",
+                  class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                ) %>
+              </div>
             </div>
-          </div>
-          <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-            <span class="w-3/5">Color:</span>
-            <div class="w-full">
-              <%= color_input(:text_component, :color,
-                id: "#{Ecto.UUID.generate()}",
-                placeholder: "Change Tag name"
-              ) %>
+            <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+              <span class="w-3/5">Color:</span>
+              <div class="w-full">
+                <%= color_input(f, :color, placeholder: "Change Tag name") %>
+              </div>
             </div>
-          </div>
+          </MishkaCoreComponent.custom_simple_form>
         </Aside.aside_accordion>
 
         <Aside.aside_accordion id={"text-#{@id}"} title="Custom Tag name">
@@ -239,8 +276,35 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     {:noreply, socket}
   end
 
-  def handle_event("tag", %{"_target" => ["text_component", "tag"], "text_component" => %{"tag" => tag}}, socket) do
+  def handle_event("tag", %{"text_component" => %{"tag" => tag}}, socket) do
     IO.inspect(tag)
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "tag",
+        %{"font_style" => %{"color" => color, "font" => font, "font_size" => font_size}},
+        socket
+      ) do
+    IO.inspect(color)
+    IO.inspect(font)
+    IO.inspect(font_size)
+    {:noreply, socket}
+  end
+
+  def handle_event("text_direction", %{"type" => type}, socket) when type in ["RTL", "LTR"] do
+    IO.inspect(type)
+    {:noreply, socket}
+  end
+
+  def handle_event("text_alignment", %{"type" => type}, socket)
+      when type in ["start", "center", "end", "justify"] do
+    IO.inspect(type)
+    {:noreply, socket}
+  end
+
+  def handle_event("text_edit", %{"text_edit" => %{"text" => text}}, socket) do
+    IO.inspect(text)
     {:noreply, socket}
   end
 end
