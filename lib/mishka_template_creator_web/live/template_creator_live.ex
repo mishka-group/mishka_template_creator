@@ -89,7 +89,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
         "save_tag",
         %{"tag" => %{"tag" => tag, "type" => type, "id" => id, "parent_id" => parent_id}},
         socket
-      ) do
+      )
+      when type in ["layout", "section"] do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3
@@ -215,6 +216,53 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       )
 
     {:noreply, new_assign}
+  end
+
+  def handle_info({"validate_tag", %{tag: tag}}, socket) do
+    submit_status =
+      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
+        String.length(String.trim(tag)) > 3
+
+    {:noreply, assign(socket, :submit, !submit_status)}
+  end
+
+  def handle_info(
+        {"save_tag",
+         %{
+           element_id: element_id,
+           section_id: section_id,
+           layout_id: layout_id,
+           element_type: element_type,
+           tag: tag
+         }},
+        socket
+      ) do
+    submit_status =
+      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
+        String.length(String.trim(tag)) > 3
+
+    new_socket =
+      case {submit_status, String.trim(tag)} do
+        {true, tag} ->
+          assign(
+            socket,
+            elements:
+              add_tag(
+                socket.assigns.elements,
+                element_id,
+                section_id,
+                layout_id,
+                tag,
+                element_type
+              ),
+            submit: false
+          )
+
+        _ ->
+          socket
+      end
+
+    {:noreply, new_socket}
   end
 
   def handle_info({"delete_element_config", selected_config}, socket) do

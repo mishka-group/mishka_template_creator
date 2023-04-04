@@ -5,6 +5,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
 
   attr(:selected_form, :string, required: false, default: nil)
   attr(:elements, :list, required: true)
+  attr(:submit, :string, required: true)
 
   @spec aside(map) :: Phoenix.LiveView.Rendered.t()
   def aside(%{selected_form: selected_form} = assigns) do
@@ -72,6 +73,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
           selected_form={@selected_form}
           render_type="form"
           elements={@elements}
+          submit={@submit}
         />
       </div>
     </div>

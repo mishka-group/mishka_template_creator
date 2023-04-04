@@ -48,7 +48,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
           submit={@submit}
           selected_setting={@selected_setting}
         />
-        <Aside.aside selected_form={@selected_form} elements={@elements} />
+        <Aside.aside selected_form={@selected_form} elements={@elements} submit={@submit} />
       </div>
     </div>
     """
@@ -364,14 +364,17 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         edited_list =
           children
           |> Enum.map(fn
-            %{type: "section", id: ^parent_id, children: children} ->
-              Enum.map(children, fn
-                %{type: ^type, id: ^id} = selected_element ->
-                  Map.merge(selected_element, %{tag: tag})
+            %{type: "section", id: ^parent_id, children: children} = selected_section ->
+              element_edited_list =
+                Enum.map(children, fn
+                  %{type: ^type, id: ^id} = selected_element ->
+                    Map.merge(selected_element, %{tag: tag})
 
-                element ->
-                  element
-              end)
+                  element ->
+                    element
+                end)
+
+              %{selected_section | children: element_edited_list}
 
             section ->
               section

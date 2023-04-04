@@ -11,7 +11,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
 
   @impl true
   def update(
-        %{id: id, render_type: render_type, selected_form: selected_form, elements: elements},
+        %{
+          id: id,
+          render_type: render_type,
+          selected_form: selected_form,
+          elements: elements,
+          submit: submit
+        },
         socket
       ) do
     element =
@@ -28,7 +34,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
        id: id,
        render_type: render_type,
        selected_form: selected_form,
-       element: element
+       element: element,
+       submit: submit
      )}
   end
 
@@ -95,6 +102,15 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                 id: "#{Ecto.UUID.generate()}",
                 rows: "4"
               ) %>
+              <span class="w-full text-start text-xs mt-2 cursor-pointer">
+                <a
+                  href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+                  target="_blank"
+                  class="text-blue-400"
+                >
+                  Styling with Markdown is supported, click here
+                </a>
+              </span>
             </div>
           </MishkaCoreComponent.custom_simple_form>
         </Aside.aside_accordion>
@@ -190,7 +206,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
             :let={f}
             for={%{}}
             as={:font_style}
-            phx-change="tag"
+            phx-change="font_style"
             phx-target={@myself}
             class="w-full m-0 p-0 flex flex-col"
           >
@@ -230,16 +246,20 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
               :let={f}
               for={%{}}
               as={:text_component}
-              phx-change="tag"
+              phx-change="validate_tag"
+              phx-submit="save_tag"
               phx-target={@myself}
               class="w-full m-0 p-0 flex flex-col"
             >
               <%= text_input(f, :tag,
                 class:
                   "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                id: "#{Ecto.UUID.generate()}",
-                placeholder: "Change Tag name"
+                placeholder: "Change Tag name",
+                value: Map.get(@element, :tag)
               ) %>
+              <p class={"text-xs #{if @submit, do: "text-red-500", else: ""} my-3 text-justify"}>
+                Please use only letters and numbers in naming and also keep in mind that you can only use (<code class="text-pink-400">-</code>) between letters. It should be noted, the tag name must be more than 4 characters.
+              </p>
             </MishkaCoreComponent.custom_simple_form>
           </div>
         </Aside.aside_accordion>
@@ -276,13 +296,31 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     {:noreply, socket}
   end
 
-  def handle_event("tag", %{"text_component" => %{"tag" => tag}}, socket) do
-    IO.inspect(tag)
+  def handle_event("validate_tag", %{"text_component" => %{"tag" => tag}}, socket) do
+    submit_status =
+      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
+        String.length(String.trim(tag)) > 3
+
+    case {submit_status, String.trim(tag)} do
+      {true, _tag} ->
+        %{
+          element_id: _element_id,
+          section_id: _section_id,
+          layout_id: _layout_id,
+          element_type: _element_type
+        } = params = socket.assigns.selected_form
+
+        send(self(), {"save_tag", Map.merge(params, %{tag: String.trim(tag)})})
+
+      _ ->
+        send(self(), {"validate_tag", %{tag: tag}})
+    end
+
     {:noreply, socket}
   end
 
   def handle_event(
-        "tag",
+        "font_style",
         %{"font_style" => %{"color" => color, "font" => font, "font_size" => font_size}},
         socket
       ) do
