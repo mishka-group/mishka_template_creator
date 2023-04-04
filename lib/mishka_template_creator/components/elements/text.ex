@@ -189,12 +189,21 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
 
         <Aside.aside_accordion id={"text-#{@id}"} title="Custom Tag name">
           <div class="flex flex-col w-full items-center justify-center pb-5">
-            <%= text_input(:text_component, :tag,
-              class:
-                "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-              id: "#{Ecto.UUID.generate()}",
-              placeholder: "Change Tag name"
-            ) %>
+            <MishkaCoreComponent.custom_simple_form
+              :let={f}
+              for={%{}}
+              as={:text_component}
+              phx-change="tag"
+              phx-target={@myself}
+              class="w-full m-0 p-0 flex flex-col"
+            >
+              <%= text_input(f, :tag,
+                class:
+                  "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                id: "#{Ecto.UUID.generate()}",
+                placeholder: "Change Tag name"
+              ) %>
+            </MishkaCoreComponent.custom_simple_form>
           </div>
         </Aside.aside_accordion>
       </Aside.aside_settings>
@@ -227,6 +236,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
        }}
     )
 
+    {:noreply, socket}
+  end
+
+  def handle_event("tag", %{"_target" => ["text_component", "tag"], "text_component" => %{"tag" => tag}}, socket) do
+    IO.inspect(tag)
     {:noreply, socket}
   end
 end
