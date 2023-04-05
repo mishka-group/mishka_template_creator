@@ -1,4 +1,20 @@
 defmodule MishkaTemplateCreator.Data.TailwindSetting do
+  @text_sizes %{
+    "1" => {"text-xs", "0.75rem"},
+    "2" => {"text-sm", "0.875rem"},
+    "3" => {"text-base", "1rem"},
+    "4" => {"text-lg", "1.125rem"},
+    "5" => {"text-xl", "1.25rem"},
+    "6" => {"text-2xl", "1.5rem"},
+    "7" => {"text-3xl", "1.875rem"},
+    "8" => {"text-4xl", "2.25rem"},
+    "9" => {"text-5xl", "3rem"},
+    "10" => {"text-6xl", "3.75rem"},
+    "11" => {"text-7xl", "4.5rem"},
+    "12" => {"text-8xl", "6rem"},
+    "13" => {"text-9xl", "8rem"}
+  }
+
   @pseudo_classes [
     "sm",
     "md",
@@ -8854,13 +8870,23 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   end
 
   def default_element("text") do
-    ["text-black", "w-full", "p-2"]
+    ["text-black", "w-full", "p-2", "text-base"]
   end
 
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()
   def convert_arbitrary_value(config) do
     [h | t] = String.split(config, "-[")
     if t != [], do: "#{h}-[x]", else: nil
+  end
+
+  def find_text_size_index(classes) do
+    Enum.find(@text_sizes, fn {_key, {text_size, _}} -> text_size in classes end)
+    |> case do
+      nil -> %{index: "1", class: "text-xs"}
+      {key, {text_size, _}} -> %{index: key, class: text_size}
+    end
+  rescue
+    _e -> %{index: "1", class: "text-xs"}
   end
 
   defp class_spliter(class) do

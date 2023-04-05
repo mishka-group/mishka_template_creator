@@ -3,6 +3,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   alias MishkaTemplateCreator.Components.Blocks.Aside
   import Phoenix.HTML.Form
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
+  alias MishkaTemplateCreator.Data.TailwindSetting
 
   @impl true
   def mount(socket) do
@@ -99,7 +100,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
               <%= textarea(f, :text,
                 class:
                   "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                id: "#{Ecto.UUID.generate()}",
                 rows: "4"
               ) %>
               <span class="w-full text-start text-xs mt-2 cursor-pointer">
@@ -215,18 +215,26 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
               <div class="w-full">
                 <%= select(f, :font, ["font-sans", "font-serif", "font-mono"],
                   class:
-                    "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1"
+                    "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1",
+                  prompt: "Choose your preferred font",
+                  selected:
+                    Enum.find(
+                      @element.class,
+                      &(&1 in TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs)
+                    )
                 ) %>
               </div>
             </div>
             <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
               <span class="w-3/5">Size:</span>
               <div class="flex flex-row w-full gap-2 items-center">
-                <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">10</span>
+                <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
+                  <%= TailwindSetting.find_text_size_index(@element.class).index %>
+                </span>
                 <%= range_input(f, :font_size,
                   min: "1",
-                  max: "48",
-                  value: "10",
+                  max: "13",
+                  value: TailwindSetting.find_text_size_index(@element.class).index,
                   class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                 ) %>
               </div>
