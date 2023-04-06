@@ -240,13 +240,25 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                 ) %>
               </div>
             </div>
-            <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-              <span class="w-3/5">Color:</span>
-              <div class="w-full">
-                <%= color_input(f, :color, placeholder: "Change Tag name") %>
+          </MishkaCoreComponent.custom_simple_form>
+          <div class="flex flex-col w-full justify-between items-stretch pt-3 pb-5">
+            <span class="w-full">Color:</span>
+            <div class="flex flex-wrap w-full mt-4">
+              <div
+                :for={
+                  item <-
+                    TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+                }
+                :if={item not in ["text-inherit", "text-current", "text-transparent"]}
+                class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
+                phx-click="font_style"
+                phx-value-color={item}
+                phx-target={@myself}
+              >
+                <Heroicons.x_mark :if={item == "text-red-500"} />
               </div>
             </div>
-          </MishkaCoreComponent.custom_simple_form>
+          </div>
         </Aside.aside_accordion>
 
         <Aside.aside_accordion id={"text-#{@id}"} title="Custom Tag name">
@@ -339,6 +351,21 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     {:noreply, socket}
   end
 
+  def handle_event("font_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    send(
+      self(),
+      {"update_class",
+       %{
+         class: Enum.reject(socket.assigns.element.class, &(&1 in text_colors)) ++ [color]
+       }}
+    )
+
+    {:noreply, socket}
+  end
+
   def handle_event("text_direction", %{"type" => type}, socket) when type in ["RTL", "LTR"] do
     IO.inspect(type)
     {:noreply, socket}
@@ -346,7 +373,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
 
   def handle_event("text_alignment", %{"type" => type}, socket)
       when type in ["start", "center", "end", "justify"] do
-    IO.inspect(type)
+    text_aligns =
+      TailwindSetting.get_form_options("typography", "text-align", nil, nil).form_configs
+
+    send(
+      self(),
+      {"update_class",
+       %{
+         class:
+           Enum.reject(socket.assigns.element.class, &(&1 in text_aligns)) ++ ["text-#{type}"]
+       }}
+    )
+
     {:noreply, socket}
   end
 
