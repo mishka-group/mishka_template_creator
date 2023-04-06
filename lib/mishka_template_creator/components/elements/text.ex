@@ -6,6 +6,24 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.Data.TailwindSetting
 
+  @selected_text_color [
+    "text-black",
+    "text-slate-600",
+    "text-slate-700",
+    "text-slate-800",
+    "text-slate-900",
+    "text-gray-700",
+    "text-gray-800",
+    "text-gray-900",
+    "text-zinc-800",
+    "text-zinc-900",
+    "text-neutral-900",
+    "text-neutral-800",
+    "text-stone-700",
+    "text-stone-800",
+    "text-stone-900"
+  ]
+
   @impl true
   def mount(socket) do
     {:ok, socket}
@@ -37,7 +55,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
        render_type: render_type,
        selected_form: selected_form,
        element: element,
-       submit: submit
+       submit: submit,
+       selected_text_color: @selected_text_color
      )}
   end
 
@@ -255,7 +274,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                 phx-value-color={item}
                 phx-target={@myself}
               >
-                <Heroicons.x_mark :if={item == "text-red-500"} />
+                <Heroicons.x_mark
+                  :if={item in @element.class}
+                  class={if(item in @selected_text_color, do: "text-white")}
+                />
               </div>
             </div>
           </div>
@@ -342,10 +364,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
 
   def handle_event(
         "font_style",
-        %{"font_style" => %{"color" => color, "font" => font, "font_size" => font_size}},
+        %{"font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    IO.inspect(color)
     IO.inspect(font)
     IO.inspect(font_size)
     {:noreply, socket}
