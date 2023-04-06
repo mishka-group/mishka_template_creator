@@ -2,7 +2,9 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
   use Phoenix.LiveComponent
   import MishkaTemplateCreatorWeb.CoreComponents
   import Phoenix.HTML.Form
+
   alias MishkaTemplateCreator.Data.TailwindSetting
+  alias Phoenix.LiveView.JS
 
   @impl true
   def mount(socket) do
@@ -28,7 +30,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
           label: "Custom Classes:",
           class: "custom-classes w-full",
           id: "#{Ecto.UUID.generate()}",
-          value: Enum.join(@class, " ")
+          value: Enum.join(@class, " "),
+          phx_click: JS.focus()
         ) %>
         <.input field={f[:block_type]} type="hidden" value={@type} id={"#{Ecto.UUID.generate()}"} />
         <.input field={f[:block_id]} type="hidden" value={@block_id} id={"#{Ecto.UUID.generate()}"} />

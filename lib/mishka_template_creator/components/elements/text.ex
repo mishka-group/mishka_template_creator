@@ -1,7 +1,8 @@
 defmodule MishkaTemplateCreator.Components.Elements.Text do
   use Phoenix.LiveComponent
-  alias MishkaTemplateCreator.Components.Blocks.Aside
   import Phoenix.HTML.Form
+
+  alias MishkaTemplateCreator.Components.Blocks.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.Data.TailwindSetting
 
