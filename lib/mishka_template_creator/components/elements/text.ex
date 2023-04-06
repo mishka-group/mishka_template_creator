@@ -367,8 +367,23 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
         %{"font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    IO.inspect(font)
-    IO.inspect(font_size)
+    text_sizes_and_font_families =
+      TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
+        TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element.class, &(&1 in text_sizes_and_font_families))
+
+    send(
+      self(),
+      {"update_class",
+       %{
+         class:
+           class ++
+             [TailwindSetting.find_font_by_index(font_size).font_class] ++
+             if(font != "", do: [font], else: [])
+       }}
+    )
+
     {:noreply, socket}
   end
 
@@ -384,11 +399,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
        }}
     )
 
-    {:noreply, socket}
-  end
-
-  def handle_event("text_direction", %{"type" => type}, socket) when type in ["RTL", "LTR"] do
-    IO.inspect(type)
     {:noreply, socket}
   end
 
@@ -411,6 +421,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
 
   def handle_event("text_edit", %{"text_edit" => %{"text" => text}}, socket) do
     IO.inspect(text)
+    {:noreply, socket}
+  end
+
+  def handle_event("text_direction", %{"type" => type}, socket) when type in ["RTL", "LTR"] do
+    IO.inspect(type)
     {:noreply, socket}
   end
 end

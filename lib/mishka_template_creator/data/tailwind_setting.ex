@@ -8889,6 +8889,14 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     _e -> %{index: "1", class: "text-xs"}
   end
 
+  @spec find_font_by_index(String.t()) :: map()
+  def find_font_by_index(index) do
+    case @text_sizes[index] do
+      nil -> %{font_class: "text-xs", font_size: "0.75rem"}
+      {class, size} -> %{font_class: class, font_size: size}
+    end
+  end
+
   defp class_spliter(class) do
     class
     |> String.split(":")
