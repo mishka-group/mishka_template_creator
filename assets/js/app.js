@@ -241,7 +241,7 @@ Hooks.dragAndDropLocation = {
 
     this.handleEvent('get_element_parent_id', ({ id, myself }) => {
       const elementDOM = document.getElementById(`${id}`);
-      this.pushEventTo(myself, 'set_element_form', {
+      this.pushEventTo(myself, 'set', {
         layout_id: elementDOM.parentNode.id,
       });
     });

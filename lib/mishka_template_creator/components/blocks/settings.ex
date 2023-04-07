@@ -52,19 +52,29 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           </div>
         </div>
 
-        <p
-          class="text-center text-sm text-blue-400"
-          phx-click={
-            JS.toggle(to: ".setting_modal")
-            |> JS.toggle(to: ".setting_modal_custom_class_start")
-            |> JS.toggle(to: ".setting_modal_custom_class_back")
-            |> JS.toggle(to: ".custom_class-form")
-          }
-          phx-value-id={@block_id}
-          phx-value-type={@type}
-        >
-          <span class="setting_modal_custom_class_start">OR put your custom classes</span>
-          <span class="setting_modal_custom_class_back hidden">Back to settings</span>
+        <p class="text-center text-sm text-blue-400">
+          <span
+            class="setting_modal_custom_class_start select-none cursor-pointer"
+            phx-click={
+              JS.add_class("hidden", to: ".setting_modal")
+              |> JS.add_class("hidden", to: ".setting_modal_custom_class_start")
+              |> JS.remove_class("hidden", to: ".setting_modal_custom_class_back")
+              |> JS.remove_class("hidden", to: ".custom_class-form")
+            }
+          >
+            OR put your custom classes
+          </span>
+          <span
+            class="setting_modal_custom_class_back select-none cursor-pointer hidden"
+            phx-click={
+              JS.remove_class("hidden", to: ".setting_modal")
+              |> JS.remove_class("hidden", to: ".setting_modal_custom_class_start")
+              |> JS.add_class("hidden", to: ".setting_modal_custom_class_back")
+              |> JS.add_class("hidden", to: ".custom_class-form")
+            }
+          >
+            Back to settings
+          </span>
         </p>
         <div class="custom_class-form hidden">
           <.live_component

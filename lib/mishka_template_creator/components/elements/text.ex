@@ -322,12 +322,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     {:noreply, new_sock}
   end
 
-  def handle_event("set_element_form", %{"layout_id" => layout_id}, socket) do
+  def handle_event("set", %{"layout_id" => layout_id}, socket) do
     %{parent_id: section_id, id: element_id, type: element_type} = socket.assigns.element
 
     send(
       self(),
-      {"set_element_form",
+      {"set",
        %{
          element_id: element_id,
          element_type: element_type,

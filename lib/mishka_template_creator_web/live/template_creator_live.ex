@@ -159,34 +159,38 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
+  @impl true
   # Handle Info
   # def handle_info({"create", params}, socket) do
   # end
 
-  # def handle_info({"delete", params}, socket) do
-  # end
+  def handle_info({"delete", selected_config}, socket) do
+    %{block_id: block_id, block_type: block_type, config: config, parent_id: parent_id} =
+      selected_config
 
-  # def handle_info({"validate", params}, socket) do
-  # end
+    new_assign =
+      assign(
+        socket,
+        elements:
+          delete_element_config(socket.assigns.elements, block_id, parent_id, config, block_type)
+      )
+
+    {:noreply, new_assign}
+  end
+
+  def handle_info({"validate", %{tag: tag}}, socket) do
+    submit_status =
+      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
+        String.length(String.trim(tag)) > 3
+
+    {:noreply, assign(socket, :submit, !submit_status)}
+  end
 
   # def handle_info({"class", params}, socket) do
   # end
 
-  # def handle_info({"element", params}, socket) do
-  # end
-
-  # def handle_info({"reset", params}, socket) do
-  # end
-
-  # def handle_info({"order", params}, socket) do
-  # end
-
-  # def handle_info({"set", params}, socket) do
-  # end
-
-  @impl true
   def handle_info(
-        {"add_element_config",
+        {"element",
          %{
            "block_type" => block_type,
            "block_id" => block_id,
@@ -210,39 +214,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       )
 
     {:noreply, new_assign}
-  end
-
-  def handle_info({"add_element_config", selected_config}, socket) do
-    %{
-      block_id: block_id,
-      block_type: block_type,
-      config: config,
-      extra_config: extra,
-      parent_id: parent_id
-    } = selected_config
-
-    new_assign =
-      assign(
-        socket,
-        elements:
-          add_element_config(
-            socket.assigns.elements,
-            block_id,
-            parent_id,
-            TailwindSetting.create_class(extra, config),
-            block_type
-          )
-      )
-
-    {:noreply, new_assign}
-  end
-
-  def handle_info({"validate", %{tag: tag}}, socket) do
-    submit_status =
-      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
-        String.length(String.trim(tag)) > 3
-
-    {:noreply, assign(socket, :submit, !submit_status)}
   end
 
   def handle_info(
@@ -284,21 +255,38 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_socket}
   end
 
-  def handle_info({"delete_element_config", selected_config}, socket) do
-    %{block_id: block_id, block_type: block_type, config: config, parent_id: parent_id} =
-      selected_config
+  def handle_info({"element", selected_config}, socket) do
+    %{
+      block_id: block_id,
+      block_type: block_type,
+      config: config,
+      extra_config: extra,
+      parent_id: parent_id
+    } = selected_config
 
     new_assign =
       assign(
         socket,
         elements:
-          delete_element_config(socket.assigns.elements, block_id, parent_id, config, block_type)
+          add_element_config(
+            socket.assigns.elements,
+            block_id,
+            parent_id,
+            TailwindSetting.create_class(extra, config),
+            block_type
+          )
       )
 
     {:noreply, new_assign}
   end
 
-  def handle_info({"set_element_form", params}, socket) do
+  # def handle_info({"reset", params}, socket) do
+  # end
+
+  # def handle_info({"order", params}, socket) do
+  # end
+
+  def handle_info({"set", params}, socket) do
     {:noreply, assign(socket, :selected_form, params)}
   end
 
@@ -308,6 +296,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, socket}
   end
 
+
+  # Helper functions
   def update_elements(nil, socket, _, _), do: {:noreply, socket}
 
   def update_elements(new_element, socket, parent, event) do

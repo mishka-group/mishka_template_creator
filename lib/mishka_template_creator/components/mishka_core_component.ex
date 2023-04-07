@@ -68,7 +68,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       id={@id}
       phx-mounted={@show && show_modal(@id)}
       phx-remove={hide_modal(@id)}
-      data-reset={reset_push_modal(@on_cancel, @id)}
+      data-reset={reset_push_modal(@id)}
       class="unsortable relative z-50 hidden"
     >
       <div id={"#{@id}-bg"} class="fixed inset-0 bg-zinc-50/90 transition-opacity" aria-hidden="true" />
@@ -512,12 +512,12 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
-  defp reset_push_modal(on_cancel, id) do
-    hide_modal(on_cancel, id)
-    |> JS.show(to: ".setting_modal")
-    |> JS.show(to: ".setting_modal_custom_class_start")
-    |> JS.hide(to: ".setting_modal_custom_class_back")
-    |> JS.hide(to: ".custom_class-form")
+  defp reset_push_modal(id) do
+    JS.remove_class("hidden", to: ".setting_modal")
+    |> JS.remove_class("hidden", to: ".setting_modal_custom_class_start")
+    |> JS.add_class("hidden", to: ".setting_modal_custom_class_back")
+    |> JS.add_class("hidden", to: ".custom_class-form")
+    |> hide_modal(id)
     |> JS.push("reset")
   end
 end

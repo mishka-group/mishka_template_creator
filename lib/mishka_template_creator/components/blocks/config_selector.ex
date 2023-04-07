@@ -109,7 +109,7 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
 
     send(
       self(),
-      {"delete_element_config",
+      {"delete",
        %{
          block_id: block_id,
          block_type: block_type,
@@ -126,7 +126,7 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
 
     send(
       self(),
-      {"add_element_config",
+      {"element",
        %{
          block_id: block_id,
          block_type: block_type,
