@@ -71,22 +71,19 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # def handle_event("class", params, socket) do
   # end
 
-  def handle_event(
-        "element",
-        %{"tag" => %{"tag" => tag, "type" => type, "id" => id, "parent_id" => parent_id}},
-        socket
-      )
-      when type in ["layout", "section"] do
+  def handle_event("element", %{"tag" => params}, socket) do
     submit_status =
-      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
-        String.length(String.trim(tag)) > 3
+      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(params["tag"])) and
+        String.length(String.trim(params["tag"])) > 3
 
     new_socket =
-      case {submit_status, String.trim(tag)} do
+      case {submit_status, String.trim(params["tag"])} do
         {true, tag} ->
           assign(
             socket,
-            elements: add_tag(socket.assigns.elements, id, parent_id, tag, type),
+            elements:
+              socket.assigns.elements
+              |> add_tag(Map.merge(params, %{"tag" => tag})),
             submit: true
           )
 
@@ -211,41 +208,15 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_assign}
   end
 
-  def handle_info(
-        {"element",
-         %{
-           element_id: element_id,
-           section_id: section_id,
-           layout_id: layout_id,
-           element_type: element_type,
-           tag: tag
-         }},
-        socket
-      ) do
+  def handle_info({"element", %{"tag" => params}}, socket) do
     submit_status =
-      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
-        String.length(String.trim(tag)) > 3
+      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, params["tag"]) and
+        String.length(params["tag"]) > 3
 
     new_socket =
-      case {submit_status, String.trim(tag)} do
-        {true, tag} ->
-          assign(
-            socket,
-            elements:
-              add_tag(
-                socket.assigns.elements,
-                element_id,
-                section_id,
-                layout_id,
-                tag,
-                element_type
-              ),
-            submit: false
-          )
-
-        _ ->
-          socket
-      end
+      if submit_status,
+        do: assign(socket, elements: add_tag(socket.assigns.elements, params), submit: false),
+        else: socket
 
     {:noreply, new_socket}
   end

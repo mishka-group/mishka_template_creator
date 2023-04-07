@@ -347,13 +347,23 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     case {submit_status, String.trim(tag)} do
       {true, _tag} ->
         %{
-          element_id: _element_id,
-          section_id: _section_id,
-          layout_id: _layout_id,
-          element_type: _element_type
-        } = params = socket.assigns.selected_form
+          element_id: element_id,
+          section_id: section_id,
+          layout_id: layout_id,
+          element_type: element_type
+        } = socket.assigns.selected_form
 
-        send(self(), {"element", Map.merge(params, %{tag: String.trim(tag)})})
+        params = %{
+          "tag" => %{
+            "id" => element_id,
+            "parent_id" => section_id,
+            "layout_id" => layout_id,
+            "tag" => String.trim(tag),
+            "type" => element_type
+          }
+        }
+
+        send(self(), {"element", params})
 
       _ ->
         send(self(), {"validate", %{tag: tag}})

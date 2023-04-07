@@ -336,13 +336,13 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
-  def add_tag(elements, id, _parent_id, tag, "layout") do
+  def add_tag(elements, %{"id" => id, "parent_id" => _parent_id, "tag" => tag, "type" => "layout"}) do
     Enum.map(elements, fn %{type: "layout"} = layout ->
       if layout.id == id, do: Map.merge(layout, %{tag: tag}), else: layout
     end)
   end
 
-  def add_tag(elements, id, parent_id, tag, "section") do
+  def add_tag(elements, %{"id" => id, "parent_id" => parent_id, "tag" => tag, "type" => "section"}) do
     Enum.map(elements, fn %{type: "layout", children: children} = layout ->
       if layout.id == parent_id do
         edited_list =
@@ -358,7 +358,14 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
-  def add_tag(elements, id, parent_id, layout_id, tag, type) when type in @elements do
+  def add_tag(elements, %{
+        "id" => id,
+        "parent_id" => parent_id,
+        "layout_id" => layout_id,
+        "tag" => tag,
+        "type" => type
+      })
+      when type in @elements do
     Enum.map(elements, fn
       %{type: "layout", id: ^layout_id, children: children} = selected_layout ->
         edited_list =
@@ -510,6 +517,13 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     |> Map.new(fn {k, v} ->
       {String.to_existing_atom(k), v}
     end)
+  end
+
+  @spec atom_map_to_string(map) :: map
+  def atom_map_to_string(map) do
+    for {key, val} <- map, into: %{} do
+      {to_string(key), to_string(val)}
+    end
   end
 
   defp reset_push_modal(id) do
