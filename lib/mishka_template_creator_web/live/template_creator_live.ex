@@ -48,19 +48,14 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     |> update_elements(socket, params["parent"], "create_draggable")
   end
 
-  def handle_event("delete", %{"id" => id, "type" => "layout"}, socket) do
-    element = delete_element(socket.assigns.elements, id, "layout")
+  def handle_event("delete", params, socket) do
+    element = delete_element(socket.assigns.elements, params)
 
     new_assign =
-      push_event(socket, "create_preview_helper", %{status: length(element) == 0})
+      assign(socket, :selected_form, nil)
+      |> push_event("redefine_blocks_drag_and_drop", %{})
+      |> push_event("create_preview_helper", %{status: length(element) == 0})
       |> assign(:elements, element)
-
-    {:noreply, new_assign}
-  end
-
-  def handle_event("delete", %{"id" => id, "parent_id" => parent_id, "type" => "section"}, socket) do
-    new_assign =
-      assign(socket, :elements, delete_element(socket.assigns.elements, id, parent_id, "section"))
 
     {:noreply, new_assign}
   end
@@ -295,7 +290,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     Process.send_after(self(), :save_db, 10000)
     {:noreply, socket}
   end
-
 
   # Helper functions
   def update_elements(nil, socket, _, _), do: {:noreply, socket}

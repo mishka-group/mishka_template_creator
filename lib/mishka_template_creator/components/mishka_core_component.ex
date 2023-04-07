@@ -316,12 +316,12 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
-  def delete_element(elements, id, "layout") do
+  def delete_element(elements, %{"id" => id, "type" => "layout"}) do
     elements
     |> Enum.reject(&(&1.id == id))
   end
 
-  def delete_element(elements, id, parent_id, "section") do
+  def delete_element(elements, %{"id" => id, "parent_id" => parent_id, "type" => "section"}) do
     Enum.map(elements, fn %{type: "layout", children: children} = layout ->
       if layout.id == parent_id do
         sorted_list =
