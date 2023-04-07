@@ -504,6 +504,14 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     |> Enum.map(fn {map, index} -> Map.put(map, :index, index) end)
   end
 
+  @spec string_map_to_atom(map) :: map
+  def string_map_to_atom(map) do
+    map
+    |> Map.new(fn {k, v} ->
+      {String.to_existing_atom(k), v}
+    end)
+  end
+
   defp reset_push_modal(on_cancel, id) do
     hide_modal(on_cancel, id)
     |> JS.show(to: ".setting_modal")

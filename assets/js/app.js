@@ -99,13 +99,13 @@ Hooks.dragAndDropLocation = {
     this.el.addEventListener('droppedElementServerNotification', (e) => {
       e.preventDefault();
       // send back to the server
-      this.pushEvent('dropped_element', e.detail);
+      this.pushEvent('create', e.detail);
     });
 
     this.el.addEventListener('changeElementOrderServerNotification', (e) => {
       e.preventDefault();
       // send back to the server
-      this.pushEvent('change_order', e.detail);
+      this.pushEvent('order', e.detail);
     });
 
     // This is a way for sending data to client from backend
@@ -129,7 +129,7 @@ Hooks.dragAndDropLocation = {
         animation: 150,
         swapThreshold: 0.65,
         onAdd: function (/**Event*/ evt) {
-          liveView.pushEvent('dropped_element', {
+          liveView.pushEvent('create', {
             index: evt.newIndex,
             type: evt.item.dataset.type,
             parent: evt.to.dataset.type,
@@ -138,7 +138,7 @@ Hooks.dragAndDropLocation = {
           evt.item.remove();
         },
         onUpdate: function (/**Event*/ evt) {
-          liveView.pushEvent('change_order', {
+          liveView.pushEvent('order', {
             current_index: evt.oldIndex,
             new_index: evt.newIndex,
             type: evt.item.dataset.type,

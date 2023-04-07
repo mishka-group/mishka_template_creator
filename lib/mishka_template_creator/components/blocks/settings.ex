@@ -38,9 +38,10 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
               :for={{id, title, module, _settings} <- @tailwind_settings}
               id={id}
               title={title}
-              phx-click="selected_setting"
+              phx-click="set"
               phx-value-id={id}
               phx-value-child={nil}
+              phx-value-type="setting"
             >
               <%= Phoenix.LiveView.TagEngine.component(
                 Code.eval_string("&#{module}/1") |> elem(0),
@@ -86,7 +87,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
 
           <div class="flex flex-row gap-2 text-center mx-auto mb-3 justify-center items-center">
             <.button
-              phx-click="reset_settings"
+              phx-click="reset"
+              phx-value-type="setting"
               class="w-24 !bg-white border border-gray-300 shadow-sm !text-black hover:bg-gray-400 hover:text-gray-400"
             >
               <div class="flex flex-row text-center gap-2">
@@ -96,7 +98,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             </.button>
 
             <.button
-              phx-click="reset_settings"
+              phx-click="reset"
+              phx-value-type="setting"
               class="!bg-white border border-gray-300 shadow-sm !text-black hover:bg-gray-400 hover:text-gray-400"
             >
               <div class="flex flex-row text-center gap-2">
@@ -146,9 +149,10 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
           <.button
             :for={{field_id, field_title} <- @selected_setting.section}
             id={"#{Ecto.UUID.generate}-#{field_id}"}
-            phx-click="selected_setting"
+            phx-click="set"
             phx-value-id={@id}
             phx-value-child={field_id}
+            phx-value-type="setting"
             class="!bg-white border-b border-gray-300 shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full !rounded-none"
           >
             <div class={"#{if field_id == @selected_setting.form_id, do: "font-bold", else: "font-normal"}"}>

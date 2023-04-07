@@ -97,7 +97,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
 
         <div
           class="px-5 flex flex-row items-center text-2xl gap-2 cursor-pointer hover:text-gray-500 hover:duration-150 duration-150"
-          phx-click="back_to_blocks"
+          phx-click="back"
         >
           <Heroicons.arrow_long_left class="w-6 h-6 mt-2" />
           <span class="mt-1">Back</span>

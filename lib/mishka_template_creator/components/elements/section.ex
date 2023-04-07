@@ -28,8 +28,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
       class={"group relative #{Enum.join(@class, " ")} #{if @selected_block === @id, do: "bg-white rounded-sm"}"}
       id={@id}
       data-type="section"
-      phx-click="edit_section"
+      phx-click="set"
       phx-value-id={@id}
+      phx-value-type="section"
     >
       <.section_header
         :if={@selected_block == @id}

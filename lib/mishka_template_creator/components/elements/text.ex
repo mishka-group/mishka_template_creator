@@ -289,8 +289,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
               :let={f}
               for={%{}}
               as={:text_component}
-              phx-change="validate_tag"
-              phx-submit="save_tag"
+              phx-change="validate"
+              phx-submit="element"
               phx-target={@myself}
               class="w-full m-0 p-0 flex flex-col"
             >
@@ -339,7 +339,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     {:noreply, socket}
   end
 
-  def handle_event("validate_tag", %{"text_component" => %{"tag" => tag}}, socket) do
+  def handle_event("validate", %{"text_component" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3
@@ -353,10 +353,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
           element_type: _element_type
         } = params = socket.assigns.selected_form
 
-        send(self(), {"save_tag", Map.merge(params, %{tag: String.trim(tag)})})
+        send(self(), {"element", Map.merge(params, %{tag: String.trim(tag)})})
 
       _ ->
-        send(self(), {"validate_tag", %{tag: tag}})
+        send(self(), {"validate", %{tag: tag}})
     end
 
     {:noreply, socket}

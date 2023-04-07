@@ -41,23 +41,11 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     """
   end
 
+  # Handle Events
   @impl true
-  def handle_event(
-        "dropped_element",
-        %{"index" => index, "type" => type, "parent" => parent, "parent_id" => parent_id},
-        socket
-      ) do
-    create_element(%{type: type, index: index, parent: parent, parent_id: parent_id})
-    |> update_elements(socket, parent, "create_draggable")
-  end
-
-  # Layout Events
-  def handle_event("save_draft", _, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("delete", %{"id" => id, "type" => "dom"}, socket) do
-    {:noreply, push_event(socket, "delete", %{id: id})}
+  def handle_event("create", params, socket) do
+    create_element(string_map_to_atom(params))
+    |> update_elements(socket, params["parent"], "create_draggable")
   end
 
   def handle_event("delete", %{"id" => id, "type" => "layout"}, socket) do
@@ -70,14 +58,14 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_assign}
   end
 
-  def handle_event("delete", %{"id" => id, "type" => "section", "parent_id" => parent_id}, socket) do
+  def handle_event("delete", %{"id" => id, "parent_id" => parent_id, "type" => "section"}, socket) do
     new_assign =
       assign(socket, :elements, delete_element(socket.assigns.elements, id, parent_id, "section"))
 
     {:noreply, new_assign}
   end
 
-  def handle_event("validate_tag", %{"tag" => %{"tag" => tag}}, socket) do
+  def handle_event("validate", %{"tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3
@@ -85,8 +73,11 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, assign(socket, :submit, !submit_status)}
   end
 
+  # def handle_event("class", params, socket) do
+  # end
+
   def handle_event(
-        "save_tag",
+        "element",
         %{"tag" => %{"tag" => tag, "type" => type, "id" => id, "parent_id" => parent_id}},
         socket
       )
@@ -111,36 +102,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_socket}
   end
 
-  def handle_event("add_separator", %{"id" => _id}, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("dark_mod", %{"id" => _id}, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("mobile_view", %{"id" => _id}, socket) do
-    {:noreply, socket}
-  end
-
-  def handle_event("edit_section", %{"id" => id}, socket) do
-    {:noreply, assign(socket, :selected_block, id)}
-  end
-
-  # This is reset event
-  def handle_event("reset", _params, socket) do
-    {:noreply, assign(socket, selected_block: nil, selected_setting: nil)}
-  end
-
-  def handle_event("selected_setting", params, socket) do
-    {:noreply, assign(socket, :selected_setting, params)}
-  end
-
-  def handle_event("reset_settings", _params, socket) do
-    {:noreply, assign(socket, :selected_setting, nil)}
-  end
-
-  def handle_event("back_to_blocks", _params, socket) do
+  def handle_event("back", _params, socket) do
     new_socket =
       assign(socket, :selected_form, nil)
       |> push_event("redefine_blocks_drag_and_drop", %{})
@@ -148,8 +110,16 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_socket}
   end
 
+  def handle_event("reset", %{"type" => "setting"}, socket) do
+    {:noreply, assign(socket, selected_setting: nil)}
+  end
+
+  def handle_event("reset", _params, socket) do
+    {:noreply, assign(socket, selected_block: nil, selected_setting: nil)}
+  end
+
   def handle_event(
-        "change_order",
+        "order",
         %{
           "current_index" => current_index,
           "new_index" => new_index,
@@ -164,6 +134,55 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
     {:noreply, assign(socket, elements: elements)}
   end
+
+  def handle_event("set", %{"id" => id, "type" => "section"}, socket) do
+    {:noreply, assign(socket, :selected_block, id)}
+  end
+
+  def handle_event("set", %{"type" => "setting"} = params, socket) do
+    {:noreply, assign(socket, :selected_setting, params)}
+  end
+
+  def handle_event("action", %{"type" => "save_draft"}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("view", %{"type" => "add_separator"}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("view", %{"type" => "dark_mod"}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("view", %{"type" => "mobile_view"}, socket) do
+    {:noreply, socket}
+  end
+
+  # Handle Info
+  # def handle_info({"create", params}, socket) do
+  # end
+
+  # def handle_info({"delete", params}, socket) do
+  # end
+
+  # def handle_info({"validate", params}, socket) do
+  # end
+
+  # def handle_info({"class", params}, socket) do
+  # end
+
+  # def handle_info({"element", params}, socket) do
+  # end
+
+  # def handle_info({"reset", params}, socket) do
+  # end
+
+  # def handle_info({"order", params}, socket) do
+  # end
+
+  # def handle_info({"set", params}, socket) do
+  # end
 
   @impl true
   def handle_info(
@@ -218,7 +237,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_assign}
   end
 
-  def handle_info({"validate_tag", %{tag: tag}}, socket) do
+  def handle_info({"validate", %{tag: tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3
@@ -227,7 +246,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_info(
-        {"save_tag",
+        {"element",
          %{
            element_id: element_id,
            section_id: section_id,
