@@ -220,6 +220,8 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       nil -> nil
       data -> elements_reevaluation(data, elements, params["parent"], params["index"])
     end
+  rescue
+    _ -> nil
   end
 
   # %{"type"=> type, "index" => index, "parent" => parent, "parent_id" => parent_id}
@@ -278,19 +280,20 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   def elements_reevaluation(new_element, elements, "section", _index) do
-    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
-      updated_children =
-        Enum.map(children, fn data ->
-          if data.type == "section" && data.id == new_element.parent_id do
-            children = List.insert_at(data.children, new_element.index, new_element)
-            %{data | children: sort_elements_list(children)}
-          else
-            data
-          end
-        end)
+    [id | _t] = Map.keys(new_element)
+    parent_id = new_element[id]["parent_id"]
 
-      %{layout | children: sort_elements_list(updated_children)}
-    end)
+    {layout_id, _layout_map} =
+      Enum.find(elements["children"], fn {_key, map} ->
+        Map.has_key?(map["children"], parent_id)
+      end)
+
+    {update_in(
+       elements,
+       ["children", layout_id, "children", parent_id, "children"],
+       fn selected_element -> Map.merge(selected_element, new_element) end
+     )
+     |> Map.merge(%{"count" => elements["count"] + 1}), id}
   end
 
   def change_order(elements, current_index, new_index, _parent_id, "layout") do
