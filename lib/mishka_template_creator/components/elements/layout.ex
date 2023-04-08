@@ -41,14 +41,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
       </div>
       <div id={@id} class={Enum.join(@class, " ")} data-type="layout">
         <Section.section
-          :for={child <- @children}
-          id={child.id}
-          children={child.children}
+          :for={{key, data} <- @children}
+          id={key}
+          children={data["children"]}
           selected_block={@selected_block}
           parent_id={@id}
           submit={@submit}
-          tag={Map.get(child, :tag)}
-          class={Map.get(child, :class)}
+          tag={data["tag"]}
+          class={data["class"]}
           selected_setting={@selected_setting}
         />
       </div>

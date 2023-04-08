@@ -119,11 +119,11 @@ Hooks.dragAndDropLocation = {
       }
     });
 
-    this.handleEvent('create_draggable', ({ id, layout }) => {
+    this.handleEvent('create_draggable', ({ id }) => {
       const element = document.getElementById(id);
       Sortable.create(element, {
         group: {
-          name: `${layout}-${id}`,
+          name: `${id}`,
           put: ['LayoutGroup', 'ElementGroup', 'MediaGroup'],
         },
         animation: 150,

@@ -13,8 +13,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
     new_socket =
       assign(socket,
-        # JSON of elements
-        elements: [],
+        # JSON of elements, it should be loaded from database or draft ETS if exists
+        elements: %{"id" => Ecto.UUID.generate(), "order" => [], "count" => 0, "children" => %{}},
         # Selected element for section
         selected_block: nil,
         # Tag submit status to let user push data or not, can be integrated inside a live component
@@ -44,8 +44,22 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # Handle Events
   @impl true
   def handle_event("create", params, socket) do
-    create_element(string_map_to_atom(params))
-    |> update_elements(socket, params["parent"], "create_draggable")
+    push_element =
+      case create_and_reevaluate_element(socket.assigns.elements, params) do
+        nil ->
+          socket
+
+        {new_element, id} ->
+          new_socket =
+            socket
+            |> assign(:elements, new_element)
+
+          if params["type"] not in ["layout", "section"],
+            do: new_socket,
+            else: push_event(new_socket, "create_draggable", %{id: id})
+      end
+
+    {:noreply, push_element}
   end
 
   def handle_event("delete", params, socket) do
@@ -260,24 +274,5 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     # TODO: it should be saved in DB
     Process.send_after(self(), :save_db, 10000)
     {:noreply, socket}
-  end
-
-  # Helper functions
-  def update_elements(nil, socket, _, _), do: {:noreply, socket}
-
-  def update_elements(new_element, socket, parent, event) do
-    elements =
-      socket.assigns.elements
-      |> elements_reevaluation(new_element, parent)
-      |> sort_elements_list()
-
-    new_socket = assign(socket, elements: elements)
-
-    push_element =
-      if new_element.type not in ["layout", "section"],
-        do: new_socket,
-        else: push_event(new_socket, event, new_element)
-
-    {:noreply, push_element}
   end
 end

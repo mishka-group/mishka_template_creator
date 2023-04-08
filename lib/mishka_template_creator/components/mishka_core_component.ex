@@ -211,46 +211,73 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     """
   end
 
-  def create_element(%{type: type, index: _index, parent: parent, parent_id: _parent_id} = params) do
+  @spec create_and_reevaluate_element(map(), map) :: nil | tuple()
+  def create_and_reevaluate_element(elements, params) do
+    params
+    |> Map.delete("index")
+    |> create_element()
+    |> case do
+      nil -> nil
+      data -> elements_reevaluation(data, elements, params["parent"], params["index"])
+    end
+  end
+
+  # %{"type"=> type, "index" => index, "parent" => parent, "parent_id" => parent_id}
+  @spec create_element(map()) :: nil | map
+  def create_element(params) do
     id = Ecto.UUID.generate()
     blocks = Enum.filter(Elements.elements(:all, :id), &(&1 not in ["section", "layout"]))
 
+    init_map = %{
+      "#{id}" =>
+        %{
+          "children" => %{},
+          "order" => [],
+          "class" => TailwindSetting.default_element(params["type"])
+        }
+        |> Map.merge(params)
+    }
+
     cond do
-      type == "layout" and parent == "dragLocation" ->
-        Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_element(type)})
+      params["type"] == "layout" and params["parent"] == "dragLocation" ->
+        init_map
 
-      type == "section" and parent == "layout" ->
-        Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_element(type)})
+      params["type"] == "section" and params["parent"] == "layout" ->
+        init_map
 
-      type in blocks and parent == "section" ->
-        Map.merge(params, %{id: id, children: [], class: TailwindSetting.default_element(type)})
+      params["type"] in blocks and params["parent"] == "section" ->
+        init_map
 
       true ->
         nil
     end
+  rescue
+    _ -> nil
   end
 
-  def elements_reevaluation(elements, new_element, "dragLocation") do
-    List.insert_at(elements, new_element.index, new_element)
-    |> sort_elements_list()
+  @spec elements_reevaluation(map(), map(), String.t(), integer()) :: tuple()
+  def elements_reevaluation(new_element, elements, "dragLocation", _index) do
+    [id | _t] = Map.keys(new_element)
+
+    {update_in(elements, ["children"], fn selected_element ->
+       Map.merge(selected_element, new_element)
+     end)
+     |> Map.merge(%{"count" => elements["count"] + 1}), id}
   end
 
-  def elements_reevaluation(elements, new_element, "layout") do
-    Enum.map(elements, fn el ->
-      if el.id == new_element.parent_id do
-        Map.merge(el, %{
-          children:
-            el.children
-            |> List.insert_at(new_element.index, new_element)
-            |> sort_elements_list()
-        })
-      else
-        el
-      end
-    end)
+  def elements_reevaluation(new_element, elements, "layout", _index) do
+    [id | _t] = Map.keys(new_element)
+    parent_id = new_element[id]["parent_id"]
+
+    {update_in(
+       elements,
+       ["children", parent_id, "children"],
+       fn selected_element -> Map.merge(selected_element, new_element) end
+     )
+     |> Map.merge(%{"count" => elements["count"] + 1}), id}
   end
 
-  def elements_reevaluation(elements, new_element, "section") do
+  def elements_reevaluation(new_element, elements, "section", _index) do
     Enum.map(elements, fn %{type: "layout", children: children} = layout ->
       updated_children =
         Enum.map(children, fn data ->
