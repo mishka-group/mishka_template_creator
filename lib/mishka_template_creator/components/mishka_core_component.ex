@@ -442,30 +442,34 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     )
   end
 
-  def delete_element_config(elements, id, _parent_id, class, "layout") do
-    Enum.map(elements, fn %{type: "layout"} = layout ->
-      if layout.id == id,
-        do: Map.merge(layout, %{class: Enum.reject(layout.class, &(&1 == class))}),
-        else: layout
+  def delete_class(elements, id, _parent_id, class, "layout") do
+    update_in(elements, ["children", id], fn selected_element ->
+      Map.merge(selected_element, %{
+        "class" => Enum.reject(selected_element["class"], &(&1 == class))
+      })
     end)
   end
 
-  def delete_element_config(elements, id, parent_id, class, "section") do
-    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
-      if layout.id == parent_id do
-        edited_list =
-          children
-          |> Enum.map(fn el ->
-            if el.id == id,
-              do: Map.merge(el, %{class: Enum.reject(el.class, &(&1 == class))}),
-              else: el
-          end)
-
-        %{layout | children: edited_list}
-      else
-        layout
-      end
+  def delete_class(elements, id, parent_id, class, "section") do
+    update_in(elements, ["children", parent_id, "children", id], fn selected_element ->
+      Map.merge(selected_element, %{
+        "class" => Enum.reject(selected_element["class"], &(&1 == class))
+      })
     end)
+  end
+
+  def delete_class(elements, id, parent_id, class, type) when type in @elements do
+    {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
+
+    update_in(
+      elements,
+      ["children", layout_id, "children", parent_id, "children", id],
+      fn selected_element ->
+        Map.merge(selected_element, %{
+          "class" => Enum.reject(selected_element["class"], &(&1 == class))
+        })
+      end
+    )
   end
 
   def find_element(elements, id, _parent_id, _layout_id, "layout"),

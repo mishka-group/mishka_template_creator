@@ -178,7 +178,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       assign(
         socket,
         elements:
-          delete_element_config(socket.assigns.elements, block_id, parent_id, config, block_type)
+          delete_class(socket.assigns.elements, block_id, parent_id, config, block_type)
       )
 
     {:noreply, new_assign}
