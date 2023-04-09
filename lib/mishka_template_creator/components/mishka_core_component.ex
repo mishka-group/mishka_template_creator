@@ -281,10 +281,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     [id | _t] = Map.keys(new_element)
     parent_id = new_element[id]["parent_id"]
 
-    {layout_id, _layout_map} =
-      Enum.find(elements["children"], fn {_key, map} ->
-        Map.has_key?(map["children"], parent_id)
-      end)
+    {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
 
     {update_in(
        elements,
@@ -358,36 +355,25 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     elements
   end
 
-  def delete_element(elements, %{"id" => id, "parent_id" => parent_id, "type" => type}) when type in @elements do
-    {layout_id, _layout_map} =
-      Enum.find(elements["children"], fn {_key, map} ->
-        Map.has_key?(map["children"], parent_id)
-      end)
+  def delete_element(elements, %{"id" => id, "parent_id" => parent_id, "type" => type})
+      when type in @elements do
+    {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
 
-    {_, elements} = pop_in(elements, ["children", layout_id, "children", parent_id, "children", id])
+    {_, elements} =
+      pop_in(elements, ["children", layout_id, "children", parent_id, "children", id])
 
     elements
   end
 
   def add_tag(elements, %{"id" => id, "parent_id" => _parent_id, "tag" => tag, "type" => "layout"}) do
-    Enum.map(elements, fn %{type: "layout"} = layout ->
-      if layout.id == id, do: Map.merge(layout, %{tag: tag}), else: layout
+    update_in(elements, ["children", id], fn selected_element ->
+      Map.merge(selected_element, %{"tag" => tag})
     end)
   end
 
   def add_tag(elements, %{"id" => id, "parent_id" => parent_id, "tag" => tag, "type" => "section"}) do
-    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
-      if layout.id == parent_id do
-        edited_list =
-          children
-          |> Enum.map(fn el ->
-            if el.id == id, do: Map.merge(el, %{tag: tag}), else: el
-          end)
-
-        %{layout | children: edited_list}
-      else
-        layout
-      end
+    update_in(elements, ["children", parent_id, "children", id], fn selected_element ->
+      Map.merge(selected_element, %{"tag" => tag})
     end)
   end
 
@@ -399,32 +385,13 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         "type" => type
       })
       when type in @elements do
-    Enum.map(elements, fn
-      %{type: "layout", id: ^layout_id, children: children} = selected_layout ->
-        edited_list =
-          children
-          |> Enum.map(fn
-            %{type: "section", id: ^parent_id, children: children} = selected_section ->
-              element_edited_list =
-                Enum.map(children, fn
-                  %{type: ^type, id: ^id} = selected_element ->
-                    Map.merge(selected_element, %{tag: tag})
-
-                  element ->
-                    element
-                end)
-
-              %{selected_section | children: element_edited_list}
-
-            section ->
-              section
-          end)
-
-        %{selected_layout | children: edited_list}
-
-      layout ->
-        layout
-    end)
+    update_in(
+      elements,
+      ["children", layout_id, "children", parent_id, "children", id],
+      fn selected_element ->
+        Map.merge(selected_element, %{"tag" => tag})
+      end
+    )
   end
 
   def add_element_config(elements, id, _parent_id, class, "layout") do
@@ -566,5 +533,12 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     |> JS.add_class("hidden", to: ".custom_class-form")
     |> hide_modal(id)
     |> JS.push("reset")
+  end
+
+  # TODO: it should support Layout --> Section --> Section --> Element
+  defp find_element_grandparents(elements, section_id: section_id) do
+    Enum.find(elements["children"], fn {_key, map} ->
+      Map.has_key?(map["children"], section_id)
+    end)
   end
 end
