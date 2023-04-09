@@ -209,7 +209,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       assign(
         socket,
         elements:
-          add_element_config(
+          add_class(
             socket.assigns.elements,
             block_id,
             parent_id,
@@ -248,7 +248,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       assign(
         socket,
         elements:
-          add_element_config(
+          add_class(
             socket.assigns.elements,
             block_id,
             parent_id,

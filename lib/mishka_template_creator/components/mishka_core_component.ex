@@ -394,56 +394,52 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     )
   end
 
-  def add_element_config(elements, id, _parent_id, class, "layout") do
-    Enum.map(elements, fn %{type: "layout"} = layout ->
-      new_class =
-        if is_nil(Map.get(layout, :class)), do: [class], else: Map.get(layout, :class) ++ [class]
-
-      if layout.id == id, do: Map.merge(layout, %{class: new_class}), else: layout
+  def add_class(elements, id, _parent_id, class, "layout") do
+    update_in(elements, ["children", id], fn selected_element ->
+      Map.merge(selected_element, %{"class" => selected_element["class"] ++ [class]})
     end)
   end
 
-  def add_element_config(elements, id, parent_id, class, "section") do
-    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
-      if layout.id == parent_id do
-        edited_list =
-          children
-          |> Enum.map(fn el ->
-            new_class =
-              if is_nil(Map.get(el, :class)), do: [class], else: Map.get(el, :class) ++ [class]
+  def add_class(elements, id, parent_id, class, "section") do
+    update_in(elements, ["children", parent_id, "children", id], fn selected_element ->
+      Map.merge(selected_element, %{"class" => selected_element["class"] ++ [class]})
+    end)
+  end
 
-            if el.id == id, do: Map.merge(el, %{class: new_class}), else: el
-          end)
+  def add_class(elements, id, parent_id, class, type) when type in @elements do
+    {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
 
-        %{layout | children: edited_list}
-      else
-        layout
+    update_in(
+      elements,
+      ["children", layout_id, "children", parent_id, "children", id],
+      fn selected_element ->
+        Map.merge(selected_element, %{"class" => selected_element["class"] ++ [class]})
       end
+    )
+  end
+
+  def add_class(elements, id, _parent_id, classes, "layout", :string_classes) do
+    update_in(elements, ["children", id], fn selected_element ->
+      Map.merge(selected_element, %{"class" => String.split(classes, " ")})
     end)
   end
 
-  def add_element_config(elements, id, _parent_id, classes, "layout", :string_classes) do
-    Enum.map(elements, fn %{type: "layout"} = layout ->
-      if layout.id == id,
-        do: Map.merge(layout, %{class: String.split(classes, " ")}),
-        else: layout
+  def add_class(elements, id, parent_id, classes, "section", :string_classes) do
+    update_in(elements, ["children", parent_id, "children", id], fn selected_element ->
+      Map.merge(selected_element, %{"class" => String.split(classes, " ")})
     end)
   end
 
-  def add_element_config(elements, id, parent_id, classes, "section", :string_classes) do
-    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
-      if layout.id == parent_id do
-        edited_list =
-          children
-          |> Enum.map(fn el ->
-            if el.id == id, do: Map.merge(el, %{class: String.split(classes, " ")}), else: el
-          end)
+  def add_class(elements, id, parent_id, classes, type, :string_classes) when type in @elements do
+    {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
 
-        %{layout | children: edited_list}
-      else
-        layout
+    update_in(
+      elements,
+      ["children", layout_id, "children", parent_id, "children", id],
+      fn selected_element ->
+        Map.merge(selected_element, %{"class" => String.split(classes, " ")})
       end
-    end)
+    )
   end
 
   def delete_element_config(elements, id, _parent_id, class, "layout") do

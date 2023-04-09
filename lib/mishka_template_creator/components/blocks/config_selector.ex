@@ -111,10 +111,10 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
       self(),
       {"delete",
        %{
-         block_id: block_id,
-         block_type: block_type,
-         config: config,
-         parent_id: socket.assigns.parent_id
+         "block_id" => block_id,
+         "block_type" => block_type,
+         "config" => config,
+         "parent_id" => socket.assigns.parent_id
        }}
     )
 
@@ -128,11 +128,11 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
       self(),
       {"element",
        %{
-         block_id: block_id,
-         block_type: block_type,
-         extra_config: extra_config,
-         config: config,
-         parent_id: socket.assigns.parent_id
+         "block_id" => block_id,
+         "block_type" => block_type,
+         "extra_config" => extra_config,
+         "config" => config,
+         "parent_id" => socket.assigns.parent_id
        }}
     )
 
