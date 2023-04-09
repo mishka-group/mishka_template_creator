@@ -473,34 +473,13 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   def find_element(elements, id, _parent_id, _layout_id, "layout"),
-    do: Enum.find(elements, &(&1.id == id))
+    do: get_in(elements, ["children", id])
 
-  def find_element(elements, id, parent_id, _layout_id, "section") do
-    Enum.flat_map(elements, fn
-      %{type: "layout", id: ^parent_id, children: children} ->
-        if is_nil(data = Enum.find(children, &(&1.id == id))), do: [], else: [data]
-
-      _layout ->
-        []
-    end)
-    |> List.first()
-  end
+  def find_element(elements, id, parent_id, _layout_id, "section"),
+    do: get_in(elements, ["children", parent_id, "children", id])
 
   def find_element(elements, id, parent_id, layout_id, type) when type in @elements do
-    Enum.flat_map(elements, fn
-      %{type: "layout", id: ^layout_id, children: children} ->
-        case Enum.find(children, &(&1.id == parent_id)) do
-          nil ->
-            []
-
-          %{type: "section", id: ^parent_id, children: children} ->
-            if is_nil(data = Enum.find(children, &(&1.id == id))), do: [], else: [data]
-        end
-
-      _layout ->
-        []
-    end)
-    |> List.first()
+    get_in(elements, ["children", layout_id, "children", parent_id, "children", id])
   end
 
   @spec sort_elements_list(list, boolean) :: list

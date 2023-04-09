@@ -40,6 +40,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
         },
         socket
       ) do
+        IO.inspect(elements)
     element =
       MishkaCoreComponent.find_element(
         elements,
@@ -329,7 +330,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
       self(),
       {"set",
        %{
-         "element_id" => socket.assigns.id,
+         "element_id" => String.replace(socket.assigns.id, "-call", ""),
          "element_type" => element_type,
          "layout_id" => layout_id,
          "section_id" => section_id
