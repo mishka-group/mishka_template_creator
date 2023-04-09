@@ -394,31 +394,10 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     )
   end
 
-  def add_class(elements, id, _parent_id, class, "layout") do
-    update_in(elements, ["children", id], fn selected_element ->
-      Map.merge(selected_element, %{"class" => selected_element["class"] ++ [class]})
-    end)
-  end
-
-  def add_class(elements, id, parent_id, class, "section") do
-    update_in(elements, ["children", parent_id, "children", id], fn selected_element ->
-      Map.merge(selected_element, %{"class" => selected_element["class"] ++ [class]})
-    end)
-  end
-
-  def add_class(elements, id, parent_id, class, type) when type in @elements do
-    {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
-
-    update_in(
-      elements,
-      ["children", layout_id, "children", parent_id, "children", id],
-      fn selected_element ->
-        Map.merge(selected_element, %{"class" => selected_element["class"] ++ [class]})
-      end
-    )
-  end
+  def add_class(elements, id, parent_id, classes, type, action \\ :normal)
 
   def add_class(elements, id, _parent_id, classes, "layout", :string_classes) do
+    IO
     update_in(elements, ["children", id], fn selected_element ->
       Map.merge(selected_element, %{"class" => String.split(classes, " ")})
     end)
@@ -438,6 +417,30 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       ["children", layout_id, "children", parent_id, "children", id],
       fn selected_element ->
         Map.merge(selected_element, %{"class" => String.split(classes, " ")})
+      end
+    )
+  end
+
+  def add_class(elements, id, _parent_id, class, "layout", :normal) do
+    update_in(elements, ["children", id], fn selected_element ->
+      Map.merge(selected_element, %{"class" => selected_element["class"] ++ [class]})
+    end)
+  end
+
+  def add_class(elements, id, parent_id, class, "section", :normal) do
+    update_in(elements, ["children", parent_id, "children", id], fn selected_element ->
+      Map.merge(selected_element, %{"class" => selected_element["class"] ++ [class]})
+    end)
+  end
+
+  def add_class(elements, id, parent_id, class, type, :normal) when type in @elements do
+    {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
+
+    update_in(
+      elements,
+      ["children", layout_id, "children", parent_id, "children", id],
+      fn selected_element ->
+        Map.merge(selected_element, %{"class" => selected_element["class"] ++ [class]})
       end
     )
   end

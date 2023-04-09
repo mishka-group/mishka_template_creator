@@ -40,14 +40,15 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
         },
         socket
       ) do
-        IO.inspect(elements)
+    IO.inspect(elements)
+
     element =
       MishkaCoreComponent.find_element(
         elements,
-        selected_form["element_id"],
-        selected_form["section_id"],
+        selected_form["id"],
+        selected_form["parent_id"],
         selected_form["layout_id"],
-        selected_form["element_type"]
+        selected_form["type"]
       )
 
     {:ok,
@@ -324,16 +325,16 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   end
 
   def handle_event("set", %{"layout_id" => layout_id}, socket) do
-    %{"parent_id" => section_id, "type" => element_type} = socket.assigns.element
+    %{"parent_id" => parent_id, "type" => type} = socket.assigns.element
 
     send(
       self(),
       {"set",
        %{
-         "element_id" => String.replace(socket.assigns.id, "-call", ""),
-         "element_type" => element_type,
+         "id" => String.replace(socket.assigns.id, "-call", ""),
+         "type" => type,
          "layout_id" => layout_id,
-         "section_id" => section_id
+         "parent_id" => parent_id
        }}
     )
 
@@ -348,19 +349,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     case {submit_status, String.trim(tag)} do
       {true, _tag} ->
         %{
-          "element_id" => element_id,
-          "section_id" => section_id,
+          "id" => id,
+          "parent_id" => parent_id,
           "layout_id" => layout_id,
-          "element_type" => element_type
+          "type" => type
         } = socket.assigns.selected_form
 
         params = %{
           "tag" => %{
-            "id" => element_id,
-            "parent_id" => section_id,
+            "id" => id,
+            "parent_id" => parent_id,
             "layout_id" => layout_id,
             "tag" => String.trim(tag),
-            "type" => element_type
+            "type" => type
           }
         }
 
@@ -382,16 +383,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
       TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
         TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs
 
-    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_sizes_and_font_families))
+    class =
+      Enum.reject(socket.assigns.element["class"], &(&1 in text_sizes_and_font_families)) ++
+        [TailwindSetting.find_font_by_index(font_size).font_class] ++
+        if(font != "", do: [font], else: [])
 
     send(
       self(),
-      {"update_class",
+      {"element",
        %{
-         "class" =>
-           class ++
-             [TailwindSetting.find_font_by_index(font_size).font_class] ++
-             if(font != "", do: [font], else: [])
+         "update_class" =>
+           %{"class" => Enum.join(class, " "), "action" => :string_classes}
+           |> Map.merge(socket.assigns.selected_form)
        }}
     )
 
@@ -402,11 +405,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_colors)) ++ [color]
+
     send(
       self(),
-      {"update_class",
+      {"element",
        %{
-         "class" => Enum.reject(socket.assigns.element["class"], &(&1 in text_colors)) ++ [color]
+         "update_class" =>
+           %{
+             "class" => Enum.join(class, " "),
+             "action" => :string_classes
+           }
+           |> Map.merge(socket.assigns.selected_form)
        }}
     )
 

@@ -14,7 +14,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
         do:
           Module.safe_concat(
             "Elixir.MishkaTemplateCreator.Components.Elements",
-            String.capitalize(selected_form["element_type"])
+            String.capitalize(selected_form["type"])
           ),
         else: nil
 
@@ -69,7 +69,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
         <.live_component
           :if={!is_nil(@selected_form)}
           module={@block_module}
-          id={@selected_form["element_id"] <> "-form"}
+          id={@selected_form["id"] <> "-form"}
           selected_form={@selected_form}
           render_type="form"
           elements={@elements}

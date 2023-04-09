@@ -177,14 +177,13 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     new_assign =
       assign(
         socket,
-        elements:
-          delete_class(socket.assigns.elements, block_id, parent_id, config, block_type)
+        elements: delete_class(socket.assigns.elements, block_id, parent_id, config, block_type)
       )
 
     {:noreply, new_assign}
   end
 
-  def handle_info({"validate", %{tag: tag}}, socket) do
+  def handle_info({"validate", %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3
@@ -235,6 +234,17 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_socket}
   end
 
+  def handle_info(
+        {"element", %{"update_class" => %{"action" => action} = params}},
+        socket
+      ) do
+    elements =
+      socket.assigns.elements
+      |> add_class(params["id"], params["parent_id"], params["class"], params["type"], action)
+
+    {:noreply, assign(socket, elements: elements)}
+  end
+
   def handle_info({"element", selected_config}, socket) do
     %{
       "block_id" => block_id,
@@ -253,7 +263,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
             block_id,
             parent_id,
             TailwindSetting.create_class(extra, config),
-            block_type
+            block_type,
+            :normal
           )
       )
 
