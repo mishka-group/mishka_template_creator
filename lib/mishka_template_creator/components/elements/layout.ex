@@ -22,7 +22,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
   attr :submit, :boolean, default: false
   attr :on_delete, JS, default: %JS{}
   attr :on_duplicate, JS, default: %JS{}
-  attr :children, :list, default: []
+  attr :children, :map, default: %{}
 
   @spec layout(map) :: Phoenix.LiveView.Rendered.t()
   def layout(assigns) do

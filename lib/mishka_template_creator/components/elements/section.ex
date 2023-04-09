@@ -17,7 +17,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   attr(:submit, :boolean, default: false)
   attr(:on_delete, JS, default: %JS{})
   attr(:on_duplicate, JS, default: %JS{})
-  attr(:children, :list, default: [])
+  attr(:children, :map, default: %{})
   attr(:class, :string, default: nil)
   attr(:rest, :global)
 
@@ -46,7 +46,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
         <%= @tag %>
       </div>
 
-      <.element :for={child <- @children} id={child.id} element={child} type={child.type} />
+      <.element :for={{key, data} <- @children} id={key} element={data} type={data["type"]} />
     </div>
     """
   end

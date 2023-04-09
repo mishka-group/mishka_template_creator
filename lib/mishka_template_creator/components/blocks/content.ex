@@ -16,7 +16,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Content do
       class="flex flex-col items-stretch justify-start pr-9 pl-0 pt-10 pb-96 mb-96 w-full space-y-16 lg:overflow-y-scroll lg:h-screen lg:min-h-screen mx-5 lg:pr-0"
     >
       <div
-        :if={@elements["count"] == 0}
+        :if={length(Map.keys(@elements["children"])) == 0}
         id="previewHelper"
         class="unsortable flex flex-col justify-center items-center w-full border border-dashed border-gray-300 h-80 text-center object-center font-bold text-xl hover:border-blue-500 hover:duration-1000 hover:rounded-md rounded-sm duration-300 hover:text-blue-600 space-y-10"
       >

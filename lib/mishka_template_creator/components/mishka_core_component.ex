@@ -9,7 +9,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   @elements Elements.elements(:all, :id)
 
-  attr(:elements, :list, required: true)
+  attr(:elements, :map, required: true)
   attr(:selected_block, :string, required: true)
   attr(:selected_setting, :map, required: false, default: nil)
   attr(:submit, :string, required: true)
@@ -263,8 +263,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
     {update_in(elements, ["children"], fn selected_element ->
        Map.merge(selected_element, new_element)
-     end)
-     |> Map.merge(%{"count" => elements["count"] + 1}), id}
+     end), id}
   end
 
   def elements_reevaluation(new_element, elements, "layout", _index) do
@@ -275,8 +274,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
        elements,
        ["children", parent_id, "children"],
        fn selected_element -> Map.merge(selected_element, new_element) end
-     )
-     |> Map.merge(%{"count" => elements["count"] + 1}), id}
+     ), id}
   end
 
   def elements_reevaluation(new_element, elements, "section", _index) do
@@ -292,10 +290,10 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
        elements,
        ["children", layout_id, "children", parent_id, "children"],
        fn selected_element -> Map.merge(selected_element, new_element) end
-     )
-     |> Map.merge(%{"count" => elements["count"] + 1}), id}
+     ), id}
   end
 
+  # TODO: It should be migrated to new version of data structure
   def change_order(elements, current_index, new_index, _parent_id, "layout") do
     current_Element = Enum.at(elements, current_index)
 
@@ -305,6 +303,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     |> sort_elements_list(false)
   end
 
+  # TODO: It should be migrated to new version of data structure
   def change_order(elements, current_index, new_index, parent_id, "section") do
     Enum.map(elements, fn %{type: "layout", children: children} = layout ->
       if layout.id == parent_id do
@@ -323,6 +322,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     end)
   end
 
+  # TODO: It should be migrated to new version of data structure
   def change_order(elements, current_index, new_index, parent_id, type) when type in @elements do
     Enum.map(elements, fn %{type: "layout", children: children} = layout ->
       updated_children =
@@ -347,23 +347,26 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   def delete_element(elements, %{"id" => id, "type" => "layout"}) do
+    {_, elements} = pop_in(elements, ["children", id])
+
     elements
-    |> Enum.reject(&(&1.id == id))
   end
 
   def delete_element(elements, %{"id" => id, "parent_id" => parent_id, "type" => "section"}) do
-    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
-      if layout.id == parent_id do
-        sorted_list =
-          children
-          |> Enum.reject(&(&1.id == id))
-          |> sort_elements_list(false)
+    {_, elements} = pop_in(elements, ["children", parent_id, "children", id])
 
-        %{layout | children: sorted_list}
-      else
-        layout
-      end
-    end)
+    elements
+  end
+
+  def delete_element(elements, %{"id" => id, "parent_id" => parent_id, "type" => type}) when type in @elements do
+    {layout_id, _layout_map} =
+      Enum.find(elements["children"], fn {_key, map} ->
+        Map.has_key?(map["children"], parent_id)
+      end)
+
+    {_, elements} = pop_in(elements, ["children", layout_id, "children", parent_id, "children", id])
+
+    elements
   end
 
   def add_tag(elements, %{"id" => id, "parent_id" => _parent_id, "tag" => tag, "type" => "layout"}) do

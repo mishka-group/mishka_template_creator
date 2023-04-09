@@ -43,10 +43,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     element =
       MishkaCoreComponent.find_element(
         elements,
-        selected_form.element_id,
-        selected_form.section_id,
-        selected_form.layout_id,
-        selected_form.element_type
+        selected_form["element_id"],
+        selected_form["section_id"],
+        selected_form["layout_id"],
+        selected_form["element_type"]
       )
 
     {:ok,
@@ -73,9 +73,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
       phx-click="get_element_layout_id"
       phx-value-myself={@myself}
       phx-target={@myself}
-      class={@element.class}
+      class={@element["class"]}
     >
-      <%= Map.get(@element, :html) || "This is a predefined text. Please click on the text to edit." %>
+      <%= @element["html"] || "This is a predefined text. Please click on the text to edit." %>
     </div>
     """
   end
@@ -239,7 +239,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                   prompt: "Choose your preferred font",
                   selected:
                     Enum.find(
-                      @element.class,
+                      @element["class"],
                       &(&1 in TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs)
                     )
                 ) %>
@@ -249,12 +249,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
               <span class="w-3/5">Size:</span>
               <div class="flex flex-row w-full gap-2 items-center">
                 <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
-                  <%= TailwindSetting.find_text_size_index(@element.class).index %>
+                  <%= TailwindSetting.find_text_size_index(@element["class"]).index %>
                 </span>
                 <%= range_input(f, :font_size,
                   min: "1",
                   max: "13",
-                  value: TailwindSetting.find_text_size_index(@element.class).index,
+                  value: TailwindSetting.find_text_size_index(@element["class"]).index,
                   class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                 ) %>
               </div>
@@ -275,7 +275,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                 phx-target={@myself}
               >
                 <Heroicons.x_mark
-                  :if={item in @element.class}
+                  :if={item in @element["class"]}
                   class={if(item in @selected_text_color, do: "text-white")}
                 />
               </div>
@@ -298,7 +298,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                 class:
                   "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
                 placeholder: "Change Tag name",
-                value: Map.get(@element, :tag)
+                value: @element["tag"]
               ) %>
               <p class={"text-xs #{if @submit, do: "text-red-500", else: ""} my-3 text-justify"}>
                 Please use only letters and numbers in naming and also keep in mind that you can only use (<code class="text-pink-400">-</code>) between letters. It should be noted, the tag name must be more than 4 characters.
@@ -315,7 +315,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   def handle_event("get_element_layout_id", %{"myself" => myself}, socket) do
     new_sock =
       push_event(socket, "get_element_parent_id", %{
-        id: socket.assigns.element.parent_id,
+        id: socket.assigns.element["parent_id"],
         myself: myself
       })
 
@@ -323,16 +323,16 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   end
 
   def handle_event("set", %{"layout_id" => layout_id}, socket) do
-    %{parent_id: section_id, id: element_id, type: element_type} = socket.assigns.element
+    %{"parent_id" => section_id, "type" => element_type} = socket.assigns.element
 
     send(
       self(),
       {"set",
        %{
-         element_id: element_id,
-         element_type: element_type,
-         layout_id: layout_id,
-         section_id: section_id
+         "element_id" => socket.assigns.id,
+         "element_type" => element_type,
+         "layout_id" => layout_id,
+         "section_id" => section_id
        }}
     )
 
@@ -347,10 +347,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     case {submit_status, String.trim(tag)} do
       {true, _tag} ->
         %{
-          element_id: element_id,
-          section_id: section_id,
-          layout_id: layout_id,
-          element_type: element_type
+          "element_id" => element_id,
+          "section_id" => section_id,
+          "layout_id" => layout_id,
+          "element_type" => element_type
         } = socket.assigns.selected_form
 
         params = %{
@@ -366,7 +366,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
         send(self(), {"element", params})
 
       _ ->
-        send(self(), {"validate", %{tag: tag}})
+        send(self(), {"validate", %{"tag" => tag}})
     end
 
     {:noreply, socket}
@@ -381,13 +381,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
       TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
         TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs
 
-    class = Enum.reject(socket.assigns.element.class, &(&1 in text_sizes_and_font_families))
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_sizes_and_font_families))
 
     send(
       self(),
       {"update_class",
        %{
-         class:
+         "class" =>
            class ++
              [TailwindSetting.find_font_by_index(font_size).font_class] ++
              if(font != "", do: [font], else: [])
@@ -405,7 +405,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
       self(),
       {"update_class",
        %{
-         class: Enum.reject(socket.assigns.element.class, &(&1 in text_colors)) ++ [color]
+         "class" => Enum.reject(socket.assigns.element["class"], &(&1 in text_colors)) ++ [color]
        }}
     )
 
@@ -421,8 +421,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
       self(),
       {"update_class",
        %{
-         class:
-           Enum.reject(socket.assigns.element.class, &(&1 in text_aligns)) ++ ["text-#{type}"]
+         "class" =>
+           Enum.reject(socket.assigns.element["class"], &(&1 in text_aligns)) ++ ["text-#{type}"]
        }}
     )
 

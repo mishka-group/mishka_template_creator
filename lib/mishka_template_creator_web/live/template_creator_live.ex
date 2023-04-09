@@ -14,7 +14,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     new_socket =
       assign(socket,
         # JSON of elements, it should be loaded from database or draft ETS if exists
-        elements: %{"id" => Ecto.UUID.generate(), "order" => [], "count" => 0, "children" => %{}},
+        elements: %{"id" => Ecto.UUID.generate(), "order" => [], "children" => %{}},
         # Selected element for section
         selected_block: nil,
         # Tag submit status to let user push data or not, can be integrated inside a live component
@@ -68,7 +68,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     new_assign =
       assign(socket, :selected_form, nil)
       |> push_event("redefine_blocks_drag_and_drop", %{})
-      |> push_event("create_preview_helper", %{status: length(element) == 0})
+      |> push_event("create_preview_helper", %{status: length(Map.keys(element["children"])) == 0})
       |> assign(:elements, element)
 
     {:noreply, new_assign}
@@ -237,11 +237,11 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   def handle_info({"element", selected_config}, socket) do
     %{
-      block_id: block_id,
-      block_type: block_type,
-      config: config,
-      extra_config: extra,
-      parent_id: parent_id
+      "block_id" => block_id,
+      "block_type" => block_type,
+      "config" => config,
+      "extra_config" => extra,
+      "parent_id" => parent_id
     } = selected_config
 
     new_assign =
