@@ -313,10 +313,10 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   def delete_element(elements, %{"id" => id, "parent_id" => parent_id, "type" => "section"}) do
     {_, elements} = pop_in(elements, ["children", parent_id, "children", id])
-
+    IO.inspect(elements)
     update_in(
       elements,
-      ["children", id],
+      ["children", parent_id],
       fn selected_element ->
         Map.merge(selected_element, %{
           "order" => delete_order_list_item(selected_element["order"], id)
@@ -535,7 +535,15 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     )
   end
 
-  def change_order(elements, id, new_index, parent_id, "section", layout_id) do
+  def change_order(elements, id, new_index, parent_id, "section", layout_id \\ nil) do
+    layout_id =
+      if is_nil(layout_id) do
+        {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
+        layout_id
+      else
+        layout_id
+      end
+
     elements
     |> update_in(
       ["children", layout_id, "children", parent_id],
