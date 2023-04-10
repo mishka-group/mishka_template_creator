@@ -128,11 +128,13 @@ defmodule MishkaTemplateCreator.Components.ConfigSelector do
       self(),
       {"element",
        %{
-         "block_id" => block_id,
-         "block_type" => block_type,
-         "extra_config" => extra_config,
-         "config" => config,
-         "parent_id" => socket.assigns.parent_id
+         "config_selector" => %{
+           "id" => block_id,
+           "type" => block_type,
+           "extra_config" => extra_config,
+           "config" => config,
+           "parent_id" => socket.assigns.parent_id
+         }
        }}
     )
 

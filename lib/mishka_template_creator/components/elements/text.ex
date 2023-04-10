@@ -428,12 +428,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     text_aligns =
       TailwindSetting.get_form_options("typography", "text-align", nil, nil).form_configs
 
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_aligns)) ++ ["text-#{type}"]
+
     send(
       self(),
-      {"update_class",
+      {"element",
        %{
-         "class" =>
-           Enum.reject(socket.assigns.element["class"], &(&1 in text_aligns)) ++ ["text-#{type}"]
+         "update_class" =>
+           %{
+             "class" => Enum.join(class, " "),
+             "action" => :string_classes
+           }
+           |> Map.merge(socket.assigns.selected_form)
        }}
     )
 
