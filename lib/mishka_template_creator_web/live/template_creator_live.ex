@@ -198,27 +198,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # def handle_info({"class", params}, socket) do
   # end
 
-  def handle_info(
-        {"element",
-         %{
-           "block_type" => block_type,
-           "block_id" => block_id,
-           "custom_classes" => custom_classes,
-           "parent_id" => parent_id
-         }},
-        socket
-      ) do
-    new_assign =
-      assign(
-        socket,
-        elements:
-          socket.assigns.elements
-          |> add_class(block_id, parent_id, custom_classes, block_type, :string_classes)
-      )
-
-    {:noreply, new_assign}
-  end
-
   def handle_info({"element", %{"tag" => params}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, params["tag"]) and

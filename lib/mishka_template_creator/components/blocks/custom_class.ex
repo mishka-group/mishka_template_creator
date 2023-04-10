@@ -71,7 +71,15 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
         send(
           self(),
           {"element",
-           Map.merge(custom_class, %{"parent_id" => socket.assigns.parent_id})}
+           %{
+             "update_class" => %{
+               "id" => custom_class["block_id"],
+               "type" => custom_class["block_type"],
+               "parent_id" => socket.assigns.parent_id,
+               "class" => custom_class["custom_classes"],
+               "action" => :string_classes
+             }
+           }}
         )
     end
 
@@ -87,10 +95,12 @@ defmodule MishkaTemplateCreator.Components.Blocks.CustomClass do
       self(),
       {"delete",
        %{
-         block_id: block_id,
-         block_type: block_type,
-         config: config,
-         parent_id: socket.assigns.parent_id
+         "delete_class" => %{
+           "id" => block_id,
+           "type" => block_type,
+           "class" => config,
+           "parent_id" => socket.assigns.parent_id
+         }
        }}
     )
 
