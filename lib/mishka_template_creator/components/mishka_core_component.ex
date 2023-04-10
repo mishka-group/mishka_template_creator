@@ -111,16 +111,17 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     """
   end
 
-  attr :for, :any, required: true, doc: "the datastructure for the form"
-  attr :as, :any, default: nil, doc: "the server side parameter to collect all input under"
+  attr(:for, :any, required: true, doc: "the datastructure for the form")
+  attr(:as, :any, default: nil, doc: "the server side parameter to collect all input under")
   attr(:class, :string, default: "space-y-8 bg-white mt-10")
 
-  attr :rest, :global,
+  attr(:rest, :global,
     include: ~w(autocomplete name rel action enctype method novalidate target),
     doc: "the arbitrary HTML attributes to apply to the form tag"
+  )
 
-  slot :inner_block, required: true
-  slot :actions, doc: "the slot for form actions, such as a submit button"
+  slot(:inner_block, required: true)
+  slot(:actions, doc: "the slot for form actions, such as a submit button")
 
   def custom_simple_form(assigns) do
     ~H"""
@@ -398,6 +399,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   def add_class(elements, id, _parent_id, classes, "layout", :string_classes) do
     IO
+
     update_in(elements, ["children", id], fn selected_element ->
       Map.merge(selected_element, %{"class" => String.split(classes, " ")})
     end)
@@ -473,6 +475,52 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         })
       end
     )
+  end
+
+  def add_param(elements, id, _parent_id, map_wanted, "layout") do
+    update_in(elements, ["children", id], fn selected_element ->
+      Map.merge(selected_element, map_wanted)
+    end)
+  end
+
+  def add_param(elements, id, parent_id, map_wanted, "section") do
+    update_in(elements, ["children", parent_id, "children", id], fn selected_element ->
+      Map.merge(selected_element, map_wanted)
+    end)
+  end
+
+  def add_param(elements, id, parent_id, map_wanted, type) when type in @elements do
+    {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
+
+    update_in(
+      elements,
+      ["children", layout_id, "children", parent_id, "children", id],
+      fn selected_element ->
+        Map.merge(selected_element, map_wanted)
+      end
+    )
+  end
+
+  def delete_param(elements, %{"key" => key, "id" => id, "type" => "layout"}) do
+    {_, elements} = pop_in(elements, ["children", id, key])
+
+    elements
+  end
+
+  def delete_param(elements, %{"key" => key, "id" => id, "parent_id" => parent_id, "type" => "section"}) do
+    {_, elements} = pop_in(elements, ["children", parent_id, "children", id, key])
+
+    elements
+  end
+
+  def delete_param(elements, %{"key" => key, "id" => id, "parent_id" => parent_id, "type" => type})
+      when type in @elements do
+    {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
+
+    {_, elements} =
+      pop_in(elements, ["children", layout_id, "children", parent_id, "children", id, key])
+
+    elements
   end
 
   def find_element(elements, id, _parent_id, _layout_id, "layout"),

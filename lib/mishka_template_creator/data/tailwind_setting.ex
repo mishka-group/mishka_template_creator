@@ -1977,7 +1977,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
             "text-right",
             "text-justify",
             "text-start",
-            "text-end	"
+            "text-end"
           ], [:hover, :media_queries]},
          {"text-color", "Text Color", "Utilities for controlling the text color of an element.",
           [

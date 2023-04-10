@@ -40,8 +40,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
         },
         socket
       ) do
-    IO.inspect(elements)
-
     element =
       MishkaCoreComponent.find_element(
         elements,
@@ -76,6 +74,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
       phx-value-myself={@myself}
       phx-target={@myself}
       class={@element["class"]}
+      dir={@element["direction"] || "LTR"}
     >
       <%= @element["html"] || "This is a predefined text. Please click on the text to edit." %>
     </div>
@@ -122,7 +121,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
               <%= textarea(f, :text,
                 class:
                   "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                rows: "4"
+                rows: "4",
+                value: @element["html"]
               ) %>
               <span class="w-full text-start text-xs mt-2 cursor-pointer">
                 <a
@@ -428,6 +428,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     text_aligns =
       TailwindSetting.get_form_options("typography", "text-align", nil, nil).form_configs
 
+    IO.inspect(text_aligns)
     class = Enum.reject(socket.assigns.element["class"], &(&1 in text_aligns)) ++ ["text-#{type}"]
 
     send(
@@ -447,12 +448,36 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   end
 
   def handle_event("text_edit", %{"text_edit" => %{"text" => text}}, socket) do
-    IO.inspect(text)
+    send(
+      self(),
+      {"element",
+       %{
+         "update_parame" =>
+           %{
+             "key" => "html",
+             "value" => text
+           }
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
+
     {:noreply, socket}
   end
 
   def handle_event("text_direction", %{"type" => type}, socket) when type in ["RTL", "LTR"] do
-    IO.inspect(type)
+    send(
+      self(),
+      {"element",
+       %{
+         "update_parame" =>
+           %{
+             "key" => "direction",
+             "value" => type
+           }
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
+
     {:noreply, socket}
   end
 end

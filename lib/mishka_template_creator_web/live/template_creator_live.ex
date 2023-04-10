@@ -242,6 +242,19 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_assign}
   end
 
+  def handle_info({"element", %{"update_parame" => update_parame}}, socket) do
+    elements =
+      socket.assigns.elements
+      |> add_param(
+        update_parame["id"],
+        update_parame["parent_id"],
+        %{"#{update_parame["key"]}" => update_parame["value"]},
+        update_parame["type"]
+      )
+
+    {:noreply, assign(socket, elements: elements)}
+  end
+
   # def handle_info({"reset", params}, socket) do
   # end
 
