@@ -170,14 +170,18 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # def handle_info({"create", params}, socket) do
   # end
 
-  def handle_info({"delete", selected_config}, socket) do
-    %{block_id: block_id, block_type: block_type, config: config, parent_id: parent_id} =
-      selected_config
+  def handle_info({"delete", %{"delete_class" => selected_config}}, socket) do
+    %{
+      "id" => id,
+      "type" => type,
+      "class" => class,
+      "parent_id" => parent_id
+    } = selected_config
 
     new_assign =
       assign(
         socket,
-        elements: delete_class(socket.assigns.elements, block_id, parent_id, config, block_type)
+        elements: delete_class(socket.assigns.elements, id, parent_id, class, type)
       )
 
     {:noreply, new_assign}
@@ -243,7 +247,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     %{
       "id" => id,
       "type" => type,
-      "config" => config,
+      "class" => class,
       "extra_config" => extra,
       "parent_id" => parent_id
     } = selected_config
@@ -253,7 +257,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
         socket,
         elements:
           socket.assigns.elements
-          |> add_class(id, parent_id, TailwindSetting.create_class(extra, config), type, :normal)
+          |> add_class(id, parent_id, TailwindSetting.create_class(extra, class), type, :normal)
       )
 
     {:noreply, new_assign}

@@ -3,6 +3,7 @@
 
 # Local test fils
 /__test__/
+/deployment/templates/*.html
 
 # If you run "mix test --cover", coverage assets end up here.
 /cover/
