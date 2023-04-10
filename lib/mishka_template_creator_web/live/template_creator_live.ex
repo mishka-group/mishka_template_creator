@@ -126,17 +126,13 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   def handle_event(
         "order",
-        %{
-          "current_index" => current_index,
-          "new_index" => new_index,
-          "parent_id" => parent_id,
-          "type" => type
-        },
+        %{"id" => id, "new_index" => index, "parent_id" => parent_id, "type" => parent_type} =
+          params,
         socket
       ) do
     elements =
       socket.assigns.elements
-      |> change_order(current_index, new_index, parent_id, type)
+      |> change_order(id, index, parent_id, parent_type)
 
     {:noreply, assign(socket, elements: elements)}
   end

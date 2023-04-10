@@ -259,101 +259,70 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   @spec elements_reevaluation(map(), map(), String.t(), integer()) :: tuple()
-  def elements_reevaluation(new_element, elements, "dragLocation", _index) do
+  def elements_reevaluation(new_element, elements, "dragLocation" = type, index) do
     [id | _t] = Map.keys(new_element)
 
-    {update_in(elements, ["children"], fn selected_element ->
-       Map.merge(selected_element, new_element)
-     end), id}
+    new_elements =
+      update_in(elements, ["children"], fn selected_element ->
+        Map.merge(selected_element, new_element)
+      end)
+      |> change_order(id, index, nil, type)
+
+    {new_elements, id}
   end
 
-  def elements_reevaluation(new_element, elements, "layout", _index) do
+  def elements_reevaluation(new_element, elements, "layout" = type, index) do
     [id | _t] = Map.keys(new_element)
     parent_id = new_element[id]["parent_id"]
 
-    {update_in(
-       elements,
-       ["children", parent_id, "children"],
-       fn selected_element -> Map.merge(selected_element, new_element) end
-     ), id}
+    new_elements =
+      update_in(
+        elements,
+        ["children", parent_id, "children"],
+        fn selected_element -> Map.merge(selected_element, new_element) end
+      )
+      |> change_order(id, index, parent_id, type)
+
+    {new_elements, id}
   end
 
-  def elements_reevaluation(new_element, elements, "section", _index) do
+  def elements_reevaluation(new_element, elements, "section" = type, index) do
     [id | _t] = Map.keys(new_element)
     parent_id = new_element[id]["parent_id"]
 
     {layout_id, _layout_map} = find_element_grandparents(elements, section_id: parent_id)
 
-    {update_in(
-       elements,
-       ["children", layout_id, "children", parent_id, "children"],
-       fn selected_element -> Map.merge(selected_element, new_element) end
-     ), id}
-  end
+    new_elements =
+      update_in(
+        elements,
+        ["children", layout_id, "children", parent_id, "children"],
+        fn selected_element -> Map.merge(selected_element, new_element) end
+      )
+      |> change_order(id, index, parent_id, type, layout_id)
 
-  # TODO: It should be migrated to new version of data structure
-  def change_order(elements, current_index, new_index, _parent_id, "layout") do
-    current_Element = Enum.at(elements, current_index)
-
-    elements
-    |> List.delete_at(current_index)
-    |> List.insert_at(new_index, current_Element)
-    |> sort_elements_list(false)
-  end
-
-  # TODO: It should be migrated to new version of data structure
-  def change_order(elements, current_index, new_index, parent_id, "section") do
-    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
-      if layout.id == parent_id do
-        current_Element = Enum.at(children, current_index)
-
-        sorted_list =
-          children
-          |> List.delete_at(current_index)
-          |> List.insert_at(new_index, current_Element)
-          |> sort_elements_list(false)
-
-        %{layout | children: sorted_list}
-      else
-        layout
-      end
-    end)
-  end
-
-  # TODO: It should be migrated to new version of data structure
-  def change_order(elements, current_index, new_index, parent_id, type) when type in @elements do
-    Enum.map(elements, fn %{type: "layout", children: children} = layout ->
-      updated_children =
-        Enum.map(children, fn data ->
-          if data.type == "section" && data.id == parent_id do
-            current_Element = Enum.at(data.children, current_index)
-
-            sorted_list =
-              data.children
-              |> List.delete_at(current_index)
-              |> List.insert_at(new_index, current_Element)
-              |> sort_elements_list(false)
-
-            %{data | children: sorted_list}
-          else
-            data
-          end
-        end)
-
-      %{layout | children: sort_elements_list(updated_children)}
-    end)
+    {new_elements, id}
   end
 
   def delete_element(elements, %{"id" => id, "type" => "layout"}) do
     {_, elements} = pop_in(elements, ["children", id])
 
-    elements
+    Map.merge(elements, %{
+      "order" => delete_order_list_item(elements["order"], id)
+    })
   end
 
   def delete_element(elements, %{"id" => id, "parent_id" => parent_id, "type" => "section"}) do
     {_, elements} = pop_in(elements, ["children", parent_id, "children", id])
 
-    elements
+    update_in(
+      elements,
+      ["children", id],
+      fn selected_element ->
+        Map.merge(selected_element, %{
+          "order" => delete_order_list_item(selected_element["order"], id)
+        })
+      end
+    )
   end
 
   def delete_element(elements, %{"id" => id, "parent_id" => parent_id, "type" => type})
@@ -363,7 +332,15 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     {_, elements} =
       pop_in(elements, ["children", layout_id, "children", parent_id, "children", id])
 
-    elements
+    update_in(
+      elements,
+      ["children", layout_id, "children", parent_id],
+      fn selected_element ->
+        Map.merge(selected_element, %{
+          "order" => delete_order_list_item(selected_element["order"], id)
+        })
+      end
+    )
   end
 
   def add_tag(elements, %{"id" => id, "parent_id" => _parent_id, "tag" => tag, "type" => "layout"}) do
@@ -398,8 +375,6 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   def add_class(elements, id, parent_id, classes, type, action \\ :normal)
 
   def add_class(elements, id, _parent_id, classes, "layout", :string_classes) do
-    IO
-
     update_in(elements, ["children", id], fn selected_element ->
       Map.merge(selected_element, %{"class" => String.split(classes, " ")})
     end)
@@ -507,7 +482,12 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     elements
   end
 
-  def delete_param(elements, %{"key" => key, "id" => id, "parent_id" => parent_id, "type" => "section"}) do
+  def delete_param(elements, %{
+        "key" => key,
+        "id" => id,
+        "parent_id" => parent_id,
+        "type" => "section"
+      }) do
     {_, elements} = pop_in(elements, ["children", parent_id, "children", id, key])
 
     elements
@@ -533,13 +513,48 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     get_in(elements, ["children", layout_id, "children", parent_id, "children", id])
   end
 
-  @spec sort_elements_list(list, boolean) :: list
-  def sort_elements_list(list, auto \\ true) do
-    list
-    |> Enum.with_index(0)
-    |> Enum.sort_by(&if(auto, do: elem(&1, 0).index, else: elem(&1, 1)))
-    |> Enum.map(fn {map, index} -> Map.put(map, :index, index) end)
+  def change_order(elements, id, new_index, _parent_id, "dragLocation") do
+    IO.inspect(elements)
+
+    elements
+    |> Map.merge(%{
+      "order" => update_order_list(elements["order"], id, new_index)
+    })
   end
+
+  def change_order(elements, id, new_index, parent_id, "layout") do
+    elements
+    |> update_in(
+      ["children", parent_id],
+      fn selected_element ->
+        selected_element
+        |> Map.merge(%{
+          "order" => update_order_list(selected_element["order"], id, new_index)
+        })
+      end
+    )
+  end
+
+  def change_order(elements, id, new_index, parent_id, "section", layout_id) do
+    elements
+    |> update_in(
+      ["children", layout_id, "children", parent_id],
+      fn selected_element ->
+        selected_element
+        |> Map.merge(%{
+          "order" => update_order_list(selected_element["order"], id, new_index)
+        })
+      end
+    )
+  end
+
+  defp update_order_list(list, id, new_index) do
+    list
+    |> Enum.reject(&(&1 == id))
+    |> List.insert_at(new_index, id)
+  end
+
+  defp delete_order_list_item(list, id), do: Enum.reject(list, &(&1 == id))
 
   @spec string_map_to_atom(map) :: map
   def string_map_to_atom(map) do

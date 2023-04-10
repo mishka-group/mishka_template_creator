@@ -80,9 +80,9 @@ Sortable.create(dragLocation, {
   },
   onUpdate: function (/**Event*/ evt) {
     customEventCreator('changeElementOrderServerNotification', evt.item, {
-      current_index: evt.oldIndex,
+      id: evt.item.dataset.id,
       new_index: evt.newIndex,
-      type: evt.item.dataset.type,
+      type: evt.item.dataset.parentType,
       parent_id: evt.to.id,
     });
   },
@@ -105,6 +105,7 @@ Hooks.dragAndDropLocation = {
     this.el.addEventListener('changeElementOrderServerNotification', (e) => {
       e.preventDefault();
       // send back to the server
+      console.log(e.detail)
       this.pushEvent('order', e.detail);
     });
 
@@ -126,6 +127,7 @@ Hooks.dragAndDropLocation = {
           name: `${id}`,
           put: ['LayoutGroup', 'ElementGroup', 'MediaGroup'],
         },
+        filter: '.unsortable',
         animation: 150,
         swapThreshold: 0.65,
         onAdd: function (/**Event*/ evt) {
@@ -139,9 +141,9 @@ Hooks.dragAndDropLocation = {
         },
         onUpdate: function (/**Event*/ evt) {
           liveView.pushEvent('order', {
-            current_index: evt.oldIndex,
+            id: evt.item.dataset.id,
             new_index: evt.newIndex,
-            type: evt.item.dataset.type,
+            type: evt.item.dataset.parentType,
             parent_id: evt.to.id,
           });
         },
@@ -156,6 +158,7 @@ Hooks.dragAndDropLocation = {
               name: 'previewHelper',
               put: ['LayoutGroup'],
             },
+            filter: '.unsortable',
             animation: sortableSpeed,
             sort: false,
             onChange: function (/**Event*/ evt) {
@@ -226,7 +229,7 @@ Hooks.dragAndDropLocation = {
     });
 
     this.handleEvent('clean_layout_default_style', ({ block_id }) => {
-      const layoutDOM = document.getElementById(`layout-${block_id}`);
+      const layoutDOM = document.getElementById(`${block_id}`);
       layoutDOM.classList.toggle('create-layout');
       layoutDOM.classList.toggle('create-layout-pure');
     });

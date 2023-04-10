@@ -428,7 +428,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     text_aligns =
       TailwindSetting.get_form_options("typography", "text-align", nil, nil).form_configs
 
-    IO.inspect(text_aligns)
     class = Enum.reject(socket.assigns.element["class"], &(&1 in text_aligns)) ++ ["text-#{type}"]
 
     send(

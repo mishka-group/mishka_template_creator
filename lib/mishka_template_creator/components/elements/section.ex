@@ -31,6 +31,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
       phx-click="set"
       phx-value-id={@id}
       phx-value-type="section"
+      data-type="section"
+      data-parent-type="layout"
+      data-id={@id}
     >
       <.section_header
         :if={@selected_block == @id}
@@ -60,7 +63,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   @spec section_header(map) :: Phoenix.LiveView.Rendered.t()
   defp section_header(assigns) do
     ~H"""
-    <div id={"section_header_#{@section_id}"} class="section-header">
+    <div
+      id={"section_header_#{@section_id}"}
+      class="section-header"
+      data-type="section"
+      data-parent-type="layout"
+      data-id={@section_id}
+    >
       <Settings.block_settings
         block_id={@section_id}
         icon_class="section-icons"
@@ -82,6 +91,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
         custom_class="section-icons text-red-500"
         type="section"
         parent_id={@parent_id}
+        data-parent-type="layout"
       />
     </div>
     """
