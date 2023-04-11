@@ -214,16 +214,12 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   @spec create_and_reevaluate_element(map(), map) :: nil | tuple()
   def create_and_reevaluate_element(elements, params) do
-    IO.inspect("we are here")
-
     params
     |> Map.delete("index")
     |> create_element()
     |> case do
       nil -> nil
-      data ->
-        IO.inspect(params["parent_type"])
-        elements_reevaluation(data, elements, params["parent_type"], params["index"])
+      data -> elements_reevaluation(data, elements, params["parent_type"], params["index"])
     end
   rescue
     _ -> nil
@@ -246,10 +242,15 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         |> Map.merge(params)
     }
 
+    IO.inspect(params["parent_type"])
+    IO.inspect(parent_type)
+    IO.inspect(params["type"])
+
     cond do
       params["type"] == "layout" and "dragLocation" in parent_type ->
         init_map
 
+      # TODO: we should support section inside section
       params["type"] == "section" and "layout" in parent_type ->
         init_map
 

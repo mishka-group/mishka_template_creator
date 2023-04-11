@@ -27,7 +27,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
   @spec layout(map) :: Phoenix.LiveView.Rendered.t()
   def layout(assigns) do
     ~H"""
-    <div class="create-layout group" data-type="layout" data-parent-type="dragLocation" data-id={@id}>
+    <div class="create-layout group" id={"container-#{@id}"}data-type="layout" data-parent-type="dragLocation" data-id={@id}>
       <div class="unsortable flex flex-row justify-start items-center space-x-3 absolute -left-[2px] -top-11 bg-gray-200 border border-gray-200 p-2 rounded-tr-3xl z-1 w-54">
         <MobileView.block_mobile_view block_id={@id} />
         <DarkMod.block_dark_mod block_id={@id} />

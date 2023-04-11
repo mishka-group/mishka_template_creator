@@ -13,6 +13,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Content do
     <div
       id="dragLocation"
       data-type="dragLocation"
+      data-parent-type="dragLocation"
       class="flex flex-col items-stretch justify-start pr-9 pl-0 pt-10 pb-96 mb-96 w-full space-y-16 lg:overflow-y-scroll lg:h-screen lg:min-h-screen mx-5 lg:pr-0"
     >
       <div

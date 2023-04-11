@@ -42,6 +42,36 @@ function defineBlocksDragAndDrop() {
 
 defineBlocksDragAndDrop();
 
+Sortable.create(dragLocation, {
+  group: {
+    name: 'ContentGroup',
+    put: ['LayoutGroup', 'ElementGroup', 'MediaGroup'],
+  },
+  filter: '.unsortable',
+  animation: 0,
+  onAdd: function (/**Event*/ evt) {
+    console.log('we are ontest');
+    const preview = document.querySelector('#previewHelper');
+    customEventCreator('droppedElementServerNotification', evt.item, {
+      index: preview && evt.newIndex === 1 ? 0 : evt.newIndex,
+      type: evt.item.dataset.type,
+      parent_type: evt.to.dataset.parentType,
+      parent: evt.to.dataset.type,
+      parent_id: evt.to.id,
+    });
+    evt.item.remove();
+  },
+  onUpdate: function (/**Event*/ evt) {
+    customEventCreator('changeElementOrderServerNotification', evt.item, {
+      id: evt.item.dataset.id,
+      new_index: evt.newIndex,
+      type: evt.item.dataset.type,
+      parent_type: evt.to.dataset.parentType,
+      parent_id: evt.to.id,
+    });
+  },
+});
+
 Sortable.create(previewHelper, {
   group: {
     name: 'previewHelper',
@@ -56,35 +86,6 @@ Sortable.create(previewHelper, {
     ) {
       previewHelper.classList.add('hidden');
     }
-  },
-});
-
-Sortable.create(dragLocation, {
-  group: {
-    name: 'ContentGroup',
-    put: ['LayoutGroup'],
-  },
-  filter: '.unsortable',
-  animation: 150,
-  onAdd: function (/**Event*/ evt) {
-    const preview = document.querySelector('#previewHelper');
-    customEventCreator('droppedElementServerNotification', evt.item, {
-      index: preview && evt.newIndex === 1 ? 0 : evt.newIndex,
-      type: evt.item.dataset.type,
-      parent_type: evt.item.dataset.parentType,
-      parent: evt.to.dataset.type,
-      parent_id: evt.to.id,
-    });
-    evt.item.remove();
-  },
-  onUpdate: function (/**Event*/ evt) {
-    customEventCreator('changeElementOrderServerNotification', evt.item, {
-      id: evt.item.dataset.id,
-      new_index: evt.newIndex,
-      type: evt.item.dataset.type,
-      parent_type: evt.item.dataset.parentType,
-      parent_id: evt.to.id,
-    });
   },
 });
 
@@ -129,20 +130,23 @@ Hooks.dragAndDropLocation = {
         filter: '.unsortable',
         animation: 150,
         onAdd: function (/**Event*/ evt) {
-          liveView.pushEvent('create', {
-            index: evt.newIndex,
-            type: evt.item.dataset.type,
-            parent_type: evt.item.dataset.parentType,
-            parent: evt.to.dataset.type,
-            parent_id: evt.to.id,
-          });
+          evt.item.remove();
+          if (evt.item.dataset.type !== 'layout') {
+            liveView.pushEvent('create', {
+              index: evt.newIndex,
+              type: evt.item.dataset.type,
+              parent_type: evt.item.dataset.parentType,
+              parent: evt.to.dataset.type,
+              parent_id: evt.to.id,
+            });
+          }
         },
         onUpdate: function (/**Event*/ evt) {
           liveView.pushEvent('order', {
             id: evt.item.dataset.id,
             new_index: evt.newIndex,
             type: evt.item.dataset.type,
-            parent_type: evt.item.dataset.parentType,
+            parent_type: evt.to.dataset.parentType,
             parent_id: evt.to.id,
           });
         },
@@ -156,7 +160,6 @@ Hooks.dragAndDropLocation = {
             name: 'previewHelper',
             put: ['LayoutGroup'],
           },
-          filter: '.unsortable',
           animation: 150,
           sort: false,
           onChange: function (/**Event*/ evt) {
