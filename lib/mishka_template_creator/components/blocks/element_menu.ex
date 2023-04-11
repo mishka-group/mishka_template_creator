@@ -4,6 +4,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.ElementMenu do
 
   attr :id, :string, required: true
   attr :title, :string, required: true
+  attr :parent_type, :string, required: true
   attr :rest, :global
 
   slot :inner_block, required: true
@@ -14,6 +15,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.ElementMenu do
     <div
       data-id={@id}
       data-type={@id}
+      data-parent-type={@parent_type}
       class="border border-gray-200 rounded-md p-5 hover:border hover:border-blue-300 hover:duration-300 duration-1000 hover:text-blue-500 lg:px-1"
       {@rest}
     >
@@ -38,7 +40,12 @@ defmodule MishkaTemplateCreator.Components.Blocks.ElementMenu do
         id={"#{@id}-block"}
         class="grid grid-cols-3 gap-4 text-gray-700 lg:grid-cols-3 2xl:grid-cols-4"
       >
-        <.block_menu :for={{id, title, module} <- @items} id={id} title={title}>
+        <.block_menu
+          :for={{id, title, module, parent_type} <- @items}
+          id={id}
+          title={title}
+          parent_type={Enum.join(parent_type, ",")}
+        >
           <.icon module={module} />
         </.block_menu>
       </div>

@@ -3,7 +3,7 @@
 @import 'tailwindcss/utilities';
 
 .create-layout {
-  @apply flex flex-row bg-gray-200 border-2 justify-between items-stretch border-dashed border-gray-200 rounded-tl-none rounded-md p-5 hover:border-2 hover:border-dashed hover:duration-300 duration-1000 lg:px-1 relative shadow-md;
+  @apply flex flex-row bg-gray-200 border-2 justify-between items-stretch border-dashed border-gray-200 rounded-tl-none rounded-md hover:border-2 hover:border-dashed hover:duration-300 duration-1000 lg:px-1 relative shadow-md;
 }
 
 .create-layout-pure {

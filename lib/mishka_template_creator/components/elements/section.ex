@@ -32,7 +32,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
       phx-value-id={@id}
       phx-value-type="section"
       data-type="section"
-      data-parent-type="layout"
+      data-parent-type="layout,section"
       data-id={@id}
     >
       <.section_header
@@ -91,7 +91,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
         custom_class="section-icons text-red-500"
         type="section"
         parent_id={@parent_id}
-        data-parent-type="layout"
       />
     </div>
     """

@@ -42,6 +42,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
               phx-value-id={id}
               phx-value-child={nil}
               phx-value-type="setting"
+              parent_type="aside"
             >
               <%= Phoenix.LiveView.TagEngine.component(
                 Code.eval_string("&#{module}/1") |> elem(0),

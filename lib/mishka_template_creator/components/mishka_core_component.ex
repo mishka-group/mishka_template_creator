@@ -214,12 +214,16 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   @spec create_and_reevaluate_element(map(), map) :: nil | tuple()
   def create_and_reevaluate_element(elements, params) do
+    IO.inspect("we are here")
+
     params
     |> Map.delete("index")
     |> create_element()
     |> case do
       nil -> nil
-      data -> elements_reevaluation(data, elements, params["parent"], params["index"])
+      data ->
+        IO.inspect(params["parent_type"])
+        elements_reevaluation(data, elements, params["parent_type"], params["index"])
     end
   rescue
     _ -> nil
@@ -230,6 +234,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   def create_element(params) do
     id = Ecto.UUID.generate()
     blocks = Enum.filter(Elements.elements(:all, :id), &(&1 not in ["section", "layout"]))
+    parent_type = String.split(params["parent_type"], ",")
 
     init_map = %{
       "#{id}" =>
@@ -242,20 +247,18 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     }
 
     cond do
-      params["type"] == "layout" and params["parent"] == "dragLocation" ->
+      params["type"] == "layout" and "dragLocation" in parent_type ->
         init_map
 
-      params["type"] == "section" and params["parent"] == "layout" ->
+      params["type"] == "section" and "layout" in parent_type ->
         init_map
 
-      params["type"] in blocks and params["parent"] == "section" ->
+      params["type"] in blocks and "section" in parent_type ->
         init_map
 
       true ->
         nil
     end
-  rescue
-    _ -> nil
   end
 
   @spec elements_reevaluation(map(), map(), String.t(), integer()) :: tuple()
@@ -271,7 +274,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     {new_elements, id}
   end
 
-  def elements_reevaluation(new_element, elements, "layout" = type, index) do
+  def elements_reevaluation(new_element, elements, "layout,section" = type, index) do
     [id | _t] = Map.keys(new_element)
     parent_id = new_element[id]["parent_id"]
 
@@ -313,7 +316,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   def delete_element(elements, %{"id" => id, "parent_id" => parent_id, "type" => "section"}) do
     {_, elements} = pop_in(elements, ["children", parent_id, "children", id])
-    IO.inspect(elements)
+
     update_in(
       elements,
       ["children", parent_id],
@@ -514,15 +517,13 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   end
 
   def change_order(elements, id, new_index, _parent_id, "dragLocation") do
-    IO.inspect(elements)
-
     elements
     |> Map.merge(%{
       "order" => update_order_list(elements["order"], id, new_index)
     })
   end
 
-  def change_order(elements, id, new_index, parent_id, "layout") do
+  def change_order(elements, id, new_index, parent_id, "layout,section") do
     elements
     |> update_in(
       ["children", parent_id],

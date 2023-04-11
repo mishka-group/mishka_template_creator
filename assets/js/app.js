@@ -8,7 +8,6 @@ import Sortable from 'sortablejs';
 let stateLessConfig = 'none';
 const dragLocation = document.getElementById('dragLocation');
 const previewHelper = document.getElementById('previewHelper');
-const sortableSpeed = 150;
 
 function defineBlocksDragAndDrop() {
   const layoutBlock = document.getElementById('layout-block');
@@ -25,7 +24,7 @@ function defineBlocksDragAndDrop() {
         pull: 'clone',
         put: false,
       },
-      animation: sortableSpeed,
+      animation: 150,
       sort: false,
       onEnd: function (/**Event*/ evt) {
         const previewHelper = document.getElementById('previewHelper');
@@ -48,7 +47,7 @@ Sortable.create(previewHelper, {
     name: 'previewHelper',
     put: ['LayoutGroup'],
   },
-  animation: sortableSpeed,
+  animation: 150,
   sort: false,
   onChange: function (/**Event*/ evt) {
     if (
@@ -66,13 +65,13 @@ Sortable.create(dragLocation, {
     put: ['LayoutGroup'],
   },
   filter: '.unsortable',
-  animation: sortableSpeed,
-  swapThreshold: 0.65,
+  animation: 150,
   onAdd: function (/**Event*/ evt) {
     const preview = document.querySelector('#previewHelper');
     customEventCreator('droppedElementServerNotification', evt.item, {
       index: preview && evt.newIndex === 1 ? 0 : evt.newIndex,
       type: evt.item.dataset.type,
+      parent_type: evt.item.dataset.parentType,
       parent: evt.to.dataset.type,
       parent_id: evt.to.id,
     });
@@ -82,7 +81,8 @@ Sortable.create(dragLocation, {
     customEventCreator('changeElementOrderServerNotification', evt.item, {
       id: evt.item.dataset.id,
       new_index: evt.newIndex,
-      type: evt.item.dataset.parentType,
+      type: evt.item.dataset.type,
+      parent_type: evt.item.dataset.parentType,
       parent_id: evt.to.id,
     });
   },
@@ -105,7 +105,6 @@ Hooks.dragAndDropLocation = {
     this.el.addEventListener('changeElementOrderServerNotification', (e) => {
       e.preventDefault();
       // send back to the server
-      console.log(e.detail)
       this.pushEvent('order', e.detail);
     });
 
@@ -124,26 +123,26 @@ Hooks.dragAndDropLocation = {
       const element = document.getElementById(id);
       Sortable.create(element, {
         group: {
-          name: `${id}`,
+          name: `${id}-Sortable`,
           put: ['LayoutGroup', 'ElementGroup', 'MediaGroup'],
         },
         filter: '.unsortable',
         animation: 150,
-        swapThreshold: 0.65,
         onAdd: function (/**Event*/ evt) {
           liveView.pushEvent('create', {
             index: evt.newIndex,
             type: evt.item.dataset.type,
+            parent_type: evt.item.dataset.parentType,
             parent: evt.to.dataset.type,
             parent_id: evt.to.id,
           });
-          evt.item.remove();
         },
         onUpdate: function (/**Event*/ evt) {
           liveView.pushEvent('order', {
             id: evt.item.dataset.id,
             new_index: evt.newIndex,
-            type: evt.item.dataset.parentType,
+            type: evt.item.dataset.type,
+            parent_type: evt.item.dataset.parentType,
             parent_id: evt.to.id,
           });
         },
@@ -152,27 +151,23 @@ Hooks.dragAndDropLocation = {
 
     this.handleEvent('create_preview_helper', ({ status }) => {
       if (status) {
-        setTimeout(() => {
-          Sortable.create(document.getElementById('previewHelper'), {
-            group: {
-              name: 'previewHelper',
-              put: ['LayoutGroup'],
-            },
-            filter: '.unsortable',
-            animation: sortableSpeed,
-            sort: false,
-            onChange: function (/**Event*/ evt) {
-              if (
-                dragLocation.childElementCount === 1 ||
-                dragLocation.childElementCount === 0
-              ) {
-                document
-                  .getElementById('previewHelper')
-                  .classList.add('hidden');
-              }
-            },
-          });
-        }, 100);
+        Sortable.create(document.getElementById('previewHelper'), {
+          group: {
+            name: 'previewHelper',
+            put: ['LayoutGroup'],
+          },
+          filter: '.unsortable',
+          animation: 150,
+          sort: false,
+          onChange: function (/**Event*/ evt) {
+            if (
+              dragLocation.childElementCount === 1 ||
+              dragLocation.childElementCount === 0
+            ) {
+              document.getElementById('previewHelper').classList.add('hidden');
+            }
+          },
+        });
       }
     });
 

@@ -44,6 +44,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   # Handle Events
   @impl true
   def handle_event("create", params, socket) do
+    IO.inspect(create_and_reevaluate_element(socket.assigns.elements, params))
     push_element =
       case create_and_reevaluate_element(socket.assigns.elements, params) do
         nil ->
@@ -67,8 +68,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
     new_assign =
       assign(socket, :selected_form, nil)
-      |> push_event("redefine_blocks_drag_and_drop", %{})
       |> push_event("create_preview_helper", %{status: length(Map.keys(element["children"])) == 0})
+      # |> push_event("redefine_blocks_drag_and_drop", %{})
       |> assign(:elements, element)
 
     {:noreply, new_assign}
@@ -126,8 +127,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
 
   def handle_event(
         "order",
-        %{"id" => id, "new_index" => index, "parent_id" => parent_id, "type" => parent_type} =
-          params,
+        %{"id" => id, "new_index" => index, "parent_id" => parent_id, "type" => _type, "parent_type" => parent_type},
         socket
       ) do
     elements =
