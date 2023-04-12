@@ -65,7 +65,8 @@ Sortable.create(dragLocation, {
       id: evt.item.dataset.id,
       new_index: evt.newIndex,
       type: evt.item.dataset.type,
-      parent_type: evt.to.dataset.parentType,
+      parent_type: evt.item.dataset.parentType,
+      parent: evt.to.dataset.type,
       parent_id: evt.to.id,
     });
   },
@@ -145,7 +146,8 @@ Hooks.dragAndDropLocation = {
             id: evt.item.dataset.id,
             new_index: evt.newIndex,
             type: evt.item.dataset.type,
-            parent_type: evt.to.dataset.parentType,
+            parent: evt.to.dataset.type,
+            parent_type: evt.item.dataset.parentType,
             parent_id: evt.to.id,
           });
         },
