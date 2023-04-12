@@ -222,9 +222,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       data -> elements_reevaluation(data, elements, params["parent_type"], params["index"])
     end
   rescue
-    e ->
-      IO.inspect(e)
-      nil
+    _ -> nil
   end
 
   # %{"type"=> type, "index" => index, "parent" => parent, "parent_id" => parent_id}

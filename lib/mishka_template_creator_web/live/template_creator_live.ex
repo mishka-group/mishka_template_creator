@@ -138,7 +138,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     elements =
       socket.assigns.elements
       |> change_order(id, index, parent_id, parent_type)
-      |> IO.inspect()
 
     {:noreply, assign(socket, elements: elements)}
   end

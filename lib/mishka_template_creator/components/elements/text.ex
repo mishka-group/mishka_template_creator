@@ -70,6 +70,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     <div
       data-type="text"
       id={"text-#{@id}"}
+      data-id={String.replace(@id, "-call", "")}
+      data-parent-type="section"
       phx-click="get_element_layout_id"
       phx-value-myself={@myself}
       phx-target={@myself}

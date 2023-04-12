@@ -14,6 +14,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   attr(:selected_block, :string, required: true)
   attr(:selected_setting, :map, required: true)
   attr(:tag, :string, default: nil)
+  attr(:order, :list, required: true)
   attr(:submit, :boolean, default: false)
   attr(:on_delete, JS, default: %JS{})
   attr(:on_duplicate, JS, default: %JS{})
@@ -49,7 +50,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
         <%= @tag %>
       </div>
 
-      <.element :for={{key, data} <- @children} id={key} element={data} type={data["type"]} />
+      <.element
+        :for={
+          %{id: key, data: data} <- Enum.map(@order, fn key -> %{id: key, data: @children[key]} end)
+        }
+        id={key}
+        element={data}
+        type={data["type"]}
+      />
     </div>
     """
   end

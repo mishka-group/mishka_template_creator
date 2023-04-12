@@ -64,6 +64,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Layout do
           parent_id={@id}
           submit={@submit}
           tag={data["tag"]}
+          order={data["order"]}
           class={data["class"]}
           selected_setting={@selected_setting}
         />
