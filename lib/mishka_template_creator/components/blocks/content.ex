@@ -29,14 +29,18 @@ defmodule MishkaTemplateCreator.Components.Blocks.Content do
       </div>
 
       <Layout.layout
-        :for={{key, %{"children" => children} = el} <- @elements["children"]}
+        :for={
+          %{id: key, data: data} <-
+            Enum.map(@elements["order"], fn key -> %{id: key, data: @elements["children"][key]} end)
+        }
         id={key}
-        children={children}
+        children={data["children"]}
+        order={data["order"]}
         selected_block={@selected_block}
         selected_setting={@selected_setting}
         submit={@submit}
-        tag={el["tag"]}
-        class={el["class"]}
+        tag={data["tag"]}
+        class={data["class"]}
       />
     </div>
     """

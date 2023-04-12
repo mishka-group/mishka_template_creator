@@ -222,7 +222,9 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       data -> elements_reevaluation(data, elements, params["parent_type"], params["index"])
     end
   rescue
-    _ -> nil
+    e ->
+      IO.inspect(e)
+      nil
   end
 
   # %{"type"=> type, "index" => index, "parent" => parent, "parent_id" => parent_id}
@@ -242,15 +244,10 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         |> Map.merge(params)
     }
 
-    IO.inspect(params["parent_type"])
-    IO.inspect(parent_type)
-    IO.inspect(params["type"])
-
     cond do
       params["type"] == "layout" and "dragLocation" in parent_type ->
         init_map
 
-      # TODO: we should support section inside section
       params["type"] == "section" and "layout" in parent_type ->
         init_map
 
@@ -279,15 +276,20 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     [id | _t] = Map.keys(new_element)
     parent_id = new_element[id]["parent_id"]
 
-    new_elements =
-      update_in(
-        elements,
-        ["children", parent_id, "children"],
-        fn selected_element -> Map.merge(selected_element, new_element) end
-      )
-      |> change_order(id, index, parent_id, type)
+    if {new_element[id]["parent"], new_element[id]["type"]} == {"section", "section"} do
+      # TODO: we should support section inside section
+      nil
+    else
+      new_elements =
+        update_in(
+          elements,
+          ["children", parent_id, "children"],
+          fn selected_element -> Map.merge(selected_element, new_element) end
+        )
+        |> change_order(id, index, parent_id, type)
 
-    {new_elements, id}
+      {new_elements, id}
+    end
   end
 
   def elements_reevaluation(new_element, elements, "section" = type, index) do

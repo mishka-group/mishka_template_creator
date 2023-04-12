@@ -50,7 +50,6 @@ Sortable.create(dragLocation, {
   filter: '.unsortable',
   animation: 0,
   onAdd: function (/**Event*/ evt) {
-    console.log('we are ontest');
     const preview = document.querySelector('#previewHelper');
     customEventCreator('droppedElementServerNotification', evt.item, {
       index: preview && evt.newIndex === 1 ? 0 : evt.newIndex,
