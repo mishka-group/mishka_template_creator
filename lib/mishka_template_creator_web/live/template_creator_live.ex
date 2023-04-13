@@ -188,6 +188,18 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     {:noreply, new_assign}
   end
 
+  def handle_info({"delete", %{"delete_element" => params}}, socket) do
+    element = delete_element(socket.assigns.elements, params)
+
+    new_assign =
+      socket
+      |> assign(elements: element, selected_form: nil)
+      |> push_event("create_preview_helper", %{status: length(Map.keys(element["children"])) == 0})
+      |> push_event("redefine_blocks_drag_and_drop", %{})
+
+    {:noreply, new_assign}
+  end
+
   def handle_info({"validate", %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and

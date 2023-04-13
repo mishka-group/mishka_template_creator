@@ -4,6 +4,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
 
   alias MishkaTemplateCreator.Components.Blocks.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
+  import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
 
   @selected_text_color [
@@ -310,6 +311,23 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
             </MishkaCoreComponent.custom_simple_form>
           </div>
         </Aside.aside_accordion>
+
+        <div class="flex flex-row w-full justify-center items-center gap-3 pb-10">
+          <.button
+            phx-click="delete"
+            phx-target={@myself}
+            class="w-24 !bg-white border border-gray-300 shadow-sm !text-red-600 hover:!bg-gray-300 hover:text-gray-400 !rounded-md"
+          >
+            Delete
+          </.button>
+          <.button
+            phx-click="reset"
+            phx-target={@myself}
+            class="w-24 !bg-white border border-gray-300 shadow-sm !text-black hover:!bg-gray-300 hover:text-gray-400 !rounded-md"
+          >
+            Reset
+          </.button>
+        </div>
       </Aside.aside_settings>
     </div>
     """
@@ -478,6 +496,29 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
            |> Map.merge(socket.assigns.selected_form)
        }}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("reset", _params, socket) do
+    send(
+      self(),
+      {"element",
+       %{
+         "update_class" =>
+           %{
+             "class" => Enum.join(TailwindSetting.default_element("text"), " "),
+             "action" => :string_classes
+           }
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("delete", _params, socket) do
+    send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
 
     {:noreply, socket}
   end
