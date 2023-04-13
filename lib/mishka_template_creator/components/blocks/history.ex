@@ -8,9 +8,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.History do
 
   @impl true
   def update(assigns, socket) do
-    # new_sock = push_event(socket, "create_sample_html", %{myself: socket.assigns.myself.cid})
-    # {:ok, assign(new_sock, assigns)}
-    {:ok, socket}
+    new_sock = push_event(socket, "create_sample_html", %{myself: socket.assigns.myself.cid})
+    {:ok, assign(new_sock, assigns)}
   end
 
   @impl true
