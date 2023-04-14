@@ -8900,7 +8900,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       "children" => %{
         "#{id}" => %{
           "title" => "Title one",
-          "html" => "This is a test text",
+          "html" => "This is some placeholder content the tab's associated content. for changing the data of this tab please click here.",
           "icon" => "Heroicons.inbox_stack"
         }
       },

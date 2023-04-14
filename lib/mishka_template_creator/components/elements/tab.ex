@@ -57,6 +57,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       data-id={String.replace(@id, "-call", "")}
       data-parent-type="section"
       class={@element["class"]}
+      phx-click="get_element_layout_id"
+      phx-value-myself={@myself}
+      phx-target={@myself}
     >
       <.tab_header
         header={@element["header"]}
@@ -82,7 +85,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
 
   def tab_header(assigns) do
     ~H"""
-    <ul class={Enum.join(@header["container"], " ")} :if={length(@children) != 0}>
+    <ul :if={length(@children) != 0} class={Enum.join(@header["container"], " ")}>
       <li :for={%{id: key, data: data} <- @children} id={key}>
         <button class={Enum.join(@header["button"], " ")} type="button">
           <MishkaCoreComponent.dynamic_icon
@@ -109,6 +112,77 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       <%= data["html"] %>
     </div>
     """
+  end
+
+  @impl true
+  def handle_event("get_element_layout_id", %{"myself" => myself}, socket) do
+    new_sock =
+      push_event(socket, "get_element_parent_id", %{
+        id: socket.assigns.element["parent_id"],
+        myself: myself
+      })
+
+    {:noreply, new_sock}
+  end
+
+  def handle_event("set", %{"layout_id" => layout_id}, socket) do
+    %{"parent_id" => parent_id, "type" => type} = socket.assigns.element
+
+    send(
+      self(),
+      {"set",
+       %{
+         "id" => String.replace(socket.assigns.id, "-call", ""),
+         "type" => type,
+         "layout_id" => layout_id,
+         "parent_id" => parent_id
+       }}
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("validate", %{"text_component" => %{"tag" => tag}}, socket) do
+    submit_status =
+      Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
+        String.length(String.trim(tag)) > 3
+
+    case {submit_status, String.trim(tag)} do
+      {true, _tag} ->
+        %{
+          "id" => id,
+          "parent_id" => parent_id,
+          "layout_id" => layout_id,
+          "type" => type
+        } = socket.assigns.selected_form
+
+        params = %{
+          "tag" => %{
+            "id" => id,
+            "parent_id" => parent_id,
+            "layout_id" => layout_id,
+            "tag" => String.trim(tag),
+            "type" => type
+          }
+        }
+
+        send(self(), {"element", params})
+
+      _ ->
+        send(self(), {"validate", %{"tag" => tag}})
+    end
+
+    {:noreply, socket}
+  end
+
+  def handle_event("reset", _params, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("delete", _params, socket) do
+    send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
+
+    {:noreply, socket}
   end
 
   defp sorted_list(order, children) do
