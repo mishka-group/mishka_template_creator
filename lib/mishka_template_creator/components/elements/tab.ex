@@ -1,6 +1,7 @@
 defmodule MishkaTemplateCreator.Components.Elements.Tab do
   use Phoenix.LiveComponent
   import Phoenix.HTML.Form
+  use Phoenix.Component
 
   alias MishkaTemplateCreator.Components.Blocks.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
@@ -57,20 +58,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       data-parent-type="section"
       class={@element["class"]}
     >
-      <ul class={Enum.join(@element["header"]["container"], " ")}>
-        <li>
-          <button class={Enum.join(@element["header"]["button"], " ")} type="button">
-            <Heroicons.adjustments_horizontal class={Enum.join(@element["header"]["icon"], " ")} />
-            <span class={Enum.join(@element["header"]["title"], " ")}>Profile</span>
-          </button>
-        </li>
-      </ul>
+      <.tab_header header={@element["header"]} children={@element["children"]} />
 
-      <div class={Enum.join(@element["content"], " ")}>
-        <p>
-          This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Profile tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.
-        </p>
-      </div>
+      <.tab_content content={@element["content"]} />
     </div>
     """
   end
@@ -78,6 +68,35 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   def render(%{render_type: "form"} = assigns) do
     ~H"""
     <div>form</div>
+    """
+  end
+
+  attr(:header, :map, required: true)
+  attr(:children, :map, required: false, default: [])
+
+  def tab_header(assigns) do
+    ~H"""
+    <ul class={Enum.join(@header["container"], " ")}>
+      <li>
+        <button class={Enum.join(@header["button"], " ")} type="button">
+          <Heroicons.adjustments_horizontal class={Enum.join(@header["icon"], " ")} />
+          <span class={Enum.join(@header["title"], " ")}>Profile</span>
+        </button>
+      </li>
+    </ul>
+    """
+  end
+
+  attr(:content, :list, required: true)
+  attr(:children, :map, required: false, default: [])
+
+  def tab_content(assigns) do
+    ~H"""
+    <div class={Enum.join(@content, " ")}>
+      <p>
+        This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Profile tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.
+      </p>
+    </div>
     """
   end
 end
