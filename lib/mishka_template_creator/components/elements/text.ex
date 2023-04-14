@@ -241,7 +241,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                 <%= select(f, :font, ["font-sans", "font-serif", "font-mono"],
                   class:
                     "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1",
-                  prompt: "Choose your preferred font",
+                  prompt: "Choose preferred font",
                   selected:
                     Enum.find(
                       @element["class"],

@@ -8795,7 +8795,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       end)
       |> Enum.concat()
 
-    [:none, :dark] ++ created_types ++ [:hover]
+    [:none, :dark] ++ created_types
   end
 
   def create_class("none", class), do: class
@@ -8840,37 +8840,54 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   @spec is_configs_member?(String.t()) :: boolean
   def is_configs_member?(config), do: Enum.member?(get_all_config(), config)
 
-  @spec default_element(String.t()) :: list(String.t())
+  @spec default_element(String.t()) :: map()
   def default_element("layout") do
-    [
-      "flex",
-      "flex-row",
-      "justify-start",
-      "items-center",
-      "w-full",
-      "space-x-3",
-      "px-3",
-      "py-10"
-    ]
+    %{
+      "class" => [
+        "flex",
+        "flex-row",
+        "justify-start",
+        "items-center",
+        "w-full",
+        "space-x-3",
+        "px-3",
+        "py-10"
+      ]
+    }
   end
 
   def default_element("section") do
-    [
-      "flex",
-      "flex-col",
-      "justify-between",
-      "items-stretch",
-      "min-h-[200px]",
-      "w-full",
-      "border",
-      "border-dashed",
-      "border-gray-400",
-      "p-1"
-    ]
+    %{
+      "class" => [
+        "flex",
+        "flex-col",
+        "justify-between",
+        "items-stretch",
+        "min-h-[200px]",
+        "w-full",
+        "border",
+        "border-dashed",
+        "border-gray-400",
+        "p-1"
+      ]
+    }
   end
 
   def default_element("text") do
-    ["text-black", "w-full", "p-2", "text-base"]
+    %{"class" => ["text-black", "w-full", "p-2", "text-base"]}
+  end
+
+  def default_element("tab") do
+    %{
+      "class" => ["text-black", "w-full", "p-2", "text-base"],
+      "header" => %{
+        "container" => ["flex", "flex-wrap", "text-sm", "font-medium", "text-center", "mb-4", "border-b", "border-gray-800"],
+        "title" => ["text-base"],
+        "icon" => ["w-4", "h-4"],
+        "button" => ["flex", "flex-row", "p-4", "gap-1", "justify-center", "items-center"]
+      },
+      "content" => ["p-4", "rounded-lg", "bg-gray-50", "text-sm", "text-gray-500"]
+    }
   end
 
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()

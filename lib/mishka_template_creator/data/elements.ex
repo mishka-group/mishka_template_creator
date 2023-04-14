@@ -3,7 +3,7 @@ defmodule MishkaTemplateCreator.Data.Elements do
     {"layout", "Layout", "Heroicons.inbox_stack", ["dragLocation"]},
     {"section", "Section", "Heroicons.inbox_stack", ["layout", "section"]},
     {"text", "Text", "Heroicons.inbox_stack", ["section"]},
-    {"tabs", "Tabs", "Heroicons.inbox_stack", ["section"]},
+    {"tab", "Tab", "Heroicons.inbox_stack", ["section"]},
     {"columns", "Columns", "Heroicons.inbox_stack", ["section"]},
     {"table", "Table", "Heroicons.inbox_stack", ["section"]},
     {"accordion", "Accordion", "Heroicons.inbox_stack", ["section"]}

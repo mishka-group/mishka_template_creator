@@ -222,7 +222,9 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       data -> elements_reevaluation(data, elements, params["parent_type"], params["index"])
     end
   rescue
-    _ -> nil
+    e ->
+      IO.inspect(e)
+      nil
   end
 
   # %{"type"=> type, "index" => index, "parent" => parent, "parent_id" => parent_id}
@@ -237,8 +239,8 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
         %{
           "children" => %{},
           "order" => [],
-          "class" => TailwindSetting.default_element(params["type"])
         }
+        |> Map.merge(TailwindSetting.default_element(params["type"]))
         |> Map.merge(params)
     }
 

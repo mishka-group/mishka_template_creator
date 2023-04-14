@@ -143,7 +143,8 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
   end
 
   def handle_event("set", %{"id" => id, "type" => "section"}, socket) do
-    {:noreply, assign(socket, :selected_block, id)}
+    selected_block = if socket.assigns.selected_block == id, do: nil, else: id
+    {:noreply, assign(socket, :selected_block, selected_block)}
   end
 
   def handle_event("set", %{"type" => "setting"} = params, socket) do
