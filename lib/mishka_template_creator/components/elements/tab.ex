@@ -58,9 +58,15 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       data-parent-type="section"
       class={@element["class"]}
     >
-      <.tab_header header={@element["header"]} children={@element["children"]} />
+      <.tab_header
+        header={@element["header"]}
+        children={sorted_list(@element["order"], @element["children"])}
+      />
 
-      <.tab_content content={@element["content"]} />
+      <.tab_content
+        content={@element["content"]}
+        children={sorted_list(@element["order"], @element["children"])}
+      />
     </div>
     """
   end
@@ -72,15 +78,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   end
 
   attr(:header, :map, required: true)
-  attr(:children, :map, required: false, default: [])
+  attr(:children, :list, required: false, default: [])
 
   def tab_header(assigns) do
     ~H"""
-    <ul class={Enum.join(@header["container"], " ")}>
-      <li>
+    <ul class={Enum.join(@header["container"], " ")} :if={length(@children) != 0}>
+      <li :for={%{id: key, data: data} <- @children} id={key}>
         <button class={Enum.join(@header["button"], " ")} type="button">
-          <Heroicons.adjustments_horizontal class={Enum.join(@header["icon"], " ")} />
-          <span class={Enum.join(@header["title"], " ")}>Profile</span>
+          <MishkaCoreComponent.dynamic_icon
+            module={data["icon"]}
+            class={Enum.join(@header["icon"], " ")}
+          />
+          <span class={Enum.join(@header["title"], " ")}><%= data["title"] %></span>
         </button>
       </li>
     </ul>
@@ -92,11 +101,17 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
 
   def tab_content(assigns) do
     ~H"""
-    <div class={Enum.join(@content, " ")}>
-      <p>
-        This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Profile tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.
-      </p>
+    <div
+      :for={%{id: key, data: data} <- @children}
+      id={"content-#{key}"}
+      class={Enum.join(@content, " ")}
+    >
+      <%= data["html"] %>
     </div>
     """
+  end
+
+  defp sorted_list(order, children) do
+    Enum.map(order, fn key -> %{id: key, data: children[key]} end)
   end
 end

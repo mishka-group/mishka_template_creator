@@ -8878,15 +8878,33 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   end
 
   def default_element("tab") do
+    id = Ecto.UUID.generate()
     %{
       "class" => ["text-black", "w-full", "text-base", "p-2"],
       "header" => %{
-        "container" => ["flex", "flex-wrap", "text-sm", "font-medium", "text-center", "mb-6", "border-b", "border-gray-800"],
+        "container" => [
+          "flex",
+          "flex-wrap",
+          "text-sm",
+          "font-medium",
+          "text-center",
+          "mb-6",
+          "border-b",
+          "border-gray-800"
+        ],
         "title" => ["text-base"],
         "icon" => ["w-4", "h-4"],
         "button" => ["flex", "flex-row", "py-4", "gap-1", "justify-center", "items-center"]
       },
-      "content" => ["p-4", "rounded-lg", "bg-gray-50", "text-sm", "text-gray-500"]
+      "content" => ["p-4", "rounded-lg", "bg-gray-50", "text-sm", "text-gray-500"],
+      "children" => %{
+        "#{id}" => %{
+          "title" => "Title one",
+          "html" => "This is a test text",
+          "icon" => "Heroicons.inbox_stack"
+        }
+      },
+      "order" => [id]
     }
   end
 

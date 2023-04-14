@@ -212,6 +212,18 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     """
   end
 
+  attr :module, :string, required: true
+  attr :class, :string, required: false, default: "w-6 h-6 mx-auto stroke-current"
+  def dynamic_icon(assigns) do
+    ~H"""
+    <%= Phoenix.LiveView.TagEngine.component(
+      Code.eval_string("&#{@module}/1") |> elem(0),
+      [class: @class],
+      {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
+    ) %>
+    """
+  end
+
   @spec create_and_reevaluate_element(map(), map) :: nil | tuple()
   def create_and_reevaluate_element(elements, params) do
     params

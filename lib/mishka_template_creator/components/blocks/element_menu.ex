@@ -1,6 +1,7 @@
 defmodule MishkaTemplateCreator.Components.Blocks.ElementMenu do
   use Phoenix.Component
   alias MishkaTemplateCreator.Data.Elements
+  alias MishkaTemplateCreatorWeb.MishkaCoreComponent
 
   attr :id, :string, required: true
   attr :title, :string, required: true
@@ -46,7 +47,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.ElementMenu do
           title={title}
           parent_type={Enum.join(parent_type, ",")}
         >
-          <.icon module={module} />
+          <MishkaCoreComponent.dynamic_icon module={module} />
         </.block_menu>
       </div>
     </div>
@@ -68,18 +69,6 @@ defmodule MishkaTemplateCreator.Components.Blocks.ElementMenu do
     <.items id="elements" items={Elements.elements(:elements_items)} title="Elements" />
     <hr />
     <.items id="media" items={Elements.elements(:media_items)} title="Media" />
-    """
-  end
-
-  attr :module, :string, required: true
-
-  defp icon(assigns) do
-    ~H"""
-    <%= Phoenix.LiveView.TagEngine.component(
-      Code.eval_string("&#{@module}/1") |> elem(0),
-      [class: "w-6 h-6 mx-auto stroke-current"],
-      {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
-    ) %>
     """
   end
 end
