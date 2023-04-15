@@ -9,6 +9,24 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias Phoenix.LiveView.JS
 
+  @selected_text_color [
+    "text-black",
+    "text-slate-600",
+    "text-slate-700",
+    "text-slate-800",
+    "text-slate-900",
+    "text-gray-700",
+    "text-gray-800",
+    "text-gray-900",
+    "text-zinc-800",
+    "text-zinc-900",
+    "text-neutral-900",
+    "text-neutral-800",
+    "text-stone-700",
+    "text-stone-800",
+    "text-stone-900"
+  ]
+
   # TODO: Add new tab and it's text
   # TODO: Tabs Title
   # TODO: Tabs Title icon
@@ -40,13 +58,44 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   }
 
   @impl true
-  def mount(socket) do
-    {:ok, socket}
+  def update(
+        %{
+          id: id,
+          render_type: render_type,
+          selected_form: selected_form,
+          elements: elements,
+          submit: submit
+        },
+        socket
+      ) do
+    element =
+      MishkaCoreComponent.find_element(
+        elements,
+        selected_form["id"],
+        selected_form["parent_id"],
+        selected_form["layout_id"],
+        selected_form["type"]
+      )
+
+    {:ok,
+     assign(socket,
+       id: id,
+       render_type: render_type,
+       selected_form: selected_form,
+       element: element,
+       submit: submit,
+       selected_text_color: @selected_text_color
+     )}
   end
 
   @impl true
   def update(assigns, socket) do
     {:ok, assign(socket, assigns)}
+  end
+
+  @impl true
+  def mount(socket) do
+    {:ok, socket}
   end
 
   @impl true
@@ -61,6 +110,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       phx-click="get_element_layout_id"
       phx-value-myself={@myself}
       phx-target={@myself}
+      dir={@element["direction"] || "LTR"}
     >
       <.tab_header
         header={@element["header"]}
@@ -77,7 +127,158 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
 
   def render(%{render_type: "form"} = assigns) do
     ~H"""
-    <div>form</div>
+    <div>
+      <Aside.aside_settings id={"tab-#{@id}"}>
+        <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 items-center mx-auto mb-4">
+          <ul class="flex flex-wrap -mb-px items-center">
+            <li class="mr-2">
+              <a
+                href="#"
+                class="inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg"
+                aria-current="page"
+              >
+                Quick edit
+              </a>
+            </li>
+            <li class="mr-2">
+              <a
+                href="#"
+                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 active"
+              >
+                Advanced edit
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <Aside.aside_accordion id={"text-#{@id}"} title="Custom Tag name">
+          <div class="flex flex-col w-full items-center justify-center pb-5">
+            <MishkaCoreComponent.custom_simple_form
+              :let={f}
+              for={%{}}
+              as={:tab_component}
+              phx-change="validate"
+              phx-submit="element"
+              phx-target={@myself}
+              class="w-full m-0 p-0 flex flex-col"
+            >
+              <%= text_input(f, :tag,
+                class:
+                  "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                placeholder: "Change Tag name",
+                value: @element["tag"]
+              ) %>
+              <p class={"text-xs #{if @submit, do: "text-red-500", else: ""} my-3 text-justify"}>
+                Please use only letters and numbers in naming and also keep in mind that you can only use (<code class="text-pink-400">-</code>) between letters. It should be noted, the tag name must be more than 4 characters.
+              </p>
+            </MishkaCoreComponent.custom_simple_form>
+          </div>
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion id={"text-#{@id}"} title="Alignment">
+          <div class="flex flex-col w-full items-center justify-center">
+            <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
+              <li
+                class="px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer"
+                phx-click="text_alignment"
+                phx-value-type="start"
+                phx-target={@myself}
+              >
+                <Heroicons.bars_3_center_left class="w-6 h-6" />
+              </li>
+              <li
+                class="px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer"
+                phx-click="text_alignment"
+                phx-value-type="center"
+                phx-target={@myself}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-6 h-6"
+                  fill="currentColor"
+                  class="bi bi-text-center"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M4 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"
+                  />
+                </svg>
+              </li>
+              <li
+                class="px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer"
+                phx-click="text_alignment"
+                phx-value-type="end"
+                phx-target={@myself}
+              >
+                <Heroicons.bars_3_bottom_right class="w-6 h-6" />
+              </li>
+              <li
+                class="px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"
+                phx-click="text_alignment"
+                phx-value-type="justify"
+                phx-target={@myself}
+              >
+                <Heroicons.bars_3 class="w-6 h-6" />
+              </li>
+            </ul>
+          </div>
+
+          <div class="flex flex-col mt-2 pb-1 justify-between w-full">
+            <p class="w-full text-start font-bold text-lg select-none">Direction:</p>
+            <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
+              <li
+                class="px-3 py-1 border border-gray-300 rounded-l-md hover:bg-gray-200 cursor-pointer"
+                phx-click="text_direction"
+                phx-value-type="LTR"
+                phx-target={@myself}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  class="w-6 h-6"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm5 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6zm0 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6zm-5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm.79-5.373c.112-.078.26-.17.444-.275L3.524 6c-.122.074-.272.17-.452.287-.18.117-.35.26-.51.428a2.425 2.425 0 0 0-.398.562c-.11.207-.164.438-.164.692 0 .36.072.65.217.873.144.219.385.328.72.328.215 0 .383-.07.504-.211a.697.697 0 0 0 .188-.463c0-.23-.07-.404-.211-.521-.137-.121-.326-.182-.568-.182h-.282c.024-.203.065-.37.123-.498a1.38 1.38 0 0 1 .252-.37 1.94 1.94 0 0 1 .346-.298zm2.167 0c.113-.078.262-.17.445-.275L5.692 6c-.122.074-.272.17-.452.287-.18.117-.35.26-.51.428a2.425 2.425 0 0 0-.398.562c-.11.207-.164.438-.164.692 0 .36.072.65.217.873.144.219.385.328.72.328.215 0 .383-.07.504-.211a.697.697 0 0 0 .188-.463c0-.23-.07-.404-.211-.521-.137-.121-.326-.182-.568-.182h-.282a1.75 1.75 0 0 1 .118-.492c.058-.13.144-.254.257-.375a1.94 1.94 0 0 1 .346-.3z" />
+                </svg>
+              </li>
+              <li
+                class="px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"
+                phx-click="text_direction"
+                phx-value-type="RTL"
+                phx-target={@myself}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  class="w-6 h-6"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm0 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6zm0 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6zm0 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm10.113-5.373a6.59 6.59 0 0 0-.445-.275l.21-.352c.122.074.272.17.452.287.18.117.35.26.51.428.156.164.289.351.398.562.11.207.164.438.164.692 0 .36-.072.65-.216.873-.145.219-.385.328-.721.328-.215 0-.383-.07-.504-.211a.697.697 0 0 1-.188-.463c0-.23.07-.404.211-.521.137-.121.326-.182.569-.182h.281a1.686 1.686 0 0 0-.123-.498 1.379 1.379 0 0 0-.252-.37 1.94 1.94 0 0 0-.346-.298zm-2.168 0A6.59 6.59 0 0 0 10 6.352L10.21 6c.122.074.272.17.452.287.18.117.35.26.51.428.156.164.289.351.398.562.11.207.164.438.164.692 0 .36-.072.65-.216.873-.145.219-.385.328-.721.328-.215 0-.383-.07-.504-.211a.697.697 0 0 1-.188-.463c0-.23.07-.404.211-.521.137-.121.327-.182.569-.182h.281a1.749 1.749 0 0 0-.117-.492 1.402 1.402 0 0 0-.258-.375 1.94 1.94 0 0 0-.346-.3z" />
+                </svg>
+              </li>
+            </ul>
+          </div>
+        </Aside.aside_accordion>
+
+        <div class="flex flex-row w-full justify-center items-center gap-3 pb-10">
+          <.button
+            phx-click="delete"
+            phx-target={@myself}
+            class="w-24 !bg-white border border-gray-300 shadow-sm !text-red-600 hover:!bg-gray-300 hover:text-gray-400 !rounded-md"
+          >
+            Delete
+          </.button>
+          <.button
+            phx-click="reset"
+            phx-target={@myself}
+            class="w-24 !bg-white border border-gray-300 shadow-sm !text-black hover:!bg-gray-300 hover:text-gray-400 !rounded-md"
+          >
+            Reset
+          </.button>
+        </div>
+      </Aside.aside_settings>
+    </div>
     """
   end
 
@@ -148,7 +349,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     {:noreply, socket}
   end
 
-  def handle_event("validate", %{"text_component" => %{"tag" => tag}}, socket) do
+  def handle_event("validate", %{"tab_component" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3
@@ -181,6 +382,46 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     {:noreply, socket}
   end
 
+  def handle_event("text_direction", %{"type" => type}, socket) when type in ["RTL", "LTR"] do
+    send(
+      self(),
+      {"element",
+       %{
+         "update_parame" =>
+           %{
+             "key" => "direction",
+             "value" => type
+           }
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("text_alignment", %{"type" => type}, socket)
+      when type in ["start", "center", "end", "justify"] do
+    text_aligns =
+      TailwindSetting.get_form_options("typography", "text-align", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_aligns)) ++ ["text-#{type}"]
+
+    send(
+      self(),
+      {"element",
+       %{
+         "update_class" =>
+           %{
+             "class" => Enum.join(class, " "),
+             "action" => :string_classes
+           }
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
+
+    {:noreply, socket}
+  end
+
   def handle_event("reset", _params, socket) do
     {:noreply, socket}
   end
@@ -195,6 +436,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     Enum.map(order, fn key -> %{id: key, data: children[key]} end)
   end
 
+  # Based on https://elixirforum.com/t/does-not-liveview-js-work-in-a-loop/55295/2
   defp reset_and_select(js \\ %JS{}, children, id) do
     children
     |> Enum.reduce(js, fn %{id: key, data: _data}, acc ->
