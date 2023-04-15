@@ -7,6 +7,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
+  alias Phoenix.LiveView.JS
 
   # TODO: Add new tab and it's text
   # TODO: Tabs Title
@@ -86,8 +87,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   def tab_header(assigns) do
     ~H"""
     <ul :if={length(@children) != 0} class={Enum.join(@header["container"], " ")}>
-      <li :for={%{id: key, data: data} <- @children} id={key}>
-        <button class={Enum.join(@header["button"], " ")} type="button">
+      <li :for={{%{id: key, data: data}, index} <- Enum.with_index(@children)} id={key}>
+        <button
+          class={"#{Enum.join(@header["button"], " ")} #{if index == 0, do: "border-b border-blue-500"}"}
+          type="button"
+          phx-click={reset_and_select(@children, key)}
+          id={"button-#{key}"}
+        >
           <MishkaCoreComponent.dynamic_icon
             module={data["icon"]}
             class={Enum.join(@header["icon"], " ")}
@@ -105,9 +111,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   def tab_content(assigns) do
     ~H"""
     <div
-      :for={%{id: key, data: data} <- @children}
+      :for={{%{id: key, data: data}, index} <- Enum.with_index(@children)}
       id={"content-#{key}"}
-      class={Enum.join(@content, " ")}
+      class={"#{Enum.join(@content, " ")} #{if index != 0, do: "hidden"}"}
     >
       <%= data["html"] %>
     </div>
@@ -187,5 +193,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
 
   defp sorted_list(order, children) do
     Enum.map(order, fn key -> %{id: key, data: children[key]} end)
+  end
+
+  defp reset_and_select(js \\ %JS{}, children, id) do
+    children
+    |> Enum.reduce(js, fn %{id: key, data: _data}, acc ->
+      acc
+      |> JS.add_class("hidden", to: "#content-#{key}")
+      |> JS.remove_class("border-b", to: "#button-#{key}")
+      |> JS.remove_class("border-blue-500", to: "#button-#{key}")
+    end)
+    |> JS.remove_class("hidden", to: "#content-#{id}")
+    |> JS.add_class("border-b", to: "#button-#{id}")
+    |> JS.add_class("border-blue-500", to: "#button-#{id}")
   end
 end

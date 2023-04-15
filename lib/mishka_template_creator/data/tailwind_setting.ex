@@ -8879,6 +8879,8 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
 
   def default_element("tab") do
     id = Ecto.UUID.generate()
+    id1 = Ecto.UUID.generate()
+
     %{
       "class" => ["text-black", "w-full", "text-base", "p-2"],
       "header" => %{
@@ -8890,7 +8892,8 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
           "text-center",
           "mb-6",
           "border-b",
-          "border-gray-800"
+          "border-gray-800",
+          "gap-6"
         ],
         "title" => ["text-base"],
         "icon" => ["w-4", "h-4"],
@@ -8900,11 +8903,18 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       "children" => %{
         "#{id}" => %{
           "title" => "Title one",
-          "html" => "This is some placeholder content the tab's associated content. for changing the data of this tab please click here.",
+          "html" =>
+            "This is some placeholder content the tab's associated content. for changing the data of this tab please click here.",
           "icon" => "Heroicons.inbox_stack"
+        },
+        "#{id1}" => %{
+          "title" => "Title two",
+          "html" =>
+            "This is some placeholder content the tab's associated content (tab2). for changing the data of this tab please click here.",
+          "icon" => "Heroicons.arrow_small_right"
         }
       },
-      "order" => [id]
+      "order" => [id, id1]
     }
   end
 

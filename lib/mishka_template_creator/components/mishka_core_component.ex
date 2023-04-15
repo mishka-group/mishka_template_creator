@@ -214,6 +214,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
 
   attr :module, :string, required: true
   attr :class, :string, required: false, default: "w-6 h-6 mx-auto stroke-current"
+
   def dynamic_icon(assigns) do
     ~H"""
     <%= Phoenix.LiveView.TagEngine.component(
@@ -250,7 +251,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       "#{id}" =>
         %{
           "children" => %{},
-          "order" => [],
+          "order" => []
         }
         |> Map.merge(TailwindSetting.default_element(params["type"]))
         |> Map.merge(params)

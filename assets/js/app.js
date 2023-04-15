@@ -247,6 +247,10 @@ Hooks.dragAndDropLocation = {
         layout_id: elementDOM.parentNode.id,
       });
     });
+    
+    this.handleEvent('reset_and_select_tab', ({ ids, key }) => {
+      
+    });
 
     this.handleEvent('redefine_blocks_drag_and_drop', () => {
       defineBlocksDragAndDrop();
