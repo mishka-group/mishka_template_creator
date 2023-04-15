@@ -113,7 +113,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
 
   attr(:id, :string, required: true)
   attr(:title, :string, required: true)
-  attr(:title_class, :string, required: false, default: "font-bold select-none my-4")
+  attr(:title_class, :string, required: false, default: "w-full font-bold select-none my-4")
   slot(:inner_block, required: true)
 
   @spec aside_accordion(map) :: Phoenix.LiveView.Rendered.t()
@@ -121,8 +121,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
     assigns = assign(assigns, title_alias: String.replace(title, " ", "-"))
 
     ~H"""
-    <section class="flex flex-col w-full px-3 mx-auto border-b border-gray-300">
-      <div class="flex flex-row w-full justify-between items-center pb-3">
+    <section class="flex flex-col w-full mx-auto">
+      <div class="flex flex-row w-full justify-between items-center pb-1 border-b border-gray-300">
         <span class={@title_class}><%= @title %>:</span>
         <span>
           <Heroicons.chevron_double_up

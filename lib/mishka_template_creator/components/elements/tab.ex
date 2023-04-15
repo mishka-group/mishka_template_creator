@@ -154,15 +154,41 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         <Aside.aside_accordion
           id={"text-#{@id}"}
           title="Tab Settings"
-          title_class="my-4 border-b pb-2 w-full text-center font-bold select-none text-lg"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          sss
+          <div class="flex flex-col w-full pb-5 gap-4">
+            <%= for %{id: key, data: data} <- sorted_list(@element["order"], @element["children"]) do %>
+              <div
+                class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
+                phx-click={JS.toggle(to: "#tree-#{key}")}
+              >
+                <Heroicons.rectangle_stack class="w-6 h-6" />
+                <span class="text-lg font-bold select-none"><%= data["title"] %></span>
+              </div>
+              <div class="hidden" id={"tree-#{key}"}>
+                <div class="flex flex-col w-full pl-5 gap-2">
+                  <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
+                    <Heroicons.wrench class="w-5 h-5" />
+                    <span class="text-base">Style</span>
+                  </div>
+                  <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
+                    <Heroicons.bars_3_bottom_left class="w-5 h-5" />
+                    <span class="text-base">Text</span>
+                  </div>
+                  <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
+                    <Heroicons.information_circle class="w-5 h-5" />
+                    <span class="text-base">Icon</span>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
         </Aside.aside_accordion>
 
         <Aside.aside_accordion
           id={"text-#{@id}"}
           title="Public Settings"
-          title_class="my-4 border-b pb-2 w-full text-center font-bold select-none text-lg"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <Aside.aside_accordion id={"text-#{@id}"} title="Alignment">
             <div class="flex flex-col w-full items-center justify-center">
