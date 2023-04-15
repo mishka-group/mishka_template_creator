@@ -507,7 +507,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
        %{
          "update_class" =>
            %{
-             "class" => Enum.join(TailwindSetting.default_element("text"), " "),
+             "class" => Enum.join(TailwindSetting.default_element("text")["class"], " "),
              "action" => :string_classes
            }
            |> Map.merge(socket.assigns.selected_form)

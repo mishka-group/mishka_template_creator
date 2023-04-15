@@ -153,6 +153,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
 
         <Aside.aside_accordion
           id={"text-#{@id}"}
+          title="Tab Settings"
+          title_class="my-4 border-b pb-2 w-full text-center font-bold select-none text-lg"
+        >
+          sss
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"text-#{@id}"}
           title="Public Settings"
           title_class="my-4 border-b pb-2 w-full text-center font-bold select-none text-lg"
         >
@@ -333,7 +341,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             </div>
           </Aside.aside_accordion>
 
-          <div class="flex flex-row w-full justify-center items-center gap-3 pb-10">
+          <div class="flex flex-row w-full justify-center items-center gap-3 pb-10 mt-5">
             <.button
               phx-click="delete"
               phx-target={@myself}
@@ -545,6 +553,16 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   end
 
   def handle_event("reset", _params, socket) do
+    send(
+      self(),
+      {"element",
+       %{
+         "update_parame" =>
+           TailwindSetting.default_element("tab")
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
+
     {:noreply, socket}
   end
 
