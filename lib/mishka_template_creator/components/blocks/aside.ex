@@ -114,7 +114,9 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
   attr(:id, :string, required: true)
   attr(:title, :string, required: true)
   attr(:title_class, :string, required: false, default: "w-full font-bold select-none my-4")
+
   slot(:inner_block, required: true)
+  slot(:before_title_block, required: false, default: nil)
 
   @spec aside_accordion(map) :: Phoenix.LiveView.Rendered.t()
   def aside_accordion(%{title: title} = assigns) do
@@ -123,6 +125,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
     ~H"""
     <section class="flex flex-col w-full mx-auto">
       <div class="flex flex-row w-full justify-between items-center pb-1 border-b border-gray-300">
+        <span :if={!is_nil(@before_title_block)}><%= render_slot(@before_title_block) %></span>
         <span class={@title_class}><%= @title %>:</span>
         <span>
           <Heroicons.chevron_double_up

@@ -126,8 +126,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   end
 
   def render(%{render_type: "form"} = assigns) do
-    IO.inspect(assigns.element)
-
     ~H"""
     <div>
       <Aside.aside_settings id={"tab-#{@id}"}>
@@ -158,17 +156,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           title="Tab Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <div class="flex flex-col w-full mx-4 justify-center items-center">
-            <button
-              type="button"
-              class="flex flex-row gap-2 justify-center items-center py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
-              phx-click="add"
-              phx-target={@myself}
-            >
-              <Heroicons.plus_small class="w-5 h-5" /> Add new Tab
-            </button>
-          </div>
-
+          <:before_title_block>
+            <Heroicons.plus class="w-5 h-5" phx-click="add" phx-target={@myself} />
+          </:before_title_block>
           <div class="flex flex-col w-full pb-5 gap-4">
             <%= for {%{id: key, data: data}, index} <- Enum.with_index(sorted_list(@element["order"], @element["children"])) do %>
               <div
@@ -178,7 +168,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 <Heroicons.rectangle_stack class="w-6 h-6" />
                 <span class="text-base font-bold select-none"><%= data["title"] %></span>
               </div>
-              <div class={"#{if index != 0, do: "hidden"}"} id={"tree-#{key}"}>
+              <div
+                class={"#{if index != 0, do: "hidden"} border-b border-gray-300 pb-4 pt-2"}
+                id={"tree-#{key}"}
+              >
                 <div class="flex flex-row w-full pl-5 gap-2">
                   <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
                     <Heroicons.pencil_square class="w-5 h-5" />
@@ -192,7 +185,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                     <Heroicons.information_circle class="w-5 h-5" />
                     <span class="text-base">Icon</span>
                   </div>
-                  <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
+                  <div
+                    class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
+                    phx-click="delete"
+                    phx-value-id={key}
+                    phx-value-type="tab"
+                    phx-target={@myself}
+                  >
                     <Heroicons.trash class="w-5 h-5 text-red-600" />
                     <span class="text-base">Delete</span>
                   </div>
@@ -435,6 +434,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
 
   def tab_content(assigns) do
     ~H"""
+    <p :if={length(@children) == 0} class={Enum.join(@content, " ") <> " text-center"}>
+      There is no Tab to show! Click here
+    </p>
+
     <div
       :for={{%{id: key, data: data}, index} <- Enum.with_index(@children)}
       id={"content-#{key}"}
@@ -629,6 +632,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
        }}
     )
 
+    {:noreply, socket}
+  end
+
+  def handle_event("delete", %{"id" => id, "type" => "tab"}, socket) do
+    {_, elements} = pop_in(socket.assigns.element, ["children", id])
+
+    updated =
+      elements
+      |> Map.merge(%{"order" => Enum.reject(socket.assigns.element["order"], &(&1 == id))})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
     {:noreply, socket}
   end
 
