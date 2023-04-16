@@ -172,51 +172,26 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                   </span>
                 </div>
               </div>
-              <div id={"form-#{key}"} class="hidden">
-                <MishkaCoreComponent.custom_simple_form
-                  :let={f}
-                  for={%{}}
-                  as={:tab_title}
-                  phx-submit="element"
-                  phx-target={@myself}
-                  class="flex flex-row w-full m-0 p-0 gap-1 justify-between items-center"
-                >
-                  <%= text_input(f, :title,
-                    class:
-                      "block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                    value: data["title"]
-                  ) %>
 
-                  <.input field={f[:id]} type="hidden" value={key} />
-
-                  <button
-                    type="submit"
-                    class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
-                    phx-click={
-                      JS.toggle(to: "#form-#{key}")
-                      |> JS.toggle(to: "#title-#{key}")
-                    }
-                  >
-                    Save
-                  </button>
-                </MishkaCoreComponent.custom_simple_form>
-              </div>
               <div
                 class={"#{if index != 0, do: "hidden"} border-b border-gray-300 pb-4 pt-2"}
                 id={"tree-#{key}"}
               >
+              <.tab_form data={data} type="title" key={key} myself={@myself} />
+              <.tab_form data={data} type="text" key={key} myself={@myself} />
+
                 <div class="flex flex-row w-full pl-5 gap-2">
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
-                    phx-click={
-                      JS.toggle(to: "#form-#{key}")
-                      |> JS.toggle(to: "#title-#{key}")
-                    }
+                    phx-click={JS.toggle(to: "#form-title-#{key}")}
                   >
                     <Heroicons.pencil_square class="w-5 h-5" />
                     <span class="text-base">Title</span>
                   </div>
-                  <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
+                  <div
+                    class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
+                    phx-click={JS.toggle(to: "#form-text-#{key}")}
+                  >
                     <Heroicons.bars_3_bottom_left class="w-5 h-5" />
                     <span class="text-base">Text</span>
                   </div>
@@ -483,6 +458,76 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       class={"#{Enum.join(@content, " ")} #{if index != 0, do: "hidden"}"}
     >
       <%= data["html"] %>
+    </div>
+    """
+  end
+
+  attr(:data, :map, required: true)
+  attr(:key, :string, required: true)
+  attr(:type, :string, required: true)
+  attr(:myself, :integer, required: true)
+
+  defp tab_form(%{type: "title"} = assigns) do
+    ~H"""
+    <div id={"form-title-#{@key}"} class="hidden">
+      <MishkaCoreComponent.custom_simple_form
+        :let={f}
+        for={%{}}
+        as={:tab_title}
+        phx-submit="element"
+        phx-target={@myself}
+        class="flex flex-row w-full justify-between items-center px-5 gap-2 mx-auto mt-2 mb-5 pb-2"
+      >
+        <%= text_input(f, :title,
+          class:
+            "block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+          value: @data["title"],
+          id: "tab_title-#{@key}"
+        ) %>
+
+        <.input field={f[:id]} type="hidden" value={@key} id={"tab_title_id-#{@key}"} />
+
+        <button
+          type="submit"
+          class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
+          phx-click={JS.toggle(to: "#form-title-#{@key}")}
+        >
+          Save
+        </button>
+      </MishkaCoreComponent.custom_simple_form>
+    </div>
+    """
+  end
+
+  defp tab_form(%{type: "text"} = assigns) do
+    ~H"""
+    <div id={"form-text-#{@key}"} class="hidden">
+      <MishkaCoreComponent.custom_simple_form
+        :let={f}
+        for={%{}}
+        as={:tab_title}
+        phx-submit="element"
+        phx-target={@myself}
+        class="flex flex-col w-full px-5 gap-2 mx-auto mt-2 mb-5 justify-center items-center"
+      >
+        <%= textarea(f, :html,
+          class:
+            "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+          value: @data["html"],
+          id: "tab_text-#{@key}",
+          rows: "4"
+        ) %>
+
+        <.input field={f[:id]} type="hidden" value={@key} id={"tab_text_id-#{@key}"} />
+
+        <button
+          type="submit"
+          class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
+          phx-click={JS.toggle(to: "#form-text-#{@key}")}
+        >
+          Save
+        </button>
+      </MishkaCoreComponent.custom_simple_form>
     </div>
     """
   end
