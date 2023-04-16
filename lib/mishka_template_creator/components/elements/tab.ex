@@ -157,23 +157,62 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <:before_title_block>
-            <Heroicons.plus class="w-5 h-5" phx-click="add" phx-target={@myself} />
+            <Heroicons.plus class="w-5 h-5 cursor-pointer" phx-click="add" phx-target={@myself} />
           </:before_title_block>
-          <div class="flex flex-col w-full pb-5 gap-4">
+          <div class="flex flex-col w-full pb-5 gap-4 pt-2">
             <%= for {%{id: key, data: data}, index} <- Enum.with_index(sorted_list(@element["order"], @element["children"])) do %>
-              <div
-                class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
-                phx-click={JS.toggle(to: "#tree-#{key}")}
-              >
-                <Heroicons.rectangle_stack class="w-6 h-6" />
-                <span class="text-base font-bold select-none"><%= data["title"] %></span>
+              <div id={"title-#{key}"}>
+                <div
+                  class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
+                  phx-click={JS.toggle(to: "#tree-#{key}")}
+                >
+                  <Heroicons.rectangle_stack class="w-6 h-6" />
+                  <span class="text-base font-bold select-none">
+                    <%= data["title"] %>
+                  </span>
+                </div>
+              </div>
+              <div id={"form-#{key}"} class="hidden">
+                <MishkaCoreComponent.custom_simple_form
+                  :let={f}
+                  for={%{}}
+                  as={:tab_title}
+                  phx-submit="element"
+                  phx-target={@myself}
+                  class="flex flex-row w-full m-0 p-0 gap-1 justify-between items-center"
+                >
+                  <%= text_input(f, :title,
+                    class:
+                      "block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                    value: data["title"]
+                  ) %>
+
+                  <.input field={f[:id]} type="hidden" value={key} />
+
+                  <button
+                    type="submit"
+                    class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
+                    phx-click={
+                      JS.toggle(to: "#form-#{key}")
+                      |> JS.toggle(to: "#title-#{key}")
+                    }
+                  >
+                    Save
+                  </button>
+                </MishkaCoreComponent.custom_simple_form>
               </div>
               <div
                 class={"#{if index != 0, do: "hidden"} border-b border-gray-300 pb-4 pt-2"}
                 id={"tree-#{key}"}
               >
                 <div class="flex flex-row w-full pl-5 gap-2">
-                  <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
+                  <div
+                    class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
+                    phx-click={
+                      JS.toggle(to: "#form-#{key}")
+                      |> JS.toggle(to: "#title-#{key}")
+                    }
+                  >
                     <Heroicons.pencil_square class="w-5 h-5" />
                     <span class="text-base">Title</span>
                   </div>
@@ -649,6 +688,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
 
   def handle_event("delete", _params, socket) do
     send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("element", %{"tab_title" => %{"id" => id, "title" => title}}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", id], fn selected_element ->
+        Map.merge(selected_element, %{"title" => title})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
