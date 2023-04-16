@@ -3,6 +3,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   import Phoenix.HTML.Form
   use Phoenix.Component
 
+  alias MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Components.Blocks.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   import MishkaTemplateCreatorWeb.CoreComponents
@@ -177,8 +178,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 class={"#{if index != 0, do: "hidden"} border-b border-gray-300 pb-4 pt-2"}
                 id={"tree-#{key}"}
               >
-              <.tab_form data={data} type="title" key={key} myself={@myself} />
-              <.tab_form data={data} type="text" key={key} myself={@myself} />
+                <.tab_form data={data} type="title" key={key} myself={@myself} />
+                <.tab_form data={data} type="text" key={key} myself={@myself} />
 
                 <div class="flex flex-row w-full pl-5 gap-2">
                   <div
@@ -196,8 +197,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                     <span class="text-base">Text</span>
                   </div>
                   <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
-                    <Heroicons.information_circle class="w-5 h-5" />
-                    <span class="text-base">Icon</span>
+                    <Heroicons.wrench class="w-5 h-5" />
+                    <span class="text-base">Style</span>
                   </div>
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
@@ -495,6 +496,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           Save
         </button>
       </MishkaCoreComponent.custom_simple_form>
+      <div class="px-5 pb-3">
+        <MishkaCoreComponent.select_icons
+          selected={String.replace(@data["icon"], "Heroicons.", "")}
+          myself={@myself}
+          block_id={@key}
+        />
+      </div>
     </div>
     """
   end
@@ -742,6 +750,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       socket.assigns.element
       |> update_in(["children", id], fn selected_element ->
         Map.merge(selected_element, %{"title" => title})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("select_icon", %{"name" => name, "block-id" => id}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", id], fn selected_element ->
+        Map.merge(selected_element, %{"icon" => "Heroicons.#{name}"})
       end)
       |> Map.merge(socket.assigns.selected_form)
 
