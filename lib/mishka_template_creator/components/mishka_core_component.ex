@@ -218,7 +218,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   def dynamic_icon(assigns) do
     ~H"""
     <%= Phoenix.LiveView.TagEngine.component(
-      Code.eval_string("&#{@module}/1") |> elem(0),
+      Code.eval_string("&(#{@module}/1)") |> elem(0),
       [class: @class],
       {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
     ) %>

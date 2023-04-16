@@ -126,6 +126,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   end
 
   def render(%{render_type: "form"} = assigns) do
+    IO.inspect(assigns.element)
+
     ~H"""
     <div>
       <Aside.aside_settings id={"tab-#{@id}"}>
@@ -156,20 +158,31 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           title="Tab Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
+          <div class="flex flex-col w-full mx-4 justify-center items-center">
+            <button
+              type="button"
+              class="flex flex-row gap-2 justify-center items-center py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
+              phx-click="add"
+              phx-target={@myself}
+            >
+              <Heroicons.plus_small class="w-5 h-5" /> Add new Tab
+            </button>
+          </div>
+
           <div class="flex flex-col w-full pb-5 gap-4">
-            <%= for %{id: key, data: data} <- sorted_list(@element["order"], @element["children"]) do %>
+            <%= for {%{id: key, data: data}, index} <- Enum.with_index(sorted_list(@element["order"], @element["children"])) do %>
               <div
                 class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
                 phx-click={JS.toggle(to: "#tree-#{key}")}
               >
                 <Heroicons.rectangle_stack class="w-6 h-6" />
-                <span class="text-lg font-bold select-none"><%= data["title"] %></span>
+                <span class="text-base font-bold select-none"><%= data["title"] %></span>
               </div>
-              <div class="hidden" id={"tree-#{key}"}>
-                <div class="flex flex-col w-full pl-5 gap-2">
+              <div class={"#{if index != 0, do: "hidden"}"} id={"tree-#{key}"}>
+                <div class="flex flex-row w-full pl-5 gap-2">
                   <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
-                    <Heroicons.wrench class="w-5 h-5" />
-                    <span class="text-base">Style</span>
+                    <Heroicons.pencil_square class="w-5 h-5" />
+                    <span class="text-base">Title</span>
                   </div>
                   <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
                     <Heroicons.bars_3_bottom_left class="w-5 h-5" />
@@ -178,6 +191,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                   <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
                     <Heroicons.information_circle class="w-5 h-5" />
                     <span class="text-base">Icon</span>
+                  </div>
+                  <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
+                    <Heroicons.trash class="w-5 h-5 text-red-600" />
+                    <span class="text-base">Delete</span>
                   </div>
                 </div>
               </div>
@@ -574,6 +591,29 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
            |> Map.merge(socket.assigns.selected_form)
        }}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("add", _params, socket) do
+    unique_id = Ecto.UUID.generate()
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children"], fn selected_element ->
+        Map.merge(selected_element, %{
+          "#{unique_id}" => %{
+            "title" => "New Title",
+            "html" =>
+              "This is some placeholder content the tab's associated content. for changing the data of this tab please click here.",
+            "icon" => "Heroicons.inbox_stack"
+          }
+        })
+      end)
+      |> Map.merge(%{"order" => socket.assigns.element["order"] ++ [unique_id]})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
