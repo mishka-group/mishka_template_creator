@@ -767,7 +767,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
               }
               :if={item not in ["text-inherit", "text-current", "text-transparent"]}
               class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
-              phx-click="font_style"
+              phx-click="tab_icon_font_style"
               phx-value-color={item}
               phx-target={@myself}
             >
@@ -811,7 +811,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     {:noreply, socket}
   end
 
-  def handle_event("validate", %{"tab_component" => %{"tag" => tag}}, socket) do
+  def handle_event("validate", %{"public_tab_tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3
@@ -949,6 +949,24 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     updated =
       socket.assigns.element
       |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "title" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+      |> IO.inspect()
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("tab_icon_font_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class =
+      Enum.reject(socket.assigns.element["header"]["icon"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "icon" => class}})
       |> Map.merge(socket.assigns.selected_form)
       |> IO.inspect()
 
