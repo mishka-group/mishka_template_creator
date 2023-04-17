@@ -86,7 +86,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         submit: submit,
         selected_text_color: @selected_text_color
       )
-      |> push_event("recovery_tab", %{})
+
+    # |> push_event("recovery_tab", %{})
 
     {:ok, new_socket}
   end
@@ -167,7 +168,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
               <div id={"title-#{key}"}>
                 <div
                   class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
-                  phx-click={JS.dispatch("reset:toggle:tab", detail: %{key: key})}
+                  phx-click={
+                    JS.toggle(to: "#tree-#{key}")
+                    |> JS.hide(to: "#form-icon-#{key}")
+                    |> JS.hide(to: "#form-text-#{key}")
+                    |> JS.hide(to: "#form-title-#{key}")
+                  }
                 >
                   <Heroicons.rectangle_stack class="w-6 h-6" />
                   <span class="text-base font-bold select-none">
@@ -207,21 +213,33 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 <div class="flex flex-row w-full pl-5 gap-2 justify-between items-center mx-auto">
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
-                    phx-click={JS.dispatch("select:toggle:tab", detail: %{type: "title", key: key})}
+                    phx-click={
+                      JS.toggle(to: "#form-title-#{key}")
+                      |> JS.hide(to: "#form-icon-#{key}")
+                      |> JS.hide(to: "#form-text-#{key}")
+                    }
                   >
                     <Heroicons.pencil_square class="w-5 h-5" />
                     <span class="text-base">Title</span>
                   </div>
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
-                    phx-click={JS.dispatch("select:toggle:tab", detail: %{type: "text", key: key})}
+                    phx-click={
+                      JS.toggle(to: "#form-text-#{key}")
+                      |> JS.hide(to: "#form-icon-#{key}")
+                      |> JS.hide(to: "#form-title-#{key}")
+                    }
                   >
                     <Heroicons.bars_3_bottom_left class="w-5 h-5" />
                     <span class="text-base">Text</span>
                   </div>
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
-                    phx-click={JS.dispatch("select:toggle:tab", detail: %{type: "icon", key: key})}
+                    phx-click={
+                      JS.toggle(to: "#form-icon-#{key}")
+                      |> JS.hide(to: "#form-text-#{key}")
+                      |> JS.hide(to: "#form-title-#{key}")
+                    }
                   >
                     <Heroicons.computer_desktop class="w-5 h-5" />
                     <span class="text-base">Icon</span>
@@ -359,7 +377,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                             nil
                           ).form_configs)
                       ),
-                      id: "public_tab_font-#{@id}"
+                    id: "public_tab_font-#{@id}"
                   ) %>
                 </div>
               </div>
@@ -389,7 +407,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                   }
                   :if={item not in ["text-inherit", "text-current", "text-transparent"]}
                   class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
-                  phx-click="font_style"
+                  phx-click="public_tab_font_style"
                   phx-value-color={item}
                   phx-target={@myself}
                 >
@@ -500,6 +518,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   attr(:header, :map, required: true)
 
   defp tab_form(%{type: "title"} = assigns) do
+    assigns = assign(assigns, :selected_text_color, @selected_text_color)
+
     ~H"""
     <div id={"form-title-#{@key}"} class="hidden">
       <MishkaCoreComponent.custom_simple_form
@@ -549,7 +569,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                     @header["title"],
                     &(&1 in TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs)
                   ),
-                  id: "tab_title_font_style_font-#{@key}"
+                id: "tab_title_font_style_font-#{@key}"
               ) %>
             </div>
           </div>
@@ -567,7 +587,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 id: "tab_title_font_style_font_size-#{@key}"
               ) %>
 
-              <.input field={f[:id]} type="hidden" value={@key} id={"tab_title_font_style_id-#{@key}"} />
+              <.input
+                field={f[:id]}
+                type="hidden"
+                value={@key}
+                id={"tab_title_font_style_id-#{@key}"}
+              />
             </div>
           </div>
         </MishkaCoreComponent.custom_simple_form>
@@ -581,7 +606,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
               }
               :if={item not in ["text-inherit", "text-current", "text-transparent"]}
               class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
-              phx-click="font_style"
+              phx-click="tab_title_font_style"
               phx-value-color={item}
               phx-target={@myself}
             >
@@ -598,6 +623,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   end
 
   defp tab_form(%{type: "text"} = assigns) do
+    assigns = assign(assigns, :selected_text_color, @selected_text_color)
+
     ~H"""
     <div id={"form-text-#{@key}"} class="hidden">
       <MishkaCoreComponent.custom_simple_form
@@ -631,6 +658,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   end
 
   defp tab_form(%{type: "icon"} = assigns) do
+    assigns = assign(assigns, :selected_text_color, @selected_text_color)
+
     ~H"""
     <div id={"form-icon-#{@key}"} class="hidden">
       <p class="w-full font-bold text-sm pb-5 border-b border-gray-300 mb-5">Select Tab Icon:</p>
@@ -798,17 +827,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
 
   def handle_event(
         "font_style",
-        %{"font_style" => %{"font" => font, "font_size" => font_size}},
+        %{"public_tab_font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    text_sizes_and_font_families =
-      TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
-        TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs
-
-    class =
-      Enum.reject(socket.assigns.element["class"], &(&1 in text_sizes_and_font_families)) ++
-        [TailwindSetting.find_font_by_index(font_size).font_class] ++
-        if(font != "", do: [font], else: [])
+    class = edit_font_style_class(socket.assigns.element["class"], font_size, font)
 
     send(
       self(),
@@ -823,7 +845,42 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     {:noreply, socket}
   end
 
-  def handle_event("font_style", %{"color" => color}, socket) do
+  def handle_event(
+        "font_style",
+        %{"tab_title_font_style" => %{"font" => font, "font_size" => font_size}},
+        socket
+      ) do
+    class = edit_font_style_class(socket.assigns.element["header"]["title"], font_size, font)
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "title" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("tab_title_font_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class =
+      Enum.reject(socket.assigns.element["header"]["title"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "title" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+      |> IO.inspect()
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("public_tab_font_style", %{"color" => color}, socket) do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
@@ -942,5 +999,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     |> JS.remove_class("hidden", to: "#content-#{id}")
     |> JS.add_class("border-b", to: "#button-#{id}")
     |> JS.add_class("border-blue-500", to: "#button-#{id}")
+  end
+
+  defp edit_font_style_class(classes, font_size, font) do
+    text_sizes_and_font_families =
+      TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
+        TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs
+
+    Enum.reject(
+      classes,
+      &(&1 in text_sizes_and_font_families)
+    ) ++
+      [TailwindSetting.find_font_by_index(font_size).font_class] ++
+      if(font != "", do: [font], else: [])
   end
 end
