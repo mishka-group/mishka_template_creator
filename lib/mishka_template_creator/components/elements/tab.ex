@@ -3,7 +3,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   import Phoenix.HTML.Form
   use Phoenix.Component
 
-  alias MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Components.Blocks.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   import MishkaTemplateCreatorWeb.CoreComponents
@@ -178,10 +177,31 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 class={"#{if index != 0, do: "hidden"} border-b border-gray-300 pb-4 pt-2"}
                 id={"tree-#{key}"}
               >
-                <.tab_form data={data} type="title" key={key} myself={@myself} />
-                <.tab_form data={data} type="text" key={key} myself={@myself} />
-
-                <div class="flex flex-row w-full pl-5 gap-2">
+                <.tab_form
+                  data={data}
+                  type="title"
+                  key={key}
+                  myself={@myself}
+                  header={@element["header"]}
+                  content={@element["content"]}
+                />
+                <.tab_form
+                  data={data}
+                  type="text"
+                  key={key}
+                  myself={@myself}
+                  header={@element["header"]}
+                  content={@element["content"]}
+                />
+                <.tab_form
+                  data={data}
+                  type="icon"
+                  key={key}
+                  myself={@myself}
+                  header={@element["header"]}
+                  content={@element["content"]}
+                />
+                <div class="flex flex-row w-full pl-5 gap-2 justify-between items-center mx-auto">
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
                     phx-click={JS.toggle(to: "#form-title-#{key}")}
@@ -196,9 +216,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                     <Heroicons.bars_3_bottom_left class="w-5 h-5" />
                     <span class="text-base">Text</span>
                   </div>
-                  <div class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer">
-                    <Heroicons.wrench class="w-5 h-5" />
-                    <span class="text-base">Style</span>
+                  <div
+                    class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
+                    phx-click={JS.toggle(to: "#form-icon-#{key}")}
+                  >
+                    <Heroicons.computer_desktop class="w-5 h-5" />
+                    <span class="text-base">Icon</span>
                   </div>
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
@@ -467,6 +490,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   attr(:key, :string, required: true)
   attr(:type, :string, required: true)
   attr(:myself, :integer, required: true)
+  attr(:content, :string, required: true)
+  attr(:header, :map, required: true)
 
   defp tab_form(%{type: "title"} = assigns) do
     ~H"""
@@ -496,13 +521,68 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           Save
         </button>
       </MishkaCoreComponent.custom_simple_form>
-      <div class="px-5 pb-3">
-        <MishkaCoreComponent.select_icons
-          selected={String.replace(@data["icon"], "Heroicons.", "")}
-          myself={@myself}
-          block_id={@key}
-        />
-      </div>
+
+      <Aside.aside_accordion id={"text-#{@key}"} title="Font Style">
+        <MishkaCoreComponent.custom_simple_form
+          :let={f}
+          for={%{}}
+          as={:font_style}
+          phx-change="font_style"
+          phx-target={@myself}
+          class="w-full m-0 p-0 flex flex-col"
+        >
+          <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+            <span class="w-3/5">Font:</span>
+            <div class="w-full">
+              <%= select(f, :font, ["font-sans", "font-serif", "font-mono"],
+                class:
+                  "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1",
+                prompt: "Choose preferred font",
+                selected:
+                  Enum.find(
+                    @header["title"],
+                    &(&1 in TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs)
+                  )
+              ) %>
+            </div>
+          </div>
+          <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+            <span class="w-3/5">Size:</span>
+            <div class="flex flex-row w-full gap-2 items-center">
+              <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
+                <%= TailwindSetting.find_text_size_index(@header["title"]).index %>
+              </span>
+              <%= range_input(f, :font_size,
+                min: "1",
+                max: "13",
+                value: TailwindSetting.find_text_size_index(@header["title"]).index,
+                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              ) %>
+            </div>
+          </div>
+        </MishkaCoreComponent.custom_simple_form>
+        <div class="flex flex-col w-full justify-between items-stretch pt-3 pb-5">
+          <span class="w-full">Color:</span>
+          <div class="flex flex-wrap w-full mt-4">
+            <div
+              :for={
+                item <-
+                  TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+              }
+              :if={item not in ["text-inherit", "text-current", "text-transparent"]}
+              class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
+              phx-click="font_style"
+              phx-value-color={item}
+              phx-target={@myself}
+            >
+              <Heroicons.x_mark
+                :if={item in @header["title"]}
+                class={if(item in @selected_text_color, do: "text-white")}
+              />
+            </div>
+          </div>
+        </div>
+      </Aside.aside_accordion>
     </div>
     """
   end
@@ -536,6 +616,21 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           Save
         </button>
       </MishkaCoreComponent.custom_simple_form>
+    </div>
+    """
+  end
+
+  defp tab_form(%{type: "icon"} = assigns) do
+    ~H"""
+    <div id={"form-icon-#{@key}"} class="hidden">
+      <p class="w-full font-bold text-sm pb-5 border-b border-gray-300 mb-5">Select Tab Icon:</p>
+      <div class="px-5 pb-3">
+        <MishkaCoreComponent.select_icons
+          selected={String.replace(@data["icon"], "Heroicons.", "")}
+          myself={@myself}
+          block_id={@key}
+        />
+      </div>
     </div>
     """
   end
