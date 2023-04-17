@@ -112,6 +112,7 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     new_socket =
       assign(socket, :selected_form, nil)
       |> push_event("redefine_blocks_drag_and_drop", %{})
+      |> push_event("delete_tab", %{})
 
     {:noreply, new_socket}
   end

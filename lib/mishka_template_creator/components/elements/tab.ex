@@ -77,15 +77,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         selected_form["type"]
       )
 
-    {:ok,
-     assign(socket,
-       id: id,
-       render_type: render_type,
-       selected_form: selected_form,
-       element: element,
-       submit: submit,
-       selected_text_color: @selected_text_color
-     )}
+    new_socket =
+      assign(socket,
+        id: id,
+        render_type: render_type,
+        selected_form: selected_form,
+        element: element,
+        submit: submit,
+        selected_text_color: @selected_text_color
+      )
+      |> push_event("recovery_tab", %{})
+
+    {:ok, new_socket}
   end
 
   @impl true
@@ -164,7 +167,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
               <div id={"title-#{key}"}>
                 <div
                   class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
-                  phx-click={JS.toggle(to: "#tree-#{key}")}
+                  phx-click={JS.dispatch("reset:toggle:tab", detail: %{key: key})}
                 >
                   <Heroicons.rectangle_stack class="w-6 h-6" />
                   <span class="text-base font-bold select-none">
@@ -204,21 +207,21 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 <div class="flex flex-row w-full pl-5 gap-2 justify-between items-center mx-auto">
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
-                    phx-click={JS.toggle(to: "#form-title-#{key}")}
+                    phx-click={JS.dispatch("select:toggle:tab", detail: %{type: "title", key: key})}
                   >
                     <Heroicons.pencil_square class="w-5 h-5" />
                     <span class="text-base">Title</span>
                   </div>
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
-                    phx-click={JS.toggle(to: "#form-text-#{key}")}
+                    phx-click={JS.dispatch("select:toggle:tab", detail: %{type: "text", key: key})}
                   >
                     <Heroicons.bars_3_bottom_left class="w-5 h-5" />
                     <span class="text-base">Text</span>
                   </div>
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
-                    phx-click={JS.toggle(to: "#form-icon-#{key}")}
+                    phx-click={JS.dispatch("select:toggle:tab", detail: %{type: "icon", key: key})}
                   >
                     <Heroicons.computer_desktop class="w-5 h-5" />
                     <span class="text-base">Icon</span>
@@ -522,7 +525,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         </button>
       </MishkaCoreComponent.custom_simple_form>
 
-      <Aside.aside_accordion id={"text-#{@key}"} title="Font Style">
+      <Aside.aside_accordion id={"title-#{@key}"} title="Font Style">
         <MishkaCoreComponent.custom_simple_form
           :let={f}
           for={%{}}
@@ -631,6 +634,53 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           block_id={@key}
         />
       </div>
+
+      <Aside.aside_accordion id={"icon-#{@key}"} title="Font Style">
+        <MishkaCoreComponent.custom_simple_form
+          :let={f}
+          for={%{}}
+          as={:icon_style}
+          phx-change="font_style"
+          phx-target={@myself}
+          class="w-full m-0 p-0 flex flex-col"
+        >
+          <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+            <span class="w-3/5">Size:</span>
+            <div class="flex flex-row w-full gap-2 items-center">
+              <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
+                <%= TailwindSetting.find_text_size_index(@header["icon"]).index %>
+              </span>
+              <%= range_input(f, :font_size,
+                min: "1",
+                max: "13",
+                value: TailwindSetting.find_text_size_index(@header["icon"]).index,
+                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              ) %>
+            </div>
+          </div>
+        </MishkaCoreComponent.custom_simple_form>
+        <div class="flex flex-col w-full justify-between items-stretch pt-3 pb-5">
+          <span class="w-full">Color:</span>
+          <div class="flex flex-wrap w-full mt-4">
+            <div
+              :for={
+                item <-
+                  TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+              }
+              :if={item not in ["text-inherit", "text-current", "text-transparent"]}
+              class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
+              phx-click="font_style"
+              phx-value-color={item}
+              phx-target={@myself}
+            >
+              <Heroicons.x_mark
+                :if={item in @header["title"]}
+                class={if(item in @selected_text_color, do: "text-white")}
+              />
+            </div>
+          </div>
+        </div>
+      </Aside.aside_accordion>
     </div>
     """
   end

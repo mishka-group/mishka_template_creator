@@ -6,6 +6,8 @@ import { customEventCreator } from '../vendor/mishka_template_creator/utilities'
 import Sortable from 'sortablejs';
 
 let stateLessConfig = 'none';
+let stateLessTab = undefined;
+
 const dragLocation = document.getElementById('dragLocation');
 const previewHelper = document.getElementById('previewHelper');
 
@@ -87,6 +89,34 @@ Sortable.create(previewHelper, {
       previewHelper.classList.add('hidden');
     }
   },
+});
+
+// Sent from server
+window.addEventListener('reset:toggle:tab', (e) => {
+  const tabDom = document.getElementById(`tree-${e.detail.key}`);
+  document.getElementById(`form-icon-${e.detail.key}`).classList.add('hidden');
+  document.getElementById(`form-text-${e.detail.key}`).classList.add('hidden');
+  document.getElementById(`form-title-${e.detail.key}`).classList.add('hidden');
+
+  if (tabDom) {
+    tabDom.classList.toggle('hidden');
+  }
+});
+
+window.addEventListener('select:toggle:tab', (e) => {
+  const tabItems = ['icon', 'text', 'title'];
+  const clone = [...tabItems];
+  clone
+    .filter((item) => item !== e.detail.type)
+    .map((item) => {
+      document
+        .getElementById(`form-${item}-${e.detail.key}`)
+        .classList.add('hidden');
+    });
+  document
+    .getElementById(`form-${e.detail.type}-${e.detail.key}`)
+    .classList.toggle('hidden');
+  stateLessTab = { type: e.detail.type, key: e.detail.key };
 });
 
 // Start Hooks object
@@ -250,6 +280,18 @@ Hooks.dragAndDropLocation = {
 
     this.handleEvent('redefine_blocks_drag_and_drop', () => {
       defineBlocksDragAndDrop();
+    });
+
+    this.handleEvent('recovery_tab', () => {
+      if (typeof stateLessTab !== 'undefined') {
+        document
+          .getElementById(`form-${stateLessTab.type}-${stateLessTab.key}`)
+          .classList.toggle('hidden');
+      }
+    });
+    
+    this.handleEvent('delete_tab', () => {
+      stateLessTab = undefined;
     });
   },
 };
