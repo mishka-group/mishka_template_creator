@@ -27,6 +27,50 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     "text-stone-900"
   ]
 
+  @svg_height [
+    "h-1",
+    "h-2",
+    "h-3",
+    "h-4",
+    "h-5",
+    "h-6",
+    "h-7",
+    "h-8",
+    "h-9",
+    "h-10",
+    "h-11",
+    "h-12",
+    "h-14",
+    "h-16",
+    "h-20",
+    "h-24",
+    "h-28",
+    "h-32",
+    "h-36"
+  ]
+
+  @svg_width [
+    "w-1",
+    "w-2",
+    "w-3",
+    "w-4",
+    "w-5",
+    "w-6",
+    "w-7",
+    "w-8",
+    "w-9",
+    "w-10",
+    "w-11",
+    "w-12",
+    "w-14",
+    "w-16",
+    "w-20",
+    "w-24",
+    "w-28",
+    "w-32",
+    "w-36"
+  ]
+
   # TODO: Add new tab and it's text
   # TODO: Tabs Title
   # TODO: Tabs Title icon
@@ -540,7 +584,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         <button
           type="submit"
           class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
-          phx-click={JS.toggle(to: "#form-title-#{@key}")}
         >
           Save
         </button>
@@ -646,7 +689,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         <button
           type="submit"
           class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
-          phx-click={JS.toggle(to: "#form-text-#{@key}")}
         >
           Save
         </button>
@@ -682,14 +724,33 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             <span class="w-3/5">Size:</span>
             <div class="flex flex-row w-full gap-2 items-center">
               <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
-                <%= TailwindSetting.find_text_size_index(@header["icon"]).index %>
+                <%= find_index_svg_sizes(@header["icon"]).width %>
               </span>
-              <%= range_input(f, :font_size,
-                min: "1",
-                max: "13",
-                value: TailwindSetting.find_text_size_index(@header["icon"]).index,
+              <span>
+              W:
+              </span>
+
+              <%= range_input(f, :width,
+                min: "0",
+                max: "18",
+                value: find_index_svg_sizes(@header["icon"]).width,
                 class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-                id: "tab_icon_style_font_size-#{@key}"
+                id: "tab_icon_style_width-#{@key}"
+              ) %>
+
+              <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
+                <%= find_index_svg_sizes(@header["icon"]).height %>
+              </span>
+              <span>
+              H:
+              </span>
+
+              <%= range_input(f, :height,
+                min: "0",
+                max: "18",
+                value: find_index_svg_sizes(@header["icon"]).height,
+                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
+                id: "tab_icon_style_height-#{@key}"
               ) %>
 
               <.input field={f[:id]} type="hidden" value={@key} id={"tab_icon_style_id-#{@key}"} />
@@ -860,6 +921,24 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     {:noreply, socket}
   end
 
+  def handle_event(
+        "font_style",
+        %{"tab_icon_style" => %{"height" => height, "width" => width}},
+        socket
+      ) do
+    class = edit_icon_size(socket.assigns.element["header"]["icon"], [width, height])
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "icon" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+      |> IO.inspect()
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("tab_title_font_style", %{"color" => color}, socket) do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
@@ -968,6 +1047,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     {:noreply, socket}
   end
 
+  def handle_event("element", %{"tab_text" => %{"id" => id, "html" => html}}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", id], fn selected_element ->
+        Map.merge(selected_element, %{"html" => html})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("select_icon", %{"name" => name, "block-id" => id}, socket) do
     updated =
       socket.assigns.element
@@ -999,7 +1091,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     |> JS.add_class("border-blue-500", to: "#button-#{id}")
   end
 
-  defp edit_font_style_class(classes, font_size, font) do
+  defp edit_font_style_class(classes, font_size, font \\ nil) do
     text_sizes_and_font_families =
       TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
         TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs
@@ -1009,6 +1101,30 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       &(&1 in text_sizes_and_font_families)
     ) ++
       [TailwindSetting.find_font_by_index(font_size).font_class] ++
-      if(font != "", do: [font], else: [])
+      if(font != "" and !is_nil(font), do: [font], else: [])
+  end
+
+  defp edit_icon_size(classes, [width, height]) do
+    all_sizes = @svg_height ++ @svg_width
+
+    Enum.reject(classes, &(&1 in all_sizes)) ++
+      [convert_size(@svg_width, width), convert_size(@svg_height, height)]
+  end
+
+  defp convert_size(list, index), do: Enum.at(list, String.to_integer(index)) || Enum.at(list, 0)
+
+  defp find_index_svg_sizes(classes) do
+    %{
+      width: find_revers_list(@svg_width, classes),
+      height: find_revers_list(@svg_height, classes)
+    }
+  end
+
+  defp find_revers_list(list, classes) do
+    Enum.find(Enum.with_index(list), fn {item, _index} -> item in classes end)
+    |> case do
+      nil -> 0
+      {_data, index} -> index
+    end
   end
 end
