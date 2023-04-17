@@ -289,7 +289,7 @@ Hooks.dragAndDropLocation = {
           .classList.toggle('hidden');
       }
     });
-    
+
     this.handleEvent('delete_tab', () => {
       stateLessTab = undefined;
     });

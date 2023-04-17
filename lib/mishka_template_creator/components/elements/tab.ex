@@ -155,7 +155,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         </div>
 
         <Aside.aside_accordion
-          id={"text-#{@id}"}
+          id={"tab-#{@id}"}
           title="Tab Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
@@ -243,11 +243,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         </Aside.aside_accordion>
 
         <Aside.aside_accordion
-          id={"text-#{@id}"}
+          id={"tab-#{@id}"}
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <Aside.aside_accordion id={"text-#{@id}"} title="Alignment">
+          <Aside.aside_accordion id={"tab-#{@id}"} title="Alignment">
             <div class="flex flex-col w-full items-center justify-center">
               <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
                 <li
@@ -333,11 +333,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             </div>
           </Aside.aside_accordion>
 
-          <Aside.aside_accordion id={"text-#{@id}"} title="Font Style">
+          <Aside.aside_accordion id={"tab-#{@id}"} title="Font Style">
             <MishkaCoreComponent.custom_simple_form
               :let={f}
               for={%{}}
-              as={:font_style}
+              as={:public_tab_font_style}
               phx-change="font_style"
               phx-target={@myself}
               class="w-full m-0 p-0 flex flex-col"
@@ -358,7 +358,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                             nil,
                             nil
                           ).form_configs)
-                      )
+                      ),
+                      id: "public_tab_font-#{@id}"
                   ) %>
                 </div>
               </div>
@@ -372,7 +373,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                     min: "1",
                     max: "13",
                     value: TailwindSetting.find_text_size_index(@element["class"]).index,
-                    class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
+                    id: "public_tab_font_size-#{@id}"
                   ) %>
                 </div>
               </div>
@@ -400,12 +402,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             </div>
           </Aside.aside_accordion>
 
-          <Aside.aside_accordion id={"text-#{@id}"} title="Custom Tag name">
+          <Aside.aside_accordion id={"tab-#{@id}"} title="Custom Tag name">
             <div class="flex flex-col w-full items-center justify-center pb-5">
               <MishkaCoreComponent.custom_simple_form
                 :let={f}
                 for={%{}}
-                as={:tab_component}
+                as={:public_tab_tag}
                 phx-change="validate"
                 phx-submit="element"
                 phx-target={@myself}
@@ -415,7 +417,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                   class:
                     "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
                   placeholder: "Change Tag name",
-                  value: @element["tag"]
+                  value: @element["tag"],
+                  id: "public_tab_tag-#{@id}"
                 ) %>
                 <p class={"text-xs #{if @submit, do: "text-red-500", else: ""} my-3 text-justify"}>
                   Please use only letters and numbers in naming and also keep in mind that you can only use (<code class="text-pink-400">-</code>) between letters. It should be noted, the tag name must be more than 4 characters.
@@ -511,7 +514,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           class:
             "block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
           value: @data["title"],
-          id: "tab_title-#{@key}"
+          id: "tab_title_title-#{@key}"
         ) %>
 
         <.input field={f[:id]} type="hidden" value={@key} id={"tab_title_id-#{@key}"} />
@@ -529,7 +532,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         <MishkaCoreComponent.custom_simple_form
           :let={f}
           for={%{}}
-          as={:font_style}
+          as={:tab_title_font_style}
           phx-change="font_style"
           phx-target={@myself}
           class="w-full m-0 p-0 flex flex-col"
@@ -545,7 +548,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                   Enum.find(
                     @header["title"],
                     &(&1 in TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs)
-                  )
+                  ),
+                  id: "tab_title_font_style_font-#{@key}"
               ) %>
             </div>
           </div>
@@ -559,8 +563,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 min: "1",
                 max: "13",
                 value: TailwindSetting.find_text_size_index(@header["title"]).index,
-                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
+                id: "tab_title_font_style_font_size-#{@key}"
               ) %>
+
+              <.input field={f[:id]} type="hidden" value={@key} id={"tab_title_font_style_id-#{@key}"} />
             </div>
           </div>
         </MishkaCoreComponent.custom_simple_form>
@@ -596,7 +603,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       <MishkaCoreComponent.custom_simple_form
         :let={f}
         for={%{}}
-        as={:tab_title}
+        as={:tab_text}
         phx-submit="element"
         phx-target={@myself}
         class="flex flex-col w-full px-5 gap-2 mx-auto mt-2 mb-5 justify-center items-center"
@@ -639,7 +646,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         <MishkaCoreComponent.custom_simple_form
           :let={f}
           for={%{}}
-          as={:icon_style}
+          as={:tab_icon_style}
           phx-change="font_style"
           phx-target={@myself}
           class="w-full m-0 p-0 flex flex-col"
@@ -654,8 +661,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 min: "1",
                 max: "13",
                 value: TailwindSetting.find_text_size_index(@header["icon"]).index,
-                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
+                id: "tab_icon_style_font_size-#{@key}"
               ) %>
+
+              <.input field={f[:id]} type="hidden" value={@key} id={"tab_icon_style_id-#{@key}"} />
             </div>
           </div>
         </MishkaCoreComponent.custom_simple_form>
