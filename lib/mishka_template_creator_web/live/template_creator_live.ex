@@ -70,7 +70,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       |> assign(elements: element, selected_form: nil)
       |> push_event("create_preview_helper", %{status: length(Map.keys(element["children"])) == 0})
       |> push_event("redefine_blocks_drag_and_drop", %{})
-      |> push_event("delete_tab", %{})
 
     {:noreply, new_assign}
   end
@@ -113,7 +112,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
     new_socket =
       assign(socket, :selected_form, nil)
       |> push_event("redefine_blocks_drag_and_drop", %{})
-      |> push_event("delete_tab", %{})
 
     {:noreply, new_socket}
   end
@@ -199,7 +197,6 @@ defmodule MishkaTemplateCreatorWeb.TemplateCreatorLive do
       |> assign(elements: element, selected_form: nil)
       |> push_event("create_preview_helper", %{status: length(Map.keys(element["children"])) == 0})
       |> push_event("redefine_blocks_drag_and_drop", %{})
-      |> push_event("delete_tab", %{})
 
     {:noreply, new_assign}
   end

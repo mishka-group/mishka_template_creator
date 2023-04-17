@@ -87,8 +87,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         selected_text_color: @selected_text_color
       )
 
-    # |> push_event("recovery_tab", %{})
-
     {:ok, new_socket}
   end
 
