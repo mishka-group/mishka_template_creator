@@ -673,12 +673,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 id: "tab_text_font_style_font_size-#{@key}"
               ) %>
 
-              <.input
-                field={f[:id]}
-                type="hidden"
-                value={@key}
-                id={"tab_text_font_style_id-#{@key}"}
-              />
+              <.input field={f[:id]} type="hidden" value={@key} id={"tab_text_font_style_id-#{@key}"} />
             </div>
           </div>
         </MishkaCoreComponent.custom_simple_form>
@@ -692,7 +687,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         <div class="flex flex-col w-full items-center justify-center">
           <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
             <li
-              class="px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer"
+              class={"#{create_border_radius(@content, "rounded-none")} px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer"}
               phx-click="border_radius"
               phx-value-type="rounded-none"
               phx-target={@myself}
@@ -700,7 +695,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
               None
             </li>
             <li
-              class="px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer"
+              class={"#{create_border_radius(@content, "rounded-sm")} px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer"}
               phx-click="border_radius"
               phx-value-type="rounded-sm"
               phx-target={@myself}
@@ -708,7 +703,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
               SM
             </li>
             <li
-              class="px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer"
+              class={"#{create_border_radius(@content, "rounded-md")} px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer"}
               phx-click="border_radius"
               phx-value-type="rounded-md"
               phx-target={@myself}
@@ -716,7 +711,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
               MD
             </li>
             <li
-              class="px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"
+              class={"#{create_border_radius(@content, "rounded-lg")} px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"}
               phx-click="border_radius"
               phx-value-type="rounded-lg"
               phx-target={@myself}
@@ -1013,6 +1008,21 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     {:noreply, socket}
   end
 
+  def handle_event("border_radius", %{"type" => type}, socket) do
+    borders = TailwindSetting.get_form_options("borders", "border-radius", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["content"], &(&1 in borders)) ++ [type]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("tab_content_background", %{"color" => color}, socket) do
     bg_colors =
       TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
@@ -1213,6 +1223,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     |> case do
       nil -> 0
       {_data, index} -> index
+    end
+  end
+
+  defp create_border_radius(classes, type, bg_color \\ "") do
+    Enum.find(classes, &(&1 == type))
+    |> case do
+      nil -> bg_color
+      _ -> "bg-gray-300"
     end
   end
 end
