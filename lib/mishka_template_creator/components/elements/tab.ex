@@ -71,36 +71,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     "w-36"
   ]
 
-  # TODO: Add new tab and it's text
-  # TODO: Tabs Title
-  # TODO: Tabs Title icon
-  # TODO: Tabs Title icon all style like text component
-  # TODO: Tab title font size
-  # TODO: Tab text all styles like text component
-  # TODO: Show tab tree to manage and edit all of them with click
   # ---------------------------------------------------------------------------------------------------------------
   # TODO: Presets which are added with MishkaInstaller as a plugin, it let user select pre-prepared tabs. in V0.0.2
-  %{
-    "unique_id" => %{
-      "children" => %{
-        "unique_id-0" => %{"title" => "", "html" => "", "icon" => ""},
-        "unique_id-1" => %{"title" => "", "html" => "", "icon" => ""}
-      },
-      "header" => %{
-        "container" => "",
-        "title" => "",
-        "icon" => "",
-        "button" => ""
-      },
-      "content" => "",
-      "order" => ["unique_id-0", "unique_id-1"],
-      "class" => "",
-      "type" => "tab",
-      "parent" => "section",
-      "parent_id" => "unique_id"
-    }
-  }
-
+  # ---------------------------------------------------------------------------------------------------------------
   @impl true
   def update(
         %{
@@ -727,7 +700,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 <%= find_index_svg_sizes(@header["icon"]).width %>
               </span>
               <span>
-              W:
+                W:
               </span>
 
               <%= range_input(f, :width,
@@ -742,7 +715,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 <%= find_index_svg_sizes(@header["icon"]).height %>
               </span>
               <span>
-              H:
+                H:
               </span>
 
               <%= range_input(f, :height,
@@ -932,7 +905,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       socket.assigns.element
       |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "icon" => class}})
       |> Map.merge(socket.assigns.selected_form)
-      |> IO.inspect()
 
     send(self(), {"element", %{"update_parame" => updated}})
 
@@ -950,7 +922,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       socket.assigns.element
       |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "title" => class}})
       |> Map.merge(socket.assigns.selected_form)
-      |> IO.inspect()
 
     send(self(), {"element", %{"update_parame" => updated}})
 
@@ -961,14 +932,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
-    class =
-      Enum.reject(socket.assigns.element["header"]["icon"], &(&1 in text_colors)) ++ [color]
+    class = Enum.reject(socket.assigns.element["header"]["icon"], &(&1 in text_colors)) ++ [color]
 
     updated =
       socket.assigns.element
       |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "icon" => class}})
       |> Map.merge(socket.assigns.selected_form)
-      |> IO.inspect()
 
     send(self(), {"element", %{"update_parame" => updated}})
 
