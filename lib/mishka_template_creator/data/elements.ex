@@ -4,7 +4,6 @@ defmodule MishkaTemplateCreator.Data.Elements do
     {"section", "Section", "Heroicons.inbox_stack", ["layout", "section"]},
     {"text", "Text", "Heroicons.inbox_stack", ["section"]},
     {"tab", "Tab", "Heroicons.inbox_stack", ["section"]},
-    {"columns", "Columns", "Heroicons.inbox_stack", ["section"]},
     {"table", "Table", "Heroicons.inbox_stack", ["section"]},
     {"accordion", "Accordion", "Heroicons.inbox_stack", ["section"]}
   ]

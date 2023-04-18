@@ -9215,7 +9215,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
           "gap-6"
         ],
         "title" => ["text-base"],
-        "icon" => ["w-4", "h-4"],
+        "icon" => ["w-5", "h-5"],
         "button" => ["flex", "flex-row", "py-4", "gap-1", "justify-center", "items-center"]
       },
       "content" => ["p-4", "rounded-lg", "bg-gray-50", "text-sm", "text-gray-500"],

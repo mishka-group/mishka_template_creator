@@ -90,8 +90,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     <div>
       <Aside.aside_settings id={"text-#{@id}"}>
         <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 items-center mx-auto mb-4">
-          <ul class="flex flex-wrap -mb-px items-center">
-            <li class="mr-2">
+          <ul class="flex flex-row -mb-px items-center">
+            <li>
               <a
                 href="#"
                 class="inline-block p-4 text-blue-600 border-b-2 border-blue-600 rounded-t-lg"
@@ -100,12 +100,26 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                 Quick edit
               </a>
             </li>
-            <li class="mr-2">
+            <li>
               <a
                 href="#"
-                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 active"
+                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 relative"
               >
                 Advanced edit
+                <div class="absolute inline-flex items-center justify-center text-whitebg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-blue-400 -top-2 -right-2">
+                  Soon
+                </div>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 relative"
+              >
+                Presets
+                <div class="absolute inline-flex items-center justify-center text-whitebg-pink-100 text-pink-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-pink-400 -top-2 -right-2">
+                  Pro
+                </div>
               </a>
             </li>
           </ul>
