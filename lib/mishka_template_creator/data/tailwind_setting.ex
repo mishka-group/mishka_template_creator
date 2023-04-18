@@ -9029,6 +9029,27 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     ]
   end
 
+  @spec different_selected_color() :: list(String.t())
+  def different_selected_color() do
+    [
+      "text-black",
+      "text-slate-600",
+      "text-slate-700",
+      "text-slate-800",
+      "text-slate-900",
+      "text-gray-700",
+      "text-gray-800",
+      "text-gray-900",
+      "text-zinc-800",
+      "text-zinc-900",
+      "text-neutral-900",
+      "text-neutral-800",
+      "text-stone-700",
+      "text-stone-800",
+      "text-stone-900"
+    ]
+  end
+
   @spec get_title(list(map), map) :: any
   def get_title(settings, selected_setting) do
     Enum.find(settings, fn {id, _title, _des, _settings} ->

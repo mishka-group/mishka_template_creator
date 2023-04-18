@@ -235,7 +235,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                     }
                   >
                     <Heroicons.pencil_square class="w-5 h-5" />
-                    <span class="text-base">Title</span>
+                    <span class="text-base select-none">Title</span>
                   </div>
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
@@ -246,7 +246,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                     }
                   >
                     <Heroicons.bars_3_bottom_left class="w-5 h-5" />
-                    <span class="text-base">Text</span>
+                    <span class="text-base select-none">Text</span>
                   </div>
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
@@ -257,7 +257,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                     }
                   >
                     <Heroicons.computer_desktop class="w-5 h-5" />
-                    <span class="text-base">Icon</span>
+                    <span class="text-base select-none">Icon</span>
                   </div>
                   <div
                     class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
@@ -267,7 +267,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                     phx-target={@myself}
                   >
                     <Heroicons.trash class="w-5 h-5 text-red-600" />
-                    <span class="text-base">Delete</span>
+                    <span class="text-base select-none">Delete</span>
                   </div>
                 </div>
               </div>
@@ -412,27 +412,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 </div>
               </div>
             </MishkaCoreComponent.custom_simple_form>
-            <div class="flex flex-col w-full justify-between items-stretch pt-3 pb-5">
-              <span class="w-full">Color:</span>
-              <div class="flex flex-wrap w-full mt-4">
-                <div
-                  :for={
-                    item <-
-                      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
-                  }
-                  :if={item not in ["text-inherit", "text-current", "text-transparent"]}
-                  class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
-                  phx-click="public_tab_font_style"
-                  phx-value-color={item}
-                  phx-target={@myself}
-                >
-                  <Heroicons.x_mark
-                    :if={item in @element["class"]}
-                    class={if(item in @selected_text_color, do: "text-white")}
-                  />
-                </div>
-              </div>
-            </div>
+            <MishkaCoreComponent.color_selector
+              myself={@myself}
+              event_name="public_tab_font_style"
+              classes={@element["class"]}
+            />
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"tab-#{@id}"} title="Custom Tag name">
@@ -610,27 +594,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             </div>
           </div>
         </MishkaCoreComponent.custom_simple_form>
-        <div class="flex flex-col w-full justify-between items-stretch pt-3 pb-5">
-          <span class="w-full">Color:</span>
-          <div class="flex flex-wrap w-full mt-4">
-            <div
-              :for={
-                item <-
-                  TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
-              }
-              :if={item not in ["text-inherit", "text-current", "text-transparent"]}
-              class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
-              phx-click="tab_title_font_style"
-              phx-value-color={item}
-              phx-target={@myself}
-            >
-              <Heroicons.x_mark
-                :if={item in @header["title"]}
-                class={if(item in @selected_text_color, do: "text-white")}
-              />
-            </div>
-          </div>
-        </div>
+        <MishkaCoreComponent.color_selector
+          myself={@myself}
+          event_name="tab_title_font_style"
+          classes={@header["title"]}
+        />
       </Aside.aside_accordion>
     </div>
     """
@@ -666,6 +634,106 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           Save
         </button>
       </MishkaCoreComponent.custom_simple_form>
+      <Aside.aside_accordion id={"title-#{@key}"} title="Content Font Style">
+        <MishkaCoreComponent.custom_simple_form
+          :let={f}
+          for={%{}}
+          as={:tab_title_font_style}
+          phx-change="font_style"
+          phx-target={@myself}
+          class="w-full m-0 p-0 flex flex-col"
+        >
+          <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+            <span class="w-3/5">Font:</span>
+            <div class="w-full">
+              <%= select(f, :font, ["font-sans", "font-serif", "font-mono"],
+                class:
+                  "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1",
+                prompt: "Choose preferred font",
+                selected:
+                  Enum.find(
+                    @header["title"],
+                    &(&1 in TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs)
+                  ),
+                id: "tab_title_font_style_font-#{@key}"
+              ) %>
+            </div>
+          </div>
+          <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+            <span class="w-3/5">Size:</span>
+            <div class="flex flex-row w-full gap-2 items-center">
+              <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
+                <%= TailwindSetting.find_text_size_index(@header["title"]).index %>
+              </span>
+              <%= range_input(f, :font_size,
+                min: "1",
+                max: "13",
+                value: TailwindSetting.find_text_size_index(@header["title"]).index,
+                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
+                id: "tab_title_font_style_font_size-#{@key}"
+              ) %>
+
+              <.input
+                field={f[:id]}
+                type="hidden"
+                value={@key}
+                id={"tab_title_font_style_id-#{@key}"}
+              />
+            </div>
+          </div>
+        </MishkaCoreComponent.custom_simple_form>
+        <MishkaCoreComponent.color_selector
+          myself={@myself}
+          event_name="tab_content_font_style"
+          classes={@content}
+        />
+      </Aside.aside_accordion>
+      <Aside.aside_accordion id={"tab-#{@key}"} title="Content Border Radius">
+        <div class="flex flex-col w-full items-center justify-center">
+          <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
+            <li
+              class="px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer"
+              phx-click="border_radius"
+              phx-value-type="rounded-none"
+              phx-target={@myself}
+            >
+              None
+            </li>
+            <li
+              class="px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer"
+              phx-click="border_radius"
+              phx-value-type="rounded-sm"
+              phx-target={@myself}
+            >
+              SM
+            </li>
+            <li
+              class="px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer"
+              phx-click="border_radius"
+              phx-value-type="rounded-md"
+              phx-target={@myself}
+            >
+              MD
+            </li>
+            <li
+              class="px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"
+              phx-click="border_radius"
+              phx-value-type="rounded-lg"
+              phx-target={@myself}
+            >
+              LG
+            </li>
+          </ul>
+        </div>
+      </Aside.aside_accordion>
+      <Aside.aside_accordion id={"text-#{@key}"} title="Content Background Color">
+        <MishkaCoreComponent.color_selector
+          myself={@myself}
+          event_name="tab_content_background"
+          type="bg"
+          classes={@content}
+        />
+      </Aside.aside_accordion>
     </div>
     """
   end
@@ -730,27 +798,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             </div>
           </div>
         </MishkaCoreComponent.custom_simple_form>
-        <div class="flex flex-col w-full justify-between items-stretch pt-3 pb-5">
-          <span class="w-full">Color:</span>
-          <div class="flex flex-wrap w-full mt-4">
-            <div
-              :for={
-                item <-
-                  TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
-              }
-              :if={item not in ["text-inherit", "text-current", "text-transparent"]}
-              class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
-              phx-click="tab_icon_font_style"
-              phx-value-color={item}
-              phx-target={@myself}
-            >
-              <Heroicons.x_mark
-                :if={item in @header["title"]}
-                class={if(item in @selected_text_color, do: "text-white")}
-              />
-            </div>
-          </div>
-        </div>
+        <MishkaCoreComponent.color_selector
+          myself={@myself}
+          event_name="tab_icon_font_style"
+          classes={@header["icon"]}
+        />
       </Aside.aside_accordion>
     </div>
     """
@@ -921,6 +973,38 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     updated =
       socket.assigns.element
       |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "title" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("tab_content_font_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["content"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("tab_content_background", %{"color" => color}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["content"], &(&1 in bg_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
