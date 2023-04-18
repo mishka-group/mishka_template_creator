@@ -9231,6 +9231,10 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     }
   end
 
+  def default_element("table") do
+    %{"class" => ["text-black", "w-full", "p-2", "text-base"]}
+  end
+
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()
   def convert_arbitrary_value(config) do
     [h | t] = String.split(config, "-[")

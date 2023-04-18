@@ -70,8 +70,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     ~H"""
     <div>
       <Aside.aside_settings id={"text-#{@id}"}>
-        <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 items-center mx-auto mb-4">
-          <ul class="flex flex-row -mb-px items-center">
+        <div class="w-full text-sm font-medium text-center text-gray-500 border-b border-gray-200 items-center mx-auto mb-4">
+          <ul class="w-full flex flex-row -mb-px justify-center items-center">
             <li>
               <a
                 href="#"
