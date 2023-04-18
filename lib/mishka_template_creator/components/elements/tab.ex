@@ -9,24 +9,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias Phoenix.LiveView.JS
 
-  @selected_text_color [
-    "text-black",
-    "text-slate-600",
-    "text-slate-700",
-    "text-slate-800",
-    "text-slate-900",
-    "text-gray-700",
-    "text-gray-800",
-    "text-gray-900",
-    "text-zinc-800",
-    "text-zinc-900",
-    "text-neutral-900",
-    "text-neutral-800",
-    "text-stone-700",
-    "text-stone-800",
-    "text-stone-900"
-  ]
-
   @svg_height [
     "h-1",
     "h-2",
@@ -100,8 +82,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         render_type: render_type,
         selected_form: selected_form,
         element: element,
-        submit: submit,
-        selected_text_color: @selected_text_color
+        submit: submit
       )
 
     {:ok, new_socket}
@@ -531,8 +512,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   attr(:header, :map, required: true)
 
   defp tab_form(%{type: "title"} = assigns) do
-    assigns = assign(assigns, :selected_text_color, @selected_text_color)
-
     ~H"""
     <div id={"form-title-#{@key}"} class="hidden">
       <MishkaCoreComponent.custom_simple_form
@@ -619,8 +598,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   end
 
   defp tab_form(%{type: "text"} = assigns) do
-    assigns = assign(assigns, :selected_text_color, @selected_text_color)
-
     ~H"""
     <div id={"form-text-#{@key}"} class="hidden">
       <MishkaCoreComponent.custom_simple_form
@@ -748,8 +725,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   end
 
   defp tab_form(%{type: "icon"} = assigns) do
-    assigns = assign(assigns, :selected_text_color, @selected_text_color)
-
     ~H"""
     <div id={"form-icon-#{@key}"} class="hidden">
       <p class="w-full font-bold text-sm pb-5 border-b border-gray-300 mb-5">Select Tab Icon:</p>

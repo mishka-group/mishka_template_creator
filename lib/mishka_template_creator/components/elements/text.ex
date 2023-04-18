@@ -7,24 +7,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
 
-  @selected_text_color [
-    "text-black",
-    "text-slate-600",
-    "text-slate-700",
-    "text-slate-800",
-    "text-slate-900",
-    "text-gray-700",
-    "text-gray-800",
-    "text-gray-900",
-    "text-zinc-800",
-    "text-zinc-900",
-    "text-neutral-900",
-    "text-neutral-800",
-    "text-stone-700",
-    "text-stone-800",
-    "text-stone-900"
-  ]
-
   @impl true
   def mount(socket) do
     {:ok, socket}
@@ -56,8 +38,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
        render_type: render_type,
        selected_form: selected_form,
        element: element,
-       submit: submit,
-       selected_text_color: @selected_text_color
+       submit: submit
      )}
   end
 
@@ -279,27 +260,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
               </div>
             </div>
           </MishkaCoreComponent.custom_simple_form>
-          <div class="flex flex-col w-full justify-between items-stretch pt-3 pb-5">
-            <span class="w-full">Color:</span>
-            <div class="flex flex-wrap w-full mt-4">
-              <div
-                :for={
-                  item <-
-                    TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
-                }
-                :if={item not in ["text-inherit", "text-current", "text-transparent"]}
-                class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
-                phx-click="font_style"
-                phx-value-color={item}
-                phx-target={@myself}
-              >
-                <Heroicons.x_mark
-                  :if={item in @element["class"]}
-                  class={if(item in @selected_text_color, do: "text-white")}
-                />
-              </div>
-            </div>
-          </div>
+          <MishkaCoreComponent.color_selector
+            myself={@myself}
+            event_name="font_style"
+            classes={@element["class"]}
+          />
         </Aside.aside_accordion>
 
         <Aside.aside_accordion id={"text-#{@id}"} title="Custom Tag name">
