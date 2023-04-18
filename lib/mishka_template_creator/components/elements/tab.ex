@@ -638,7 +638,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         <MishkaCoreComponent.custom_simple_form
           :let={f}
           for={%{}}
-          as={:tab_title_font_style}
+          as={:tab_text_font_style}
           phx-change="font_style"
           phx-target={@myself}
           class="w-full m-0 p-0 flex flex-col"
@@ -652,10 +652,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 prompt: "Choose preferred font",
                 selected:
                   Enum.find(
-                    @header["title"],
+                    @content,
                     &(&1 in TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs)
                   ),
-                id: "tab_title_font_style_font-#{@key}"
+                id: "tab_text_font_style_font-#{@key}"
               ) %>
             </div>
           </div>
@@ -663,21 +663,21 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             <span class="w-3/5">Size:</span>
             <div class="flex flex-row w-full gap-2 items-center">
               <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
-                <%= TailwindSetting.find_text_size_index(@header["title"]).index %>
+                <%= TailwindSetting.find_text_size_index(@content).index %>
               </span>
               <%= range_input(f, :font_size,
                 min: "1",
                 max: "13",
-                value: TailwindSetting.find_text_size_index(@header["title"]).index,
+                value: TailwindSetting.find_text_size_index(@content).index,
                 class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-                id: "tab_title_font_style_font_size-#{@key}"
+                id: "tab_text_font_style_font_size-#{@key}"
               ) %>
 
               <.input
                 field={f[:id]}
                 type="hidden"
                 value={@key}
-                id={"tab_title_font_style_id-#{@key}"}
+                id={"tab_text_font_style_id-#{@key}"}
               />
             </div>
           </div>
@@ -939,6 +939,23 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     updated =
       socket.assigns.element
       |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "title" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"tab_text_font_style" => %{"font" => font, "font_size" => font_size}},
+        socket
+      ) do
+    class = edit_font_style_class(socket.assigns.element["content"], font_size, font)
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
