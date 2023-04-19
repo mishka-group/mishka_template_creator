@@ -169,7 +169,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             <Heroicons.plus class="w-5 h-5 cursor-pointer" phx-click="add" phx-target={@myself} />
           </:before_title_block>
 
-          <div class="w-full flex flex-col gap-3 space-y-4">
+          <div class="w-full flex flex-col gap-3 space-y-4 pt-3">
             <div
               :for={{title, index} <- Enum.with_index(@element["children"]["headers"])}
               class="w-full flex flex-row justify-between items-center"
@@ -184,7 +184,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                   phx-target={@myself}
                 >
                   <Heroicons.pencil_square class="w-5 h-5" />
-                  <span class="text-base select-none">Title</span>
+                  <span class="text-base select-none">Edit</span>
                 </div>
                 <div
                   class="flex flex-row justify-center items-start gap-2 cursor-pointer"
@@ -203,10 +203,21 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
 
         <Aside.aside_accordion
           id={"table-#{@id}"}
+          title="Table Rows Settings"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+        >
+          <:before_title_block>
+            <Heroicons.plus class="w-5 h-5 cursor-pointer" phx-click="add" phx-target={@myself} />
+          </:before_title_block>
+          sss
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"table-#{@id}"}
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <Aside.aside_accordion id={"table-#{@id}"} title="Alignment">
+          <Aside.aside_accordion id={"table-#{@id}"} title="Alignment" open={false}>
             <div class="flex flex-col w-full items-center justify-center">
               <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
                 <li
@@ -292,7 +303,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             </div>
           </Aside.aside_accordion>
 
-          <Aside.aside_accordion id={"table-#{@id}"} title="Font Style">
+          <Aside.aside_accordion id={"table-#{@id}"} title="Font Style" open={false}>
             <MishkaCoreComponent.custom_simple_form
               :let={f}
               for={%{}}
@@ -345,7 +356,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             />
           </Aside.aside_accordion>
 
-          <Aside.aside_accordion id={"table-#{@id}"} title="Custom Tag name">
+          <Aside.aside_accordion id={"table-#{@id}"} title="Custom Tag name" open={false}>
             <div class="flex flex-col w-full items-center justify-center pb-5">
               <MishkaCoreComponent.custom_simple_form
                 :let={f}

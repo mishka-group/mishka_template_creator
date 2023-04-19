@@ -106,7 +106,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
           </ul>
         </div>
 
-        <Aside.aside_accordion id={"text-#{@id}"} title="Change Text">
+        <Aside.aside_accordion id={"text-#{@id}"} title="Change Text" open={false}>
           <MishkaCoreComponent.custom_simple_form
             :let={f}
             for={%{}}
@@ -135,7 +135,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
           </MishkaCoreComponent.custom_simple_form>
         </Aside.aside_accordion>
 
-        <Aside.aside_accordion id={"text-#{@id}"} title="Alignment">
+        <Aside.aside_accordion id={"text-#{@id}"} title="Alignment" open={false}>
           <div class="flex flex-col w-full items-center justify-center">
             <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
               <li
@@ -221,7 +221,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
           </div>
         </Aside.aside_accordion>
 
-        <Aside.aside_accordion id={"text-#{@id}"} title="Font Style">
+        <Aside.aside_accordion id={"text-#{@id}"} title="Font Style" open={false}>
           <MishkaCoreComponent.custom_simple_form
             :let={f}
             for={%{}}

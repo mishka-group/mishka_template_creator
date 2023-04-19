@@ -114,6 +114,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
   attr(:id, :string, required: true)
   attr(:title, :string, required: true)
   attr(:title_class, :string, required: false, default: "w-full font-bold select-none my-4")
+  attr(:open, :boolean, required: false, default: true)
 
   slot(:inner_block, required: true)
   slot(:before_title_block, required: false, default: nil)
@@ -129,7 +130,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
         <span class={@title_class}><%= @title %>:</span>
         <span>
           <Heroicons.chevron_double_up
-            class={"#{@title_alias}-up w-4 h-auto cursor-pointer"}
+            class={"#{@title_alias}-up w-4 h-auto cursor-pointer #{if !@open, do: "hidden"}"}
             phx-click={
               JS.toggle()
               |> JS.show(to: ".#{@title_alias}-down")
@@ -137,7 +138,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
             }
           />
           <Heroicons.chevron_double_down
-            class={"#{@title_alias}-down w-4 h-auto cursor-pointer hidden"}
+            class={"#{@title_alias}-down w-4 h-auto cursor-pointer #{if @open, do: "hidden"}"}
             phx-click={
               JS.toggle()
               |> JS.show(to: ".#{@title_alias}-up")
@@ -147,7 +148,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
         </span>
       </div>
 
-      <div class={"#{@id}-#{@title_alias}-content flex flex-col pt-2 duration-200 w-full"}>
+      <div class={"#{@id}-#{@title_alias}-content flex flex-col pt-2 duration-200 w-full #{if !@open, do: "hidden"}"}>
         <%= render_slot(@inner_block) %>
       </div>
     </section>
