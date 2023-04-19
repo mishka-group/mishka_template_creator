@@ -209,7 +209,60 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           <:before_title_block>
             <Heroicons.plus class="w-5 h-5 cursor-pointer" phx-click="add" phx-target={@myself} />
           </:before_title_block>
-          sss
+
+          <div class="flex flex-col w-full gap-3 space-y-4 pt-3">
+            <div
+              :for={
+                {%{id: key, data: data}, index} <-
+                  Enum.with_index(
+                    MishkaCoreComponent.sorted_list_by_order(
+                      @element["order"],
+                      @element["children"]["content"]
+                    ),
+                    1
+                  )
+              }
+              class="w-full flex flex-col justify-between items-center"
+            >
+              <div class="w-full flex flex-row justify-between items-center pb-3">
+                <span class="text-base">Row-<%= index %>:</span>
+                <div class="flex flex-row justify-end items-center gap-2">
+                  <div
+                    class="flex flex-row justify-center items-start gap-1 cursor-pointer"
+                    phx-click="delete"
+                    phx-value-id={"table-header-#{@id}-#{key}"}
+                    phx-value-type="tab"
+                    phx-target={@myself}
+                  >
+                    <Heroicons.plus class="w-5 h-5" />
+                    <span class="text-base select-none">Add</span>
+                  </div>
+                  <div
+                    class="flex flex-row justify-center items-start gap-1 cursor-pointer"
+                    phx-click="delete"
+                    phx-value-id={"table-header-#{@id}-#{key}"}
+                    phx-value-type="tab"
+                    phx-target={@myself}
+                  >
+                    <Heroicons.trash class="w-5 h-5 text-red-600" />
+                    <span class="text-base select-none">Delete</span>
+                  </div>
+                </div>
+              </div>
+              <div class={"w-full flex flex-wrap p-3 gap-2 #{if index != 1, do: "hidden"}"}>
+                <span
+                  :for={item <- data}
+                  class="group text-sm border border-gray-200 rounded-md py-2 px-3 bg-gray-100 relative"
+                >
+                  <%= item %>
+                  <span class="hidden group-hover:flex group-hover:absolute left-1 duration-100 group-hover:duration-150 gap-2">
+                    <Heroicons.trash class="w-5 h-5 text-red-600 cursor-pointer" />
+                    <Heroicons.pencil_square class="w-5 h-5 cursor-pointer" />
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
         </Aside.aside_accordion>
 
         <Aside.aside_accordion
