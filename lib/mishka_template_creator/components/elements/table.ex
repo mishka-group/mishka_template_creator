@@ -9,6 +9,28 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias Phoenix.LiveView.JS
 
+  %{
+    "unique_id" => %{
+      "children" => %{
+        "unique_id-0" => %{"title" => "", "html" => "", "icon" => ""},
+        "unique_id-1" => %{"title" => "", "html" => "", "icon" => ""}
+      },
+      "header" => %{
+        "row" => "",
+        "column" => ""
+      },
+      "content" => %{
+        "row" => "",
+        "column" => ""
+      },
+      "order" => ["unique_id-0", "unique_id-1"],
+      "class" => "",
+      "type" => "tab",
+      "parent" => "section",
+      "parent_id" => "unique_id"
+    }
+  }
+
   @impl true
   def mount(socket) do
     {:ok, socket}
@@ -60,8 +82,39 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
       phx-value-myself={@myself}
       phx-target={@myself}
       class={@element["class"]}
+      dir={@element["direction"] || "LTR"}
     >
-      <%= @element["html"] || "This is a predefined text. Please click on the text to edit." %>
+      <div class="relative overflow-x-auto">
+        <table class="w-full">
+          <thead class={@element["header"]["row"]}>
+            <tr>
+              <th
+                :for={title <- @element["children"]["headers"]}
+                scope="col"
+                class={@element["header"]["column"]}
+              >
+                <%= title %>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              :for={
+                %{id: _key, data: data} <-
+                  MishkaCoreComponent.sorted_list_by_order(
+                    @element["order"],
+                    @element["children"]["content"]
+                  )
+              }
+              class={@element["content"]["row"]}
+            >
+              <td :for={item <- data} class={@element["content"]["column"]}>
+                <%= item %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     """
   end
@@ -106,12 +159,54 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             </li>
           </ul>
         </div>
+
         <Aside.aside_accordion
-          id={"tab-#{@id}"}
+          id={"table-#{@id}"}
+          title="Table Headers Settings"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+        >
+          <:before_title_block>
+            <Heroicons.plus class="w-5 h-5 cursor-pointer" phx-click="add" phx-target={@myself} />
+          </:before_title_block>
+
+          <div class="w-full flex flex-col gap-3 space-y-4">
+            <div
+              :for={{title, index} <- Enum.with_index(@element["children"]["headers"])}
+              class="w-full flex flex-row justify-between items-center"
+            >
+              <span class="font-bold text-base"><%= title %></span>
+              <div class="flex flex-row justify-end items-center gap-2">
+                <div
+                  class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                  phx-click="delete"
+                  phx-value-id={"table-header-#{@id}-#{index}"}
+                  phx-value-type="tab"
+                  phx-target={@myself}
+                >
+                  <Heroicons.pencil_square class="w-5 h-5" />
+                  <span class="text-base select-none">Title</span>
+                </div>
+                <div
+                  class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                  phx-click="delete"
+                  phx-value-id={"table-header-#{@id}-#{index}"}
+                  phx-value-type="tab"
+                  phx-target={@myself}
+                >
+                  <Heroicons.trash class="w-5 h-5 text-red-600" />
+                  <span class="text-base select-none">Delete</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"table-#{@id}"}
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <Aside.aside_accordion id={"tab-#{@id}"} title="Alignment">
+          <Aside.aside_accordion id={"table-#{@id}"} title="Alignment">
             <div class="flex flex-col w-full items-center justify-center">
               <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
                 <li
@@ -197,7 +292,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             </div>
           </Aside.aside_accordion>
 
-          <Aside.aside_accordion id={"tab-#{@id}"} title="Font Style">
+          <Aside.aside_accordion id={"table-#{@id}"} title="Font Style">
             <MishkaCoreComponent.custom_simple_form
               :let={f}
               for={%{}}
@@ -250,7 +345,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             />
           </Aside.aside_accordion>
 
-          <Aside.aside_accordion id={"tab-#{@id}"} title="Custom Tag name">
+          <Aside.aside_accordion id={"table-#{@id}"} title="Custom Tag name">
             <div class="flex flex-col w-full items-center justify-center pb-5">
               <MishkaCoreComponent.custom_simple_form
                 :let={f}
@@ -418,6 +513,28 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     {:noreply, socket}
   end
 
+  def handle_event("public_tab_font_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_colors)) ++ [color]
+
+    send(
+      self(),
+      {"element",
+       %{
+         "update_class" =>
+           %{
+             "class" => Enum.join(class, " "),
+             "action" => :string_classes
+           }
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
+
+    {:noreply, socket}
+  end
+
   def handle_event("reset", _params, socket) do
     send(
       self(),
@@ -438,7 +555,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     {:noreply, socket}
   end
 
-  defp edit_font_style_class(classes, font_size, font \\ nil) do
+  defp edit_font_style_class(classes, font_size, font) do
     text_sizes_and_font_families =
       TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
         TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs

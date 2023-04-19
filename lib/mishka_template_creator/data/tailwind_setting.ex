@@ -9232,7 +9232,28 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   end
 
   def default_element("table") do
-    %{"class" => ["text-black", "w-full", "p-2", "text-base"]}
+    id = Ecto.UUID.generate()
+    id1 = Ecto.UUID.generate()
+
+    %{
+      "class" => ["text-black", "w-full", "text-base", "p-2"],
+      "header" => %{
+        "row" => ["text-gray-700", "bg-gray-50"],
+        "column" => ["px-6", "py-3", "text-start"]
+      },
+      "content" => %{
+        "row" => ["bg-white", "border-b"],
+        "column" => ["px-6", "py-4"]
+      },
+      "children" => %{
+        "headers" => ["Product name", "Color", "Category", "Price"],
+        "content" => %{
+          "#{id}" => ["Apple MacBook Pro 17\"", "Silver", "Laptop", "$2999"],
+          "#{id1}" => ["Microsoft Surface Pro", "White", "Laptop PC", "$1999"]
+        }
+      },
+      "order" => [id, id1]
+    }
   end
 
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()

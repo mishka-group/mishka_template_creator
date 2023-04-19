@@ -641,6 +641,10 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
     )
   end
 
+  def sorted_list_by_order(order, children) do
+    Enum.map(order, fn key -> %{id: key, data: children[key]} end)
+  end
+
   defp update_order_list(list, id, new_index) do
     list
     |> Enum.reject(&(&1 == id))

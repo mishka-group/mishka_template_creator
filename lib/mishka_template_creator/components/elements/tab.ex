@@ -114,12 +114,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     >
       <.tab_header
         header={@element["header"]}
-        children={sorted_list(@element["order"], @element["children"])}
+        children={MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])}
       />
 
       <.tab_content
         content={@element["content"]}
-        children={sorted_list(@element["order"], @element["children"])}
+        children={MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])}
       />
     </div>
     """
@@ -174,7 +174,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             <Heroicons.plus class="w-5 h-5 cursor-pointer" phx-click="add" phx-target={@myself} />
           </:before_title_block>
           <div class="flex flex-col w-full pb-5 gap-4 pt-2">
-            <%= for {%{id: key, data: data}, index} <- Enum.with_index(sorted_list(@element["order"], @element["children"])) do %>
+            <%= for {%{id: key, data: data}, index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>
               <div id={"title-#{key}"}>
                 <div
                   class="flex flex-row w-full justify-start items-start gap-2 cursor-pointer"
@@ -1160,10 +1160,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     {:noreply, socket}
   end
 
-  defp sorted_list(order, children) do
-    Enum.map(order, fn key -> %{id: key, data: children[key]} end)
-  end
-
   # Based on https://elixirforum.com/t/does-not-liveview-js-work-in-a-loop/55295/2
   defp reset_and_select(js \\ %JS{}, children, id) do
     children
@@ -1178,7 +1174,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     |> JS.add_class("border-blue-500", to: "#button-#{id}")
   end
 
-  defp edit_font_style_class(classes, font_size, font \\ nil) do
+  defp edit_font_style_class(classes, font_size, font) do
     text_sizes_and_font_families =
       TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
         TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs
