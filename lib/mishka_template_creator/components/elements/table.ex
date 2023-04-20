@@ -640,6 +640,32 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     {:noreply, socket}
   end
 
+  def handle_event("add", %{"type" => "header"}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "headers"], fn selected_element ->
+        selected_element ++ ["New Title"]
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("delete", %{"type" => "header", "index" => index}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "headers"], fn selected_element ->
+        List.delete_at(selected_element, String.to_integer(index))
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("delete", _params, socket) do
     send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
 
