@@ -166,7 +166,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <:before_title_block>
-            <Heroicons.plus class="w-5 h-5 cursor-pointer" phx-click="add" phx-target={@myself} />
+            <Heroicons.plus
+              class="w-5 h-5 cursor-pointer"
+              phx-click="add"
+              phx-value-type="header"
+              phx-target={@myself}
+            />
           </:before_title_block>
 
           <div class="w-full flex flex-col gap-3 space-y-4 pt-3">
@@ -176,21 +181,15 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             >
               <span class="font-bold text-base"><%= title %></span>
               <div class="flex flex-row justify-end items-center gap-2">
-                <div
-                  class="flex flex-row justify-center items-start gap-2 cursor-pointer"
-                  phx-click="delete"
-                  phx-value-id={"table-header-#{@id}-#{index}"}
-                  phx-value-type="tab"
-                  phx-target={@myself}
-                >
+                <div class="flex flex-row justify-center items-start gap-2 cursor-pointer">
                   <Heroicons.pencil_square class="w-5 h-5" />
                   <span class="text-base select-none">Edit</span>
                 </div>
                 <div
                   class="flex flex-row justify-center items-start gap-2 cursor-pointer"
                   phx-click="delete"
-                  phx-value-id={"table-header-#{@id}-#{index}"}
-                  phx-value-type="tab"
+                  phx-value-type="header"
+                  phx-value-index={index}
                   phx-target={@myself}
                 >
                   <Heroicons.trash class="w-5 h-5 text-red-600" />
@@ -207,7 +206,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <:before_title_block>
-            <Heroicons.plus class="w-5 h-5 cursor-pointer" phx-click="add" phx-target={@myself} />
+            <Heroicons.plus
+              class="w-5 h-5 cursor-pointer"
+              phx-click="add"
+              phx-value-type="content"
+              phx-target={@myself}
+            />
           </:before_title_block>
 
           <div class="flex flex-col w-full gap-3 space-y-4 pt-3">
@@ -225,13 +229,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
               class="w-full flex flex-col justify-between items-center"
             >
               <div class="w-full flex flex-row justify-between items-center pb-3">
-                <span class="text-base">Row-<%= index %>:</span>
+                <span
+                  class="text-base select-none cursor-pointer"
+                  phx-click={JS.toggle(to: "#table-content-#{@id}-#{key}")}
+                >
+                  Row-<%= index %>:
+                </span>
                 <div class="flex flex-row justify-end items-center gap-2">
                   <div
                     class="flex flex-row justify-center items-start gap-1 cursor-pointer"
-                    phx-click="delete"
-                    phx-value-id={"table-header-#{@id}-#{key}"}
-                    phx-value-type="tab"
+                    phx-click="add_item"
+                    phx-value-type="content"
+                    phx-value-id={key}
+                    phx-value-index={index}
                     phx-target={@myself}
                   >
                     <Heroicons.plus class="w-5 h-5" />
@@ -240,8 +250,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                   <div
                     class="flex flex-row justify-center items-start gap-1 cursor-pointer"
                     phx-click="delete"
-                    phx-value-id={"table-header-#{@id}-#{key}"}
-                    phx-value-type="tab"
+                    phx-value-type="content"
+                    phx-value-id={key}
+                    phx-value-index={index}
                     phx-target={@myself}
                   >
                     <Heroicons.trash class="w-5 h-5 text-red-600" />
@@ -249,17 +260,33 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                   </div>
                 </div>
               </div>
-              <div class={"w-full flex flex-wrap p-3 gap-2 #{if index != 1, do: "hidden"}"}>
-                <span
-                  :for={item <- data}
-                  class="group text-sm border border-gray-200 rounded-md py-2 px-3 bg-gray-100 relative"
-                >
-                  <%= item %>
-                  <span class="hidden group-hover:flex group-hover:absolute left-1 duration-100 group-hover:duration-150 gap-2">
-                    <Heroicons.trash class="w-5 h-5 text-red-600 cursor-pointer" />
-                    <Heroicons.pencil_square class="w-5 h-5 cursor-pointer" />
+              <div id={"table-content-#{@id}-#{key}"} class={"w-full #{if index != 1, do: "hidden"}"}>
+                <div class="w-full flex flex-wrap p-3 gap-2">
+                  <span
+                    :for={{item, index} <- Enum.with_index(data)}
+                    class="group text-sm border border-gray-200 rounded-md py-2 px-3 bg-gray-100 relative"
+                  >
+                    <%= item %>
+                    <span class="hidden group-hover:flex group-hover:absolute left-1 duration-100 group-hover:duration-150 gap-2">
+                      <Heroicons.trash
+                        class="w-5 h-5 text-red-600 cursor-pointer"
+                        phx-click="delete_item"
+                        phx-value-type="content_item"
+                        phx-value-index={index}
+                        phx-value-id={key}
+                        phx-target={@myself}
+                      />
+                      <Heroicons.pencil_square
+                        class="w-5 h-5 cursor-pointer"
+                        phx-click="edit_item"
+                        phx-value-type="content_item"
+                        phx-value-index={index}
+                        phx-value-id={key}
+                        phx-target={@myself}
+                      />
+                    </span>
                   </span>
-                </span>
+                </div>
               </div>
             </div>
           </div>
@@ -616,6 +643,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
   def handle_event("delete", _params, socket) do
     send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
 
+    {:noreply, socket}
+  end
+
+  def handle_event("delete_item", %{"type" => "content_item", "index" => _index}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("edit_item", %{"type" => "content_item", "index" => _index}, socket) do
     {:noreply, socket}
   end
 
