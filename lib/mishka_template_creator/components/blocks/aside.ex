@@ -120,8 +120,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Aside do
   slot(:before_title_block, required: false, default: nil)
 
   @spec aside_accordion(map) :: Phoenix.LiveView.Rendered.t()
-  def aside_accordion(%{title: title} = assigns) do
-    assigns = assign(assigns, title_alias: String.replace(title, " ", "-"))
+  def aside_accordion(%{id: id, title: title} = assigns) do
+    assigns = assign(assigns, title_alias: String.replace(title, " ", "-") <> "-#{id}")
 
     ~H"""
     <section class="flex flex-col w-full mx-auto">

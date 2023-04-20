@@ -162,7 +162,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
 
         <Aside.aside_accordion
           id={"table-#{@id}"}
-          title="Table Headers Settings"
+          title="Table Header Content"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <:before_title_block>
@@ -260,7 +260,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
 
         <Aside.aside_accordion
           id={"table-#{@id}"}
-          title="Table Rows Settings"
+          title="Table Row Content"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <:before_title_block>
@@ -364,93 +364,172 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
 
         <Aside.aside_accordion
           id={"table-#{@id}"}
+          title="Table Header Style"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+        >
+          <Aside.aside_accordion id={"table-headers-#{@id}"} title="Header Font Style" open={false}>
+            <MishkaCoreComponent.alignment_selector
+              event_name="header_text_alignment"
+              myself={@myself}
+            />
+
+            <MishkaCoreComponent.direction_selector
+              event_name="header_text_direction"
+              myself={@myself}
+            />
+
+            <MishkaCoreComponent.custom_simple_form
+              :let={f}
+              for={%{}}
+              as={:header_table_font_style}
+              phx-change="font_style"
+              phx-target={@myself}
+              class="w-full m-0 p-0 flex flex-col"
+            >
+              <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+                <span class="w-3/5">Font:</span>
+                <div class="w-full">
+                  <%= select(f, :font, ["font-sans", "font-serif", "font-mono"],
+                    class:
+                      "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1",
+                    prompt: "Choose preferred font",
+                    selected:
+                      Enum.find(
+                        @element["header"]["row"],
+                        &(&1 in TailwindSetting.get_form_options(
+                            "typography",
+                            "font-family",
+                            nil,
+                            nil
+                          ).form_configs)
+                      ),
+                    id: "header_table_font-#{@id}"
+                  ) %>
+                </div>
+              </div>
+              <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+                <span class="w-3/5">Size:</span>
+                <div class="flex flex-row w-full gap-2 items-center">
+                  <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
+                    <%= TailwindSetting.find_text_size_index(@element["class"]).index %>
+                  </span>
+                  <%= range_input(f, :font_size,
+                    min: "1",
+                    max: "13",
+                    value: TailwindSetting.find_text_size_index(@element["header"]["row"]).index,
+                    class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
+                    id: "header_table_font_size-#{@id}"
+                  ) %>
+                </div>
+              </div>
+            </MishkaCoreComponent.custom_simple_form>
+            <MishkaCoreComponent.color_selector
+              myself={@myself}
+              event_name="header_table_font_style"
+              classes={@element["class"]}
+            />
+          </Aside.aside_accordion>
+
+          <Aside.aside_accordion id={"table-headers-#{@id}"} title="Header Row Style" open={false}>
+            <MishkaCoreComponent.color_selector
+              title="Background Color:"
+              type="bg"
+              myself={@myself}
+              event_name="header_table_row_style"
+              classes={@element["class"]}
+            />
+          </Aside.aside_accordion>
+
+          <Aside.aside_accordion id={"table-headers-#{@id}"} title="Header Item Style" open={false}>
+            <MishkaCoreComponent.color_selector
+              title="Background Color:"
+              type="bg"
+              myself={@myself}
+              event_name="header_table_item_style"
+              classes={@element["class"]}
+            />
+          </Aside.aside_accordion>
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"table-#{@id}"}
+          title="Table Row Style"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+        >
+          <Aside.aside_accordion id={"table-row-#{@id}"} title="Row Font Style" open={false}>
+            <MishkaCoreComponent.alignment_selector event_name="row_text_alignment" myself={@myself} />
+
+            <MishkaCoreComponent.direction_selector event_name="row_text_direction" myself={@myself} />
+            <MishkaCoreComponent.custom_simple_form
+              :let={f}
+              for={%{}}
+              as={:public_table_font_style}
+              phx-change="font_style"
+              phx-target={@myself}
+              class="w-full m-0 p-0 flex flex-col"
+            >
+              <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+                <span class="w-3/5">Font:</span>
+                <div class="w-full">
+                  <%= select(f, :font, ["font-sans", "font-serif", "font-mono"],
+                    class:
+                      "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1",
+                    prompt: "Choose preferred font",
+                    selected:
+                      Enum.find(
+                        @element["class"],
+                        &(&1 in TailwindSetting.get_form_options(
+                            "typography",
+                            "font-family",
+                            nil,
+                            nil
+                          ).form_configs)
+                      ),
+                    id: "public_tab_font-#{@id}"
+                  ) %>
+                </div>
+              </div>
+              <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
+                <span class="w-3/5">Size:</span>
+                <div class="flex flex-row w-full gap-2 items-center">
+                  <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
+                    <%= TailwindSetting.find_text_size_index(@element["class"]).index %>
+                  </span>
+                  <%= range_input(f, :font_size,
+                    min: "1",
+                    max: "13",
+                    value: TailwindSetting.find_text_size_index(@element["class"]).index,
+                    class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
+                    id: "public_tab_font_size-#{@id}"
+                  ) %>
+                </div>
+              </div>
+            </MishkaCoreComponent.custom_simple_form>
+            <MishkaCoreComponent.color_selector
+              myself={@myself}
+              event_name="public_table_font_style"
+              classes={@element["class"]}
+            />
+          </Aside.aside_accordion>
+
+          <Aside.aside_accordion id={"table-headers-#{@id}"} title="Row Row Style" open={false}>
+            ss
+          </Aside.aside_accordion>
+
+          <Aside.aside_accordion id={"table-headers-#{@id}"} title="Row Item Style" open={false}>
+            sss
+          </Aside.aside_accordion>
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"table-#{@id}"}
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <Aside.aside_accordion id={"table-#{@id}"} title="Alignment" open={false}>
-            <div class="flex flex-col w-full items-center justify-center">
-              <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
-                <li
-                  class="px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer"
-                  phx-click="text_alignment"
-                  phx-value-type="start"
-                  phx-target={@myself}
-                >
-                  <Heroicons.bars_3_center_left class="w-6 h-6" />
-                </li>
-                <li
-                  class="px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer"
-                  phx-click="text_alignment"
-                  phx-value-type="center"
-                  phx-target={@myself}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-6 h-6"
-                    fill="currentColor"
-                    class="bi bi-text-center"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M4 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"
-                    />
-                  </svg>
-                </li>
-                <li
-                  class="px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer"
-                  phx-click="text_alignment"
-                  phx-value-type="end"
-                  phx-target={@myself}
-                >
-                  <Heroicons.bars_3_bottom_right class="w-6 h-6" />
-                </li>
-                <li
-                  class="px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"
-                  phx-click="text_alignment"
-                  phx-value-type="justify"
-                  phx-target={@myself}
-                >
-                  <Heroicons.bars_3 class="w-6 h-6" />
-                </li>
-              </ul>
-            </div>
+            <MishkaCoreComponent.alignment_selector myself={@myself} />
 
-            <div class="flex flex-col mt-2 pb-1 justify-between w-full">
-              <p class="w-full text-start font-bold text-lg select-none">Direction:</p>
-              <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
-                <li
-                  class="px-3 py-1 border border-gray-300 rounded-l-md hover:bg-gray-200 cursor-pointer"
-                  phx-click="text_direction"
-                  phx-value-type="LTR"
-                  phx-target={@myself}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    class="w-6 h-6"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm5 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6zm0 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6zm-5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm.79-5.373c.112-.078.26-.17.444-.275L3.524 6c-.122.074-.272.17-.452.287-.18.117-.35.26-.51.428a2.425 2.425 0 0 0-.398.562c-.11.207-.164.438-.164.692 0 .36.072.65.217.873.144.219.385.328.72.328.215 0 .383-.07.504-.211a.697.697 0 0 0 .188-.463c0-.23-.07-.404-.211-.521-.137-.121-.326-.182-.568-.182h-.282c.024-.203.065-.37.123-.498a1.38 1.38 0 0 1 .252-.37 1.94 1.94 0 0 1 .346-.298zm2.167 0c.113-.078.262-.17.445-.275L5.692 6c-.122.074-.272.17-.452.287-.18.117-.35.26-.51.428a2.425 2.425 0 0 0-.398.562c-.11.207-.164.438-.164.692 0 .36.072.65.217.873.144.219.385.328.72.328.215 0 .383-.07.504-.211a.697.697 0 0 0 .188-.463c0-.23-.07-.404-.211-.521-.137-.121-.326-.182-.568-.182h-.282a1.75 1.75 0 0 1 .118-.492c.058-.13.144-.254.257-.375a1.94 1.94 0 0 1 .346-.3z" />
-                  </svg>
-                </li>
-                <li
-                  class="px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"
-                  phx-click="text_direction"
-                  phx-value-type="RTL"
-                  phx-target={@myself}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    class="w-6 h-6"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M2.5 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm0 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6zm0 3a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1h-6zm0 3a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11zm10.113-5.373a6.59 6.59 0 0 0-.445-.275l.21-.352c.122.074.272.17.452.287.18.117.35.26.51.428.156.164.289.351.398.562.11.207.164.438.164.692 0 .36-.072.65-.216.873-.145.219-.385.328-.721.328-.215 0-.383-.07-.504-.211a.697.697 0 0 1-.188-.463c0-.23.07-.404.211-.521.137-.121.326-.182.569-.182h.281a1.686 1.686 0 0 0-.123-.498 1.379 1.379 0 0 0-.252-.37 1.94 1.94 0 0 0-.346-.298zm-2.168 0A6.59 6.59 0 0 0 10 6.352L10.21 6c.122.074.272.17.452.287.18.117.35.26.51.428.156.164.289.351.398.562.11.207.164.438.164.692 0 .36-.072.65-.216.873-.145.219-.385.328-.721.328-.215 0-.383-.07-.504-.211a.697.697 0 0 1-.188-.463c0-.23.07-.404.211-.521.137-.121.327-.182.569-.182h.281a1.749 1.749 0 0 0-.117-.492 1.402 1.402 0 0 0-.258-.375 1.94 1.94 0 0 0-.346-.3z" />
-                  </svg>
-                </li>
-              </ul>
-            </div>
+            <MishkaCoreComponent.direction_selector myself={@myself} />
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"table-#{@id}"} title="Font Style" open={false}>
