@@ -411,7 +411,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                 <span class="w-3/5">Size:</span>
                 <div class="flex flex-row w-full gap-2 items-center">
                   <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
-                    <%= TailwindSetting.find_text_size_index(@element["class"]).index %>
+                    <%= TailwindSetting.find_text_size_index(@element["header"]["row"]).index %>
                   </span>
                   <%= range_input(f, :font_size,
                     min: "1",
@@ -426,7 +426,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             <MishkaCoreComponent.color_selector
               myself={@myself}
               event_name="header_table_font_style"
-              classes={@element["class"]}
+              classes={@element["header"]["row"]}
             />
           </Aside.aside_accordion>
 
@@ -436,7 +436,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
               type="bg"
               myself={@myself}
               event_name="header_table_row_style"
-              classes={@element["class"]}
+              classes={@element["header"]["row"]}
             />
           </Aside.aside_accordion>
 
@@ -446,7 +446,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
               type="bg"
               myself={@myself}
               event_name="header_table_item_style"
-              classes={@element["class"]}
+              classes={@element["header"]["column"]}
             />
           </Aside.aside_accordion>
         </Aside.aside_accordion>
@@ -463,7 +463,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             <MishkaCoreComponent.custom_simple_form
               :let={f}
               for={%{}}
-              as={:public_table_font_style}
+              as={:content_table_font_style}
               phx-change="font_style"
               phx-target={@myself}
               class="w-full m-0 p-0 flex flex-col"
@@ -477,7 +477,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                     prompt: "Choose preferred font",
                     selected:
                       Enum.find(
-                        @element["class"],
+                        @element["content"]["row"],
                         &(&1 in TailwindSetting.get_form_options(
                             "typography",
                             "font-family",
@@ -485,7 +485,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                             nil
                           ).form_configs)
                       ),
-                    id: "public_tab_font-#{@id}"
+                    id: "content_tab_font-#{@id}"
                   ) %>
                 </div>
               </div>
@@ -493,31 +493,43 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                 <span class="w-3/5">Size:</span>
                 <div class="flex flex-row w-full gap-2 items-center">
                   <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
-                    <%= TailwindSetting.find_text_size_index(@element["class"]).index %>
+                    <%= TailwindSetting.find_text_size_index(@element["content"]["row"]).index %>
                   </span>
                   <%= range_input(f, :font_size,
                     min: "1",
                     max: "13",
-                    value: TailwindSetting.find_text_size_index(@element["class"]).index,
+                    value: TailwindSetting.find_text_size_index(@element["content"]["row"]).index,
                     class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-                    id: "public_tab_font_size-#{@id}"
+                    id: "content_tab_font_size-#{@id}"
                   ) %>
                 </div>
               </div>
             </MishkaCoreComponent.custom_simple_form>
             <MishkaCoreComponent.color_selector
               myself={@myself}
-              event_name="public_table_font_style"
-              classes={@element["class"]}
+              event_name="content_table_font_style"
+              classes={@element["content"]["row"]}
             />
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"table-headers-#{@id}"} title="Row Row Style" open={false}>
-            ss
+            <MishkaCoreComponent.color_selector
+              title="Background Color:"
+              type="bg"
+              myself={@myself}
+              event_name="content_table_row_style"
+              classes={@element["content"]["row"]}
+            />
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"table-headers-#{@id}"} title="Row Item Style" open={false}>
-            sss
+            <MishkaCoreComponent.color_selector
+              title="Background Color:"
+              type="bg"
+              myself={@myself}
+              event_name="content_table_item_style"
+              classes={@element["content"]["column"]}
+            />
           </Aside.aside_accordion>
         </Aside.aside_accordion>
 
