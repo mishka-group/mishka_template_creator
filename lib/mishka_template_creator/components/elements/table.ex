@@ -175,6 +175,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           </:before_title_block>
 
           <div class="w-full flex flex-col gap-3 space-y-4 pt-3">
+            <span
+              :if={length(@element["children"]["headers"]) == 0}
+              class="mx-auto border border-gray-200 bg-gray-100 font-bold py-2 px-3"
+            >
+              There is no header item for this table
+            </span>
+
             <div
               :for={{title, index} <- Enum.with_index(@element["children"]["headers"])}
               class="w-full flex flex-row justify-between items-center"
@@ -266,6 +273,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           </:before_title_block>
 
           <div class="flex flex-col w-full gap-3 space-y-4 pt-3">
+            <span
+              :if={Map.keys(@element["children"]["content"]) == []}
+              class="mx-auto border border-gray-200 bg-gray-100 font-bold py-2 px-3"
+            >
+              Please add row for this table
+            </span>
+
             <div
               :for={
                 {%{id: key, data: data}, index} <-
@@ -289,10 +303,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                 <div class="flex flex-row justify-end items-center gap-2">
                   <div
                     class="flex flex-row justify-center items-start gap-1 cursor-pointer"
-                    phx-click="add_item"
-                    phx-value-type="content"
-                    phx-value-id={key}
-                    phx-value-index={index}
+                    phx-click={
+                      JS.show(to: "#table-content-#{@id}-#{key}")
+                      |> JS.push("add_item", value: %{"type" => "content", "id" => key})
+                    }
                     phx-target={@myself}
                   >
                     <Heroicons.plus class="w-5 h-5" />
@@ -303,7 +317,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                     phx-click="delete"
                     phx-value-type="content"
                     phx-value-id={key}
-                    phx-value-index={index}
                     phx-target={@myself}
                   >
                     <Heroicons.trash class="w-5 h-5 text-red-600" />
@@ -751,12 +764,38 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     {:noreply, socket}
   end
 
+  def handle_event("add_item", %{"type" => "content", "id" => id}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "content", id], fn selected_element ->
+        selected_element ++ ["New Item"]
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("delete", %{"type" => "header", "index" => index}, socket) do
     updated =
       socket.assigns.element
       |> update_in(["children", "headers"], fn selected_element ->
         List.delete_at(selected_element, String.to_integer(index))
       end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("delete", %{"type" => "content", "id" => id}, socket) do
+    {_, element} = pop_in(socket.assigns.element, ["children", "content", id])
+
+    updated =
+      element
+      |> Map.merge(%{"order" => Enum.reject(element["order"], &(&1 == id))})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
