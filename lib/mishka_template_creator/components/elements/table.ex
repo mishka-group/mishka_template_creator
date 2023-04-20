@@ -314,6 +314,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
               <div id={"table-content-#{@id}-#{key}"} class={"w-full #{if index != 1, do: "hidden"}"}>
                 <div class="w-full flex flex-wrap p-3 gap-2">
                   <span
+                    :if={length(data) == 0}
+                    class="mx-auto border border-gray-200 bg-gray-100 font-bold py-2 px-3"
+                  >
+                    Please add items for this row
+                  </span>
+                  <span
                     :for={{item, index} <- Enum.with_index(data)}
                     class="group text-sm border border-gray-200 rounded-md py-2 px-3 bg-gray-100 relative"
                   >
@@ -720,6 +726,24 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
       |> update_in(["children", "headers"], fn selected_element ->
         selected_element ++ ["New Title"]
       end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("add", %{"type" => "content"}, socket) do
+    unique_id = Ecto.UUID.generate()
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "content"], fn selected_element ->
+        Map.merge(selected_element, %{
+          "#{unique_id}" => []
+        })
+      end)
+      |> Map.merge(%{"order" => socket.assigns.element["order"] ++ [unique_id]})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})

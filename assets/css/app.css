@@ -27,7 +27,7 @@
 }
 
 .section-header {
-  @apply absolute -mt-5 bg-[#e1e1e1] flex flex-row justify-end items-end p-2 text-sm gap-1 text-gray-500 shadow-md rounded-md right-2;
+  @apply absolute -mt-5 bg-[#e1e1e1] flex flex-row justify-end items-end p-2 text-sm gap-1 text-gray-500 shadow-md rounded-md right-2 z-10;
 }
 
 .section-tag {
