@@ -179,11 +179,62 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
               :for={{title, index} <- Enum.with_index(@element["children"]["headers"])}
               class="w-full flex flex-row justify-between items-center"
             >
-              <span class="font-bold text-base"><%= title %></span>
+              <span
+                class="font-bold text-base"
+                id={"title-#{@id}-#{index}-span-title"}
+                phx-click={JS.toggle() |> JS.toggle(to: "#title-#{@id}-#{index}")}
+              >
+                <%= title %>
+              </span>
+              <div id={"title-#{@id}-#{index}"} class="hidden">
+                <MishkaCoreComponent.custom_simple_form
+                  :let={f}
+                  for={%{}}
+                  as={:table_header_component}
+                  phx-submit="edit"
+                  phx-target={@myself}
+                  class="flex flex-row w-full justify-start gap-2"
+                >
+                  <%= text_input(f, :title,
+                    class:
+                      "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                    placeholder: "Change Tag name",
+                    value: title,
+                    id: "title-#{@id}-#{index}-title-text"
+                  ) %>
+
+                  <.input
+                    field={f[:index]}
+                    type="hidden"
+                    value={index}
+                    id={"title-#{@id}-#{index}-title-id"}
+                  />
+
+                  <button
+                    type="submit"
+                    class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
+                    phx-click={
+                      JS.toggle(to: "#title-#{@id}-#{index}-span-title")
+                      |> JS.toggle(to: "#title-#{@id}-#{index}")
+                    }
+                  >
+                    Save
+                  </button>
+                </MishkaCoreComponent.custom_simple_form>
+              </div>
+
               <div class="flex flex-row justify-end items-center gap-2">
-                <div class="flex flex-row justify-center items-start gap-2 cursor-pointer">
+                <div
+                  class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                  phx-click={
+                    JS.toggle(to: "#title-#{@id}-#{index}-span-title")
+                    |> JS.toggle(to: "#title-#{@id}-#{index}")
+                  }
+                >
                   <Heroicons.pencil_square class="w-5 h-5" />
-                  <span class="text-base select-none">Edit</span>
+                  <span class="text-base select-none">
+                    Edit
+                  </span>
                 </div>
                 <div
                   class="flex flex-row justify-center items-start gap-2 cursor-pointer"
@@ -387,7 +438,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             <MishkaCoreComponent.custom_simple_form
               :let={f}
               for={%{}}
-              as={:public_tab_font_style}
+              as={:public_table_font_style}
               phx-change="font_style"
               phx-target={@myself}
               class="w-full m-0 p-0 flex flex-col"
@@ -431,7 +482,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             </MishkaCoreComponent.custom_simple_form>
             <MishkaCoreComponent.color_selector
               myself={@myself}
-              event_name="public_tab_font_style"
+              event_name="public_table_font_style"
               classes={@element["class"]}
             />
           </Aside.aside_accordion>
@@ -586,7 +637,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
 
   def handle_event(
         "font_style",
-        %{"public_tab_font_style" => %{"font" => font, "font_size" => font_size}},
+        %{"public_table_font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
     class = edit_font_style_class(socket.assigns.element["class"], font_size, font)
@@ -604,7 +655,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     {:noreply, socket}
   end
 
-  def handle_event("public_tab_font_style", %{"color" => color}, socket) do
+  def handle_event("public_table_font_style", %{"color" => color}, socket) do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
@@ -622,6 +673,29 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
            |> Map.merge(socket.assigns.selected_form)
        }}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "edit",
+        %{"table_header_component" => %{"title" => title, "index" => index}},
+        socket
+      ) do
+    index = String.to_integer(index)
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "headers"], fn selected_element ->
+        Enum.with_index(selected_element)
+        |> Enum.map(fn
+          {_, ^index} -> title
+          {value, _} -> value
+        end)
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
