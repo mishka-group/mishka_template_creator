@@ -86,7 +86,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     >
       <div class="relative overflow-x-auto">
         <table class="w-full">
-          <thead class={@element["header"]["row"]} dir={@element["header_direction"] || @element["direction"] || "LTR"}>
+          <thead
+            class={@element["header"]["row"]}
+            dir={@element["header_direction"] || @element["direction"] || "LTR"}
+          >
             <tr>
               <th
                 :for={title <- @element["children"]["headers"]}
@@ -1153,7 +1156,20 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     {:noreply, socket}
   end
 
-  def handle_event("delete_item", %{"type" => "content_item", "index" => _index}, socket) do
+  def handle_event(
+        "delete_item",
+        %{"type" => "content_item", "index" => index, "id" => id},
+        socket
+      ) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "content", id], fn selected_element ->
+        List.delete_at(selected_element, String.to_integer(index))
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
     {:noreply, socket}
   end
 
