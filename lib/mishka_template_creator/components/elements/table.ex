@@ -86,7 +86,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     >
       <div class="relative overflow-x-auto">
         <table class="w-full">
-          <thead class={@element["header"]["row"]}>
+          <thead class={@element["header"]["row"]} dir={@element["header_direction"] || @element["direction"] || "LTR"}>
             <tr>
               <th
                 :for={title <- @element["children"]["headers"]}
@@ -97,7 +97,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody dir={@element["content_direction"] || @element["direction"] || "LTR"}>
             <tr
               :for={
                 %{id: _key, data: data} <-
@@ -759,6 +759,80 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     {:noreply, socket}
   end
 
+  def handle_event("header_text_alignment", %{"type" => type}, socket)
+      when type in ["start", "center", "end", "justify"] do
+    text_aligns =
+      TailwindSetting.get_form_options("typography", "text-align", nil, nil).form_configs
+
+    class =
+      Enum.reject(socket.assigns.element["header"]["row"], &(&1 in text_aligns)) ++
+        ["text-#{type}"]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "row" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("row_text_alignment", %{"type" => type}, socket)
+      when type in ["start", "center", "end", "justify"] do
+    text_aligns =
+      TailwindSetting.get_form_options("typography", "text-align", nil, nil).form_configs
+
+    class =
+      Enum.reject(socket.assigns.element["content"]["row"], &(&1 in text_aligns)) ++
+        ["text-#{type}"]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content" => %{socket.assigns.element["content"] | "row" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("header_text_direction", %{"type" => type}, socket)
+      when type in ["RTL", "LTR"] do
+    send(
+      self(),
+      {"element",
+       %{
+         "update_parame" =>
+           %{
+             "key" => "header_direction",
+             "value" => type
+           }
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("row_text_direction", %{"type" => type}, socket)
+      when type in ["RTL", "LTR"] do
+    send(
+      self(),
+      {"element",
+       %{
+         "update_parame" =>
+           %{
+             "key" => "content_direction",
+             "value" => type
+           }
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
+
+    {:noreply, socket}
+  end
+
   def handle_event(
         "font_style",
         %{"public_table_font_style" => %{"font" => font, "font_size" => font_size}},
@@ -1035,8 +1109,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
-    class =
-      Enum.reject(socket.assigns.element["content"]["row"], &(&1 in text_colors)) ++ [color]
+    class = Enum.reject(socket.assigns.element["content"]["row"], &(&1 in text_colors)) ++ [color]
 
     updated =
       socket.assigns.element

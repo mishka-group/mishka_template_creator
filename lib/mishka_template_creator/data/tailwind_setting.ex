@@ -9238,8 +9238,8 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     %{
       "class" => ["text-black", "w-full", "text-base", "p-2"],
       "header" => %{
-        "row" => [],
-        "column" => ["px-6", "py-3", "text-start"]
+        "row" => ["text-justify"],
+        "column" => ["px-6", "py-3"]
       },
       "content" => %{
         "row" => ["border-b", "border-gray-400"],
