@@ -432,6 +432,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
 
           <Aside.aside_accordion id={"table-headers-#{@id}"} title="Header Row Style" open={false}>
             <MishkaCoreComponent.color_selector
+              title="Text Color:"
+              myself={@myself}
+              event_name="header_table_row_text_style"
+              classes={@element["header"]["row"]}
+            />
+
+            <MishkaCoreComponent.color_selector
               title="Background Color:"
               type="bg"
               myself={@myself}
@@ -441,6 +448,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"table-headers-#{@id}"} title="Header Item Style" open={false}>
+            <MishkaCoreComponent.color_selector
+              title="Text Color:"
+              myself={@myself}
+              event_name="header_table_item_text_style"
+              classes={@element["header"]["column"]}
+            />
+
             <MishkaCoreComponent.color_selector
               title="Background Color:"
               type="bg"
@@ -514,6 +528,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
 
           <Aside.aside_accordion id={"table-headers-#{@id}"} title="Row Row Style" open={false}>
             <MishkaCoreComponent.color_selector
+              title="Text Color:"
+              myself={@myself}
+              event_name="content_table_row_text_style"
+              classes={@element["content"]["row"]}
+            />
+
+            <MishkaCoreComponent.color_selector
               title="Background Color:"
               type="bg"
               myself={@myself}
@@ -523,6 +544,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"table-headers-#{@id}"} title="Row Item Style" open={false}>
+            <MishkaCoreComponent.color_selector
+              title="Text Color:"
+              myself={@myself}
+              event_name="content_table_item_text_style"
+              classes={@element["content"]["column"]}
+            />
+
             <MishkaCoreComponent.color_selector
               title="Background Color:"
               type="bg"
@@ -920,11 +948,79 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     bg_colors =
       TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
 
-    class = Enum.reject(socket.assigns.element["content"]["column"], &(&1 in bg_colors)) ++ [color]
+    class =
+      Enum.reject(socket.assigns.element["content"]["column"], &(&1 in bg_colors)) ++ [color]
 
     updated =
       socket.assigns.element
       |> Map.merge(%{"content" => %{socket.assigns.element["content"] | "column" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("header_table_row_text_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["header"]["row"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "row" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("header_table_item_text_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class =
+      Enum.reject(socket.assigns.element["header"]["column"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "column" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("content_table_item_text_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class =
+      Enum.reject(socket.assigns.element["content"]["column"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content" => %{socket.assigns.element["content"] | "column" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("content_table_row_text_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class =
+      Enum.reject(socket.assigns.element["content"]["row"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content" => %{socket.assigns.element["content"] | "row" => class}})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
