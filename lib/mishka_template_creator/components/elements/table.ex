@@ -425,19 +425,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             </MishkaCoreComponent.custom_simple_form>
             <MishkaCoreComponent.color_selector
               myself={@myself}
-              event_name="header_table_font_style"
+              event_name="header_table_row_text_style"
               classes={@element["header"]["row"]}
             />
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"table-headers-#{@id}"} title="Header Row Style" open={false}>
-            <MishkaCoreComponent.color_selector
-              title="Text Color:"
-              myself={@myself}
-              event_name="header_table_row_text_style"
-              classes={@element["header"]["row"]}
-            />
-
             <MishkaCoreComponent.color_selector
               title="Background Color:"
               type="bg"
@@ -521,19 +514,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             </MishkaCoreComponent.custom_simple_form>
             <MishkaCoreComponent.color_selector
               myself={@myself}
-              event_name="content_table_font_style"
+              event_name="content_table_row_text_style"
               classes={@element["content"]["row"]}
             />
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"table-headers-#{@id}"} title="Row Row Style" open={false}>
-            <MishkaCoreComponent.color_selector
-              title="Text Color:"
-              myself={@myself}
-              event_name="content_table_row_text_style"
-              classes={@element["content"]["row"]}
-            />
-
             <MishkaCoreComponent.color_selector
               title="Background Color:"
               type="bg"
