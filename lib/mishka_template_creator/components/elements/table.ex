@@ -779,6 +779,40 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     {:noreply, socket}
   end
 
+  def handle_event(
+        "font_style",
+        %{"header_table_font_style" => %{"font" => font, "font_size" => font_size}},
+        socket
+      ) do
+    class = edit_font_style_class(socket.assigns.element["header"]["row"], font_size, font)
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "row" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"content_table_font_style" => %{"font" => font, "font_size" => font_size}},
+        socket
+      ) do
+    class = edit_font_style_class(socket.assigns.element["content"]["row"], font_size, font)
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content" => %{socket.assigns.element["content"] | "row" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("public_table_font_style", %{"color" => color}, socket) do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
