@@ -328,7 +328,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                 </div>
               </div>
               <div id={"table-content-#{@id}-#{key}"} class={"w-full #{if index != 1, do: "hidden"}"}>
-                <div class="w-full flex flex-wrap p-3 gap-2">
+                <div class="w-full flex flex-wrap p-3 gap-2 items-start">
                   <span
                     :if={length(data) == 0}
                     class="mx-auto border border-gray-200 bg-gray-100 font-bold py-2 px-3"
@@ -337,9 +337,53 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                   </span>
                   <span
                     :for={{item, index} <- Enum.with_index(data)}
-                    class="group text-sm border border-gray-200 rounded-md py-2 px-3 bg-gray-100 relative"
+                    class="group text-sm border border-gray-200 rounded-md py-2 px-3 bg-gray-100 relative mb-3"
                   >
-                    <%= item %>
+                    <span id={"content-title-#{@id}-#{index}"}><%= item %></span>
+
+                    <div id={"content-title-input-#{@id}-#{index}"} class="hidden">
+                      <MishkaCoreComponent.custom_simple_form
+                        :let={f}
+                        for={%{}}
+                        as={:table_content_component}
+                        phx-submit="edit"
+                        phx-target={@myself}
+                        class="flex flex-row w-full justify-start gap-2"
+                      >
+                        <%= text_input(f, :title,
+                          class:
+                            "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                          placeholder: "Change Tag name",
+                          value: item,
+                          id: "content-title-form-#{@id}-#{index}"
+                        ) %>
+
+                        <.input
+                          field={f[:index]}
+                          type="hidden"
+                          value={index}
+                          id={"content-id-form-#{@id}-#{index}"}
+                        />
+
+                        <.input
+                          field={f[:id]}
+                          type="hidden"
+                          value={key}
+                          id={"content-key-form-#{@id}-#{index}"}
+                        />
+
+                        <button
+                          type="submit"
+                          class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
+                          phx-click={
+                            JS.toggle(to: "#content-title-input-#{@id}-#{index}")
+                            |> JS.toggle(to: "#content-title-#{@id}-#{index}")
+                          }
+                        >
+                          Save
+                        </button>
+                      </MishkaCoreComponent.custom_simple_form>
+                    </div>
                     <span class="hidden group-hover:flex group-hover:absolute left-1 duration-100 group-hover:duration-150 gap-2">
                       <Heroicons.trash
                         class="w-5 h-5 text-red-600 cursor-pointer"
@@ -351,11 +395,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                       />
                       <Heroicons.pencil_square
                         class="w-5 h-5 cursor-pointer"
-                        phx-click="edit_item"
-                        phx-value-type="content_item"
-                        phx-value-index={index}
-                        phx-value-id={key}
-                        phx-target={@myself}
+                        phx-click={
+                          JS.toggle(to: "#content-title-input-#{@id}-#{index}")
+                          |> JS.toggle(to: "#content-title-#{@id}-#{index}")
+                        }
                       />
                     </span>
                   </span>
@@ -922,6 +965,29 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     updated =
       socket.assigns.element
       |> update_in(["children", "headers"], fn selected_element ->
+        Enum.with_index(selected_element)
+        |> Enum.map(fn
+          {_, ^index} -> title
+          {value, _} -> value
+        end)
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "edit",
+        %{"table_content_component" => %{"title" => title, "index" => index, "id" => id}},
+        socket
+      ) do
+    index = String.to_integer(index)
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "content", id], fn selected_element ->
         Enum.with_index(selected_element)
         |> Enum.map(fn
           {_, ^index} -> title
