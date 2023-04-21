@@ -1,13 +1,14 @@
 defmodule MishkaTemplateCreator.Components.Elements.Table do
   use Phoenix.LiveComponent
-  import Phoenix.HTML.Form
   use Phoenix.Component
+  import Phoenix.HTML.Form
+  import MishkaTemplateCreatorWeb.CoreComponents
 
   alias MishkaTemplateCreator.Components.Blocks.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
-  import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias Phoenix.LiveView.JS
+  alias MishkaTemplateCreator.Components.Blocks.Tag
 
   %{
     "unique_id" => %{
@@ -659,26 +660,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
 
           <Aside.aside_accordion id={"table-#{@id}"} title="Custom Tag name" open={false}>
             <div class="flex flex-col w-full items-center justify-center pb-5">
-              <MishkaCoreComponent.custom_simple_form
-                :let={f}
-                for={%{}}
-                as={:public_tab_tag}
-                phx-change="validate"
-                phx-submit="element"
-                phx-target={@myself}
-                class="w-full m-0 p-0 flex flex-col"
-              >
-                <%= text_input(f, :tag,
-                  class:
-                    "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                  placeholder: "Change Tag name",
-                  value: @element["tag"],
-                  id: "public_tab_tag-#{@id}"
-                ) %>
-                <p class={"text-xs #{if @submit, do: "text-red-500", else: ""} my-3 text-justify"}>
-                  Please use only letters and numbers in naming and also keep in mind that you can only use (<code class="text-pink-400">-</code>) between letters. It should be noted, the tag name must be more than 4 characters.
-                </p>
-              </MishkaCoreComponent.custom_simple_form>
+              <Tag.input_tag myself={@myself} value={@element["tag"]} submit={@submit} id={@id} />
             </div>
           </Aside.aside_accordion>
 
