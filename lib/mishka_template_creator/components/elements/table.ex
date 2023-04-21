@@ -868,6 +868,70 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     {:noreply, socket}
   end
 
+  def handle_event("header_table_row_style", %{"color" => color}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["header"]["row"], &(&1 in bg_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "row" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("header_table_item_style", %{"color" => color}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["header"]["column"], &(&1 in bg_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"header" => %{socket.assigns.element["header"] | "column" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("content_table_row_style", %{"color" => color}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["content"]["row"], &(&1 in bg_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content" => %{socket.assigns.element["content"] | "row" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("content_table_item_style", %{"color" => color}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["content"]["column"], &(&1 in bg_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content" => %{socket.assigns.element["content"] | "column" => class}})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("delete", %{"type" => "header", "index" => index}, socket) do
     updated =
       socket.assigns.element

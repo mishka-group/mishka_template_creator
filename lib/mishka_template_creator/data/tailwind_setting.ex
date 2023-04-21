@@ -9236,7 +9236,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     id1 = Ecto.UUID.generate()
 
     %{
-      "class" => ["text-black", "w-full", "text-base", "p-2", "bg-gray-200"],
+      "class" => ["text-black", "w-full", "text-base", "p-2"],
       "header" => %{
         "row" => [],
         "column" => ["px-6", "py-3", "text-start"]
