@@ -3,7 +3,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   import Phoenix.HTML.Form
 
   alias MishkaTemplateCreator.Components.Blocks.Tag
-  alias MishkaTemplateCreator.Components.Blocks.Aside
+  alias MishkaTemplateCreator.Components.Layout.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
@@ -107,7 +107,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
           </ul>
         </div>
 
-        <Aside.aside_accordion id={"text-#{@id}"} title="Change Text" open={false}>
+        <Aside.aside_accordion id={"text-#{@id}"} title="Change Text">
           <MishkaCoreComponent.custom_simple_form
             :let={f}
             for={%{}}

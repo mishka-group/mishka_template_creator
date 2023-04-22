@@ -3,7 +3,7 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
   import Phoenix.HTML.Form
   import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
-  alias MishkaTemplateCreator.Components.Blocks.{Content, Aside, History}
+  alias MishkaTemplateCreator.Components.Layout.{Content, Aside, History}
   alias Phoenix.LiveView.JS
   alias MishkaTemplateCreator.Data.Elements
 
@@ -209,49 +209,6 @@ defmodule MishkaTemplateCreatorWeb.MishkaCoreComponent do
       selected: @selected,
       prompt: "Choose your config"
     ) %>
-    """
-  end
-
-  attr(:module, :string, required: true)
-  attr(:class, :string, required: false, default: "w-6 h-6 mx-auto stroke-current")
-
-  def dynamic_icon(assigns) do
-    ~H"""
-    <%= Phoenix.LiveView.TagEngine.component(
-      Code.eval_string("&(#{@module}/1)") |> elem(0),
-      [class: @class],
-      {__ENV__.module, __ENV__.function, __ENV__.file, __ENV__.line}
-    ) %>
-    """
-  end
-
-  attr(:class, :string,
-    required: false,
-    default: "w-4 h-4 mx-auto stroke-current text-black cursor-pointer"
-  )
-
-  attr(:myself, :integer, required: true)
-  attr(:selected, :string, required: false, default: nil)
-  attr(:block_id, :string, required: false, default: nil)
-
-  def select_icons(assigns) do
-    assigns = assign(assigns, icons: TailwindSetting.hero_icons())
-
-    ~H"""
-    <div class="flex flex-wrap w-full gap-1 border border-gray-300 p-3 rounded-md mb-3 justify-start">
-      <span
-        :for={icon <- @icons}
-        phx-click="select_icon"
-        phx-value-name={icon}
-        phx-value-block-id={@block_id}
-        phx-target={@myself}
-      >
-        <.dynamic_icon
-          module={"Heroicons.#{icon}"}
-          class={@class <> "#{if @selected == icon, do: " !text-red-600", else: ""}"}
-        />
-      </span>
-    </div>
     """
   end
 

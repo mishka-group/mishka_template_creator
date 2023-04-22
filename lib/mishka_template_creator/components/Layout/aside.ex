@@ -1,6 +1,6 @@
-defmodule MishkaTemplateCreator.Components.Blocks.Aside do
+defmodule MishkaTemplateCreator.Components.Layout.Aside do
   use Phoenix.Component
-  alias MishkaTemplateCreator.Components.Blocks.ElementMenu
+  alias MishkaTemplateCreator.Components.Layout.ElementMenu
   alias Phoenix.LiveView.JS
 
   attr(:selected_form, :string, required: false, default: nil)

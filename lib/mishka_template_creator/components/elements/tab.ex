@@ -3,12 +3,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   import Phoenix.HTML.Form
   use Phoenix.Component
 
-  alias MishkaTemplateCreator.Components.Blocks.Aside
+  alias MishkaTemplateCreator.Components.Layout.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias Phoenix.LiveView.JS
   alias MishkaTemplateCreator.Components.Blocks.Tag
+  alias MishkaTemplateCreator.Components.Blocks.Icon
 
   @svg_height [
     "h-1",
@@ -456,7 +457,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           phx-click={reset_and_select(@children, key)}
           id={"button-#{key}"}
         >
-          <MishkaCoreComponent.dynamic_icon
+          <Icon.dynamic
             module={data["icon"]}
             class={Enum.join(@header["icon"], " ")}
           />
@@ -711,7 +712,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     <div id={"form-icon-#{@key}"} class="hidden">
       <p class="w-full font-bold text-sm pb-5 border-b border-gray-300 mb-5">Select Tab Icon:</p>
       <div class="px-5 pb-3">
-        <MishkaCoreComponent.select_icons
+        <Icon.select
           selected={String.replace(@data["icon"], "Heroicons.", "")}
           myself={@myself}
           block_id={@key}

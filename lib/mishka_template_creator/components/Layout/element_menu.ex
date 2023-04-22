@@ -1,7 +1,7 @@
-defmodule MishkaTemplateCreator.Components.Blocks.ElementMenu do
+defmodule MishkaTemplateCreator.Components.Layout.ElementMenu do
   use Phoenix.Component
   alias MishkaTemplateCreator.Data.Elements
-  alias MishkaTemplateCreatorWeb.MishkaCoreComponent
+  alias MishkaTemplateCreator.Components.Blocks.Icon
 
   attr :id, :string, required: true
   attr :title, :string, required: true
@@ -47,7 +47,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.ElementMenu do
           title={title}
           parent_type={Enum.join(parent_type, ",")}
         >
-          <MishkaCoreComponent.dynamic_icon module={module} />
+          <Icon.dynamic module={module} />
         </.block_menu>
       </div>
     </div>

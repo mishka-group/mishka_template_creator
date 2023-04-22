@@ -4,7 +4,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
   import Phoenix.HTML.Form
   import MishkaTemplateCreatorWeb.CoreComponents
 
-  alias MishkaTemplateCreator.Components.Blocks.Aside
+  alias MishkaTemplateCreator.Components.Layout.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias Phoenix.LiveView.JS

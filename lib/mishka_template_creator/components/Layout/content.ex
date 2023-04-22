@@ -1,4 +1,4 @@
-defmodule MishkaTemplateCreator.Components.Blocks.Content do
+defmodule MishkaTemplateCreator.Components.Layout.Content do
   use Phoenix.Component
   alias MishkaTemplateCreator.Components.Elements.Layout
 

@@ -6,7 +6,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
   import MishkaTemplateCreatorWeb.MishkaCoreComponent
 
   alias MishkaTemplateCreator.{
-    Components.Blocks.ElementMenu,
+    Components.Layout.ElementMenu,
     Components.Blocks.CustomClass,
     Data.TailwindSetting,
     Components.ConfigSelector

@@ -1,4 +1,4 @@
-defmodule MishkaTemplateCreator.Components.Blocks.History do
+defmodule MishkaTemplateCreator.Components.Layout.History do
   use Phoenix.LiveComponent
 
   @impl true

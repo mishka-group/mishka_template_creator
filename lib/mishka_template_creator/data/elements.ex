@@ -5,12 +5,12 @@ defmodule MishkaTemplateCreator.Data.Elements do
     {"text", "Text", "Heroicons.inbox_stack", ["section"]},
     {"tab", "Tab", "Heroicons.inbox_stack", ["section"]},
     {"table", "Table", "Heroicons.inbox_stack", ["section"]},
-    {"accordion", "Accordion", "Heroicons.inbox_stack", ["section"]}
+    {"accordion", "Accordion", "Heroicons.inbox_stack", ["section"]},
+    {"buttons", "Buttons", "Heroicons.inbox_stack", ["section"]}
   ]
   @elements_items [
     {"alerts", "Alerts", "Heroicons.inbox_stack", ["section"]},
     {"quotes", "Quotes", "Heroicons.inbox_stack", ["section"]},
-    {"buttons", "Buttons", "Heroicons.inbox_stack", ["section"]},
     {"links", "Links", "Heroicons.inbox_stack", ["section"]},
     {"code", "Code", "Heroicons.inbox_stack", ["section"]},
     {"notes", "Notes", "Heroicons.inbox_stack", ["section"]}
