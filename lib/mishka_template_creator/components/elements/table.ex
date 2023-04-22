@@ -417,61 +417,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <Aside.aside_accordion id={"table-headers-#{@id}"} title="Header Font Style" open={false}>
-            <Text.alignment_selector
-              event_name="header_text_alignment"
-              myself={@myself}
-            />
+            <Text.alignment_selector event_name="header_text_alignment" myself={@myself} />
 
-            <Text.direction_selector
-              event_name="header_text_direction"
+            <Text.direction_selector event_name="header_text_direction" myself={@myself} />
+            <Text.font_style
               myself={@myself}
-            />
-
-            <MishkaCoreComponent.custom_simple_form
-              :let={f}
-              for={%{}}
+              classes={@element["header"]["row"]}
               as={:header_table_font_style}
-              phx-change="font_style"
-              phx-target={@myself}
-              class="w-full m-0 p-0 flex flex-col"
-            >
-              <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-                <span class="w-3/5">Font:</span>
-                <div class="w-full">
-                  <%= select(f, :font, ["font-sans", "font-serif", "font-mono"],
-                    class:
-                      "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1",
-                    prompt: "Choose preferred font",
-                    selected:
-                      Enum.find(
-                        @element["header"]["row"],
-                        &(&1 in TailwindSetting.get_form_options(
-                            "typography",
-                            "font-family",
-                            nil,
-                            nil
-                          ).form_configs)
-                      ),
-                    id: "header_table_font-#{@id}"
-                  ) %>
-                </div>
-              </div>
-              <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-                <span class="w-3/5">Size:</span>
-                <div class="flex flex-row w-full gap-2 items-center">
-                  <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
-                    <%= TailwindSetting.find_text_size_index(@element["header"]["row"]).index %>
-                  </span>
-                  <%= range_input(f, :font_size,
-                    min: "1",
-                    max: "13",
-                    value: TailwindSetting.find_text_size_index(@element["header"]["row"]).index,
-                    class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-                    id: "header_table_font_size-#{@id}"
-                  ) %>
-                </div>
-              </div>
-            </MishkaCoreComponent.custom_simple_form>
+            />
             <Color.select
               myself={@myself}
               event_name="header_table_row_text_style"
@@ -516,51 +469,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
             <Text.alignment_selector event_name="row_text_alignment" myself={@myself} />
 
             <Text.direction_selector event_name="row_text_direction" myself={@myself} />
-            <MishkaCoreComponent.custom_simple_form
-              :let={f}
-              for={%{}}
+            <Text.font_style
+              myself={@myself}
+              classes={@element["content"]["row"]}
               as={:content_table_font_style}
-              phx-change="font_style"
-              phx-target={@myself}
-              class="w-full m-0 p-0 flex flex-col"
-            >
-              <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-                <span class="w-3/5">Font:</span>
-                <div class="w-full">
-                  <%= select(f, :font, ["font-sans", "font-serif", "font-mono"],
-                    class:
-                      "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1",
-                    prompt: "Choose preferred font",
-                    selected:
-                      Enum.find(
-                        @element["content"]["row"],
-                        &(&1 in TailwindSetting.get_form_options(
-                            "typography",
-                            "font-family",
-                            nil,
-                            nil
-                          ).form_configs)
-                      ),
-                    id: "content_tab_font-#{@id}"
-                  ) %>
-                </div>
-              </div>
-              <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-                <span class="w-3/5">Size:</span>
-                <div class="flex flex-row w-full gap-2 items-center">
-                  <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
-                    <%= TailwindSetting.find_text_size_index(@element["content"]["row"]).index %>
-                  </span>
-                  <%= range_input(f, :font_size,
-                    min: "1",
-                    max: "13",
-                    value: TailwindSetting.find_text_size_index(@element["content"]["row"]).index,
-                    class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-                    id: "content_tab_font_size-#{@id}"
-                  ) %>
-                </div>
-              </div>
-            </MishkaCoreComponent.custom_simple_form>
+            />
             <Color.select
               myself={@myself}
               event_name="content_table_row_text_style"
@@ -608,51 +521,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"table-#{@id}"} title="Font Style" open={false}>
-            <MishkaCoreComponent.custom_simple_form
-              :let={f}
-              for={%{}}
+            <Text.font_style
+              myself={@myself}
+              classes={@element["class"]}
               as={:public_table_font_style}
-              phx-change="font_style"
-              phx-target={@myself}
-              class="w-full m-0 p-0 flex flex-col"
-            >
-              <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-                <span class="w-3/5">Font:</span>
-                <div class="w-full">
-                  <%= select(f, :font, ["font-sans", "font-serif", "font-mono"],
-                    class:
-                      "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1",
-                    prompt: "Choose preferred font",
-                    selected:
-                      Enum.find(
-                        @element["class"],
-                        &(&1 in TailwindSetting.get_form_options(
-                            "typography",
-                            "font-family",
-                            nil,
-                            nil
-                          ).form_configs)
-                      ),
-                    id: "public_tab_font-#{@id}"
-                  ) %>
-                </div>
-              </div>
-              <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-                <span class="w-3/5">Size:</span>
-                <div class="flex flex-row w-full gap-2 items-center">
-                  <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
-                    <%= TailwindSetting.find_text_size_index(@element["class"]).index %>
-                  </span>
-                  <%= range_input(f, :font_size,
-                    min: "1",
-                    max: "13",
-                    value: TailwindSetting.find_text_size_index(@element["class"]).index,
-                    class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-                    id: "public_tab_font_size-#{@id}"
-                  ) %>
-                </div>
-              </div>
-            </MishkaCoreComponent.custom_simple_form>
+            />
             <Color.select
               myself={@myself}
               event_name="public_table_font_style"

@@ -57,9 +57,11 @@ defmodule MishkaTemplateCreator.Components.Blocks.Tag do
     required: false,
     default: "flex flex-col w-full items-center justify-center pb-5"
   )
+
   attr(:text_input_class, :string,
     required: false,
-    default: "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+    default:
+      "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
   )
 
   def input_tag(assigns) do
