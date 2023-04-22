@@ -13,50 +13,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   alias MishkaTemplateCreator.Components.Blocks.Color
   alias MishkaTemplateCreator.Components.Elements.Text
 
-  @svg_height [
-    "h-1",
-    "h-2",
-    "h-3",
-    "h-4",
-    "h-5",
-    "h-6",
-    "h-7",
-    "h-8",
-    "h-9",
-    "h-10",
-    "h-11",
-    "h-12",
-    "h-14",
-    "h-16",
-    "h-20",
-    "h-24",
-    "h-28",
-    "h-32",
-    "h-36"
-  ]
-
-  @svg_width [
-    "w-1",
-    "w-2",
-    "w-3",
-    "w-4",
-    "w-5",
-    "w-6",
-    "w-7",
-    "w-8",
-    "w-9",
-    "w-10",
-    "w-11",
-    "w-12",
-    "w-14",
-    "w-16",
-    "w-20",
-    "w-24",
-    "w-28",
-    "w-32",
-    "w-36"
-  ]
-
   # ---------------------------------------------------------------------------------------------------------------
   # TODO: Presets which are added with MishkaInstaller as a plugin, it let user select pre-prepared tabs. in V0.0.2
   # ---------------------------------------------------------------------------------------------------------------
@@ -511,51 +467,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
       </div>
 
       <Aside.aside_accordion id={"icon-#{@key}"} title="Font Style">
-        <MishkaCoreComponent.custom_simple_form
-          :let={f}
-          for={%{}}
+        <Icon.select_size
+          myself={@myself}
+          classes={@header["icon"]}
           as={:tab_icon_style}
-          phx-change="font_style"
-          phx-target={@myself}
-          class="w-full m-0 p-0 flex flex-col"
-        >
-          <div class="flex flex-row w-full justify-between items-stretch pt-3 pb-5">
-            <span class="w-3/5">Size:</span>
-            <div class="flex flex-row w-full gap-2 items-center">
-              <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
-                <%= find_index_svg_sizes(@header["icon"]).width %>
-              </span>
-              <span>
-                W:
-              </span>
-
-              <%= range_input(f, :width,
-                min: "0",
-                max: "18",
-                value: find_index_svg_sizes(@header["icon"]).width,
-                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-                id: "tab_icon_style_width-#{@key}"
-              ) %>
-
-              <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
-                <%= find_index_svg_sizes(@header["icon"]).height %>
-              </span>
-              <span>
-                H:
-              </span>
-
-              <%= range_input(f, :height,
-                min: "0",
-                max: "18",
-                value: find_index_svg_sizes(@header["icon"]).height,
-                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-                id: "tab_icon_style_height-#{@key}"
-              ) %>
-
-              <.input field={f[:id]} type="hidden" value={@key} id={"tab_icon_style_id-#{@key}"} />
-            </div>
-          </div>
-        </MishkaCoreComponent.custom_simple_form>
+          id_input={@key}
+        />
         <Color.select myself={@myself} event_name="tab_icon_font_style" classes={@header["icon"]} />
       </Aside.aside_accordion>
     </div>
@@ -668,7 +585,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         %{"public_tab_font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    class = edit_font_style_class(socket.assigns.element["class"], font_size, font)
+    class = Icon.edit_font_style_class(socket.assigns.element["class"], font_size, font)
 
     send(
       self(),
@@ -688,7 +605,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         %{"tab_title_font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    class = edit_font_style_class(socket.assigns.element["header"]["title"], font_size, font)
+    class = Icon.edit_font_style_class(socket.assigns.element["header"]["title"], font_size, font)
 
     updated =
       socket.assigns.element
@@ -705,7 +622,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         %{"tab_text_font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    class = edit_font_style_class(socket.assigns.element["content"], font_size, font)
+    class = Icon.edit_font_style_class(socket.assigns.element["content"], font_size, font)
 
     updated =
       socket.assigns.element
@@ -722,7 +639,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         %{"tab_icon_style" => %{"height" => height, "width" => width}},
         socket
       ) do
-    class = edit_icon_size(socket.assigns.element["header"]["icon"], [width, height])
+    class = Icon.edit_icon_size(socket.assigns.element["header"]["icon"], [width, height])
 
     updated =
       socket.assigns.element
@@ -942,43 +859,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     |> JS.remove_class("hidden", to: "#content-#{id}")
     |> JS.add_class("border-b", to: "#button-#{id}")
     |> JS.add_class("border-blue-500", to: "#button-#{id}")
-  end
-
-  defp edit_font_style_class(classes, font_size, font) do
-    text_sizes_and_font_families =
-      TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
-        TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs
-
-    Enum.reject(
-      classes,
-      &(&1 in text_sizes_and_font_families)
-    ) ++
-      [TailwindSetting.find_font_by_index(font_size).font_class] ++
-      if(font != "" and !is_nil(font), do: [font], else: [])
-  end
-
-  defp edit_icon_size(classes, [width, height]) do
-    all_sizes = @svg_height ++ @svg_width
-
-    Enum.reject(classes, &(&1 in all_sizes)) ++
-      [convert_size(@svg_width, width), convert_size(@svg_height, height)]
-  end
-
-  defp convert_size(list, index), do: Enum.at(list, String.to_integer(index)) || Enum.at(list, 0)
-
-  defp find_index_svg_sizes(classes) do
-    %{
-      width: find_revers_list(@svg_width, classes),
-      height: find_revers_list(@svg_height, classes)
-    }
-  end
-
-  defp find_revers_list(list, classes) do
-    Enum.find(Enum.with_index(list), fn {item, _index} -> item in classes end)
-    |> case do
-      nil -> 0
-      {_data, index} -> index
-    end
   end
 
   defp create_border_radius(classes, type, bg_color \\ "") do
