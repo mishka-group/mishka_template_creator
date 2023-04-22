@@ -10,6 +10,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
   alias Phoenix.LiveView.JS
   alias MishkaTemplateCreator.Components.Blocks.Tag
   alias MishkaTemplateCreator.Components.Blocks.Icon
+  alias MishkaTemplateCreator.Components.Blocks.Color
 
   @svg_height [
     "h-1",
@@ -409,7 +410,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 </div>
               </div>
             </MishkaCoreComponent.custom_simple_form>
-            <MishkaCoreComponent.color_selector
+            <Color.select
               myself={@myself}
               event_name="public_tab_font_style"
               classes={@element["class"]}
@@ -570,7 +571,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             </div>
           </div>
         </MishkaCoreComponent.custom_simple_form>
-        <MishkaCoreComponent.color_selector
+        <Color.select
           myself={@myself}
           event_name="tab_title_font_style"
           classes={@header["title"]}
@@ -651,7 +652,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             </div>
           </div>
         </MishkaCoreComponent.custom_simple_form>
-        <MishkaCoreComponent.color_selector
+        <Color.select
           myself={@myself}
           event_name="tab_content_font_style"
           classes={@content}
@@ -696,7 +697,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         </div>
       </Aside.aside_accordion>
       <Aside.aside_accordion id={"text-#{@key}"} title="Content Background Color">
-        <MishkaCoreComponent.color_selector
+        <Color.select
           myself={@myself}
           event_name="tab_content_background"
           type="bg"
@@ -765,7 +766,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
             </div>
           </div>
         </MishkaCoreComponent.custom_simple_form>
-        <MishkaCoreComponent.color_selector
+        <Color.select
           myself={@myself}
           event_name="tab_icon_font_style"
           classes={@header["icon"]}

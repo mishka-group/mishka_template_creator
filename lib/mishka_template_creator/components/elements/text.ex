@@ -7,6 +7,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
+  alias MishkaTemplateCreator.Components.Blocks.Color
 
   @impl true
   def mount(socket) do
@@ -261,7 +262,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
               </div>
             </div>
           </MishkaCoreComponent.custom_simple_form>
-          <MishkaCoreComponent.color_selector
+          <Color.select
             myself={@myself}
             event_name="font_style"
             classes={@element["class"]}
