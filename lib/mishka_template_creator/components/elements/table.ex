@@ -4,12 +4,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
   import Phoenix.HTML.Form
   import MishkaTemplateCreatorWeb.CoreComponents
 
+  alias Phoenix.LiveView.JS
   alias MishkaTemplateCreator.Components.Layout.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   alias MishkaTemplateCreator.Data.TailwindSetting
-  alias Phoenix.LiveView.JS
   alias MishkaTemplateCreator.Components.Blocks.Tag
   alias MishkaTemplateCreator.Components.Blocks.Color
+  alias MishkaTemplateCreator.Components.Elements.Text
 
   %{
     "unique_id" => %{
@@ -341,9 +342,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                     :for={{item, index} <- Enum.with_index(data)}
                     class="group text-sm border border-gray-200 rounded-md py-2 px-3 bg-gray-100 relative mb-3"
                   >
-                    <span id={"content-title-#{@id}-#{index}"}><%= item %></span>
+                    <span id={"content-title-#{key}-#{@id}-#{index}"}><%= item %></span>
 
-                    <div id={"content-title-input-#{@id}-#{index}"} class="hidden">
+                    <div id={"content-title-#{key}-input-#{@id}-#{index}"} class="hidden">
                       <MishkaCoreComponent.custom_simple_form
                         :let={f}
                         for={%{}}
@@ -357,29 +358,29 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                             "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
                           placeholder: "Change Tag name",
                           value: item,
-                          id: "content-title-form-#{@id}-#{index}"
+                          id: "content-title-form-#{@id}-#{index}-#{Ecto.UUID.generate()}"
                         ) %>
 
                         <.input
                           field={f[:index]}
                           type="hidden"
                           value={index}
-                          id={"content-id-form-#{@id}-#{index}"}
+                          id={"content-id-form-#{@id}-#{index}-#{Ecto.UUID.generate()}"}
                         />
 
                         <.input
                           field={f[:id]}
                           type="hidden"
                           value={key}
-                          id={"content-key-form-#{@id}-#{index}"}
+                          id={"content-key-form-#{@id}-#{index}-#{Ecto.UUID.generate()}"}
                         />
 
                         <button
                           type="submit"
                           class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
                           phx-click={
-                            JS.toggle(to: "#content-title-input-#{@id}-#{index}")
-                            |> JS.toggle(to: "#content-title-#{@id}-#{index}")
+                            JS.toggle(to: "#content-title-#{key}-input-#{@id}-#{index}")
+                            |> JS.toggle(to: "#content-title-#{key}-#{@id}-#{index}")
                           }
                         >
                           Save
@@ -398,8 +399,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
                       <Heroicons.pencil_square
                         class="w-5 h-5 cursor-pointer"
                         phx-click={
-                          JS.toggle(to: "#content-title-input-#{@id}-#{index}")
-                          |> JS.toggle(to: "#content-title-#{@id}-#{index}")
+                          JS.toggle(to: "#content-title-#{key}-input-#{@id}-#{index}")
+                          |> JS.toggle(to: "#content-title-#{key}-#{@id}-#{index}")
                         }
                       />
                     </span>
@@ -416,12 +417,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <Aside.aside_accordion id={"table-headers-#{@id}"} title="Header Font Style" open={false}>
-            <MishkaCoreComponent.alignment_selector
+            <Text.alignment_selector
               event_name="header_text_alignment"
               myself={@myself}
             />
 
-            <MishkaCoreComponent.direction_selector
+            <Text.direction_selector
               event_name="header_text_direction"
               myself={@myself}
             />
@@ -512,9 +513,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <Aside.aside_accordion id={"table-row-#{@id}"} title="Row Font Style" open={false}>
-            <MishkaCoreComponent.alignment_selector event_name="row_text_alignment" myself={@myself} />
+            <Text.alignment_selector event_name="row_text_alignment" myself={@myself} />
 
-            <MishkaCoreComponent.direction_selector event_name="row_text_direction" myself={@myself} />
+            <Text.direction_selector event_name="row_text_direction" myself={@myself} />
             <MishkaCoreComponent.custom_simple_form
               :let={f}
               for={%{}}
@@ -601,9 +602,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <Aside.aside_accordion id={"table-#{@id}"} title="Alignment" open={false}>
-            <MishkaCoreComponent.alignment_selector myself={@myself} />
+            <Text.alignment_selector myself={@myself} />
 
-            <MishkaCoreComponent.direction_selector myself={@myself} />
+            <Text.direction_selector myself={@myself} />
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"table-#{@id}"} title="Font Style" open={false}>
