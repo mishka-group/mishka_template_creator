@@ -3,10 +3,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
   use Phoenix.Component
   import Phoenix.HTML.Form
 
+  import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Components.Blocks.Tag
   alias MishkaTemplateCreator.Components.Layout.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
-  import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias MishkaTemplateCreator.Components.Blocks.Color
 
@@ -68,7 +68,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     """
   end
 
-  @impl true
   def render(%{render_type: "form"} = assigns) do
     ~H"""
     <div>
@@ -541,5 +540,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
 
     {:noreply, socket}
+  end
+
+  def edit_font_style_class(classes, font_size, font) do
+    text_sizes_and_font_families =
+      TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
+        TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs
+
+    Enum.reject(
+      classes,
+      &(&1 in text_sizes_and_font_families)
+    ) ++
+      [TailwindSetting.find_font_by_index(font_size).font_class] ++
+      if(font != "" and !is_nil(font), do: [font], else: [])
   end
 end

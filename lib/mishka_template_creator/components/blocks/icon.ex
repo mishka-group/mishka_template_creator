@@ -160,19 +160,6 @@ defmodule MishkaTemplateCreator.Components.Blocks.Icon do
     """
   end
 
-  def edit_font_style_class(classes, font_size, font) do
-    text_sizes_and_font_families =
-      TailwindSetting.get_form_options("typography", "font-size", nil, nil).form_configs ++
-        TailwindSetting.get_form_options("typography", "font-family", nil, nil).form_configs
-
-    Enum.reject(
-      classes,
-      &(&1 in text_sizes_and_font_families)
-    ) ++
-      [TailwindSetting.find_font_by_index(font_size).font_class] ++
-      if(font != "" and !is_nil(font), do: [font], else: [])
-  end
-
   def edit_icon_size(classes, [width, height]) do
     all_sizes = @svg_height ++ @svg_width
 

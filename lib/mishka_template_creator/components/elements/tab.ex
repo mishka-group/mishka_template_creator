@@ -157,24 +157,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
                 id={"tree-#{key}"}
               >
                 <.tab_form
+                  :for={type <- ["title", "text", "icon"]}
                   data={data}
-                  type="title"
-                  key={key}
-                  myself={@myself}
-                  header={@element["header"]}
-                  content={@element["content"]}
-                />
-                <.tab_form
-                  data={data}
-                  type="text"
-                  key={key}
-                  myself={@myself}
-                  header={@element["header"]}
-                  content={@element["content"]}
-                />
-                <.tab_form
-                  data={data}
-                  type="icon"
+                  type={type}
                   key={key}
                   myself={@myself}
                   header={@element["header"]}
@@ -585,7 +570,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         %{"public_tab_font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    class = Icon.edit_font_style_class(socket.assigns.element["class"], font_size, font)
+    class = Text.edit_font_style_class(socket.assigns.element["class"], font_size, font)
 
     send(
       self(),
@@ -605,7 +590,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         %{"tab_title_font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    class = Icon.edit_font_style_class(socket.assigns.element["header"]["title"], font_size, font)
+    class = Text.edit_font_style_class(socket.assigns.element["header"]["title"], font_size, font)
 
     updated =
       socket.assigns.element
@@ -622,7 +607,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
         %{"tab_text_font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    class = Icon.edit_font_style_class(socket.assigns.element["content"], font_size, font)
+    class = Text.edit_font_style_class(socket.assigns.element["content"], font_size, font)
 
     updated =
       socket.assigns.element
