@@ -176,10 +176,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
 
   attr(:myself, :integer, required: true)
   attr(:classes, :list, required: true)
-  attr(:id_input, :boolean, required: false, default: false)
-  attr(:id_input_key, :string, required: false, default: nil)
+  attr(:id_input, :string, required: false, default: nil)
   attr(:event_name, :string, required: false, default: "font_style")
   attr(:as, :atom, required: false, default: :font_style)
+  attr(:id, :string, required: false, default: nil)
 
   attr(:class, :string,
     required: false,
@@ -213,7 +213,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
                     nil
                   ).form_configs)
               ),
-            id: "font-style-font-#{Atom.to_string(@as)}"
+            id: "font-style-font-#{Atom.to_string(@as)}-#{@id || ""}"
           ) %>
         </div>
       </div>
@@ -228,7 +228,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
             max: "13",
             value: TailwindSetting.find_text_size_index(@classes).index,
             class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-            id: "font-style-size-#{Atom.to_string(@as)}"
+            id: "font-style-size-#{Atom.to_string(@as)}-#{@id_input || ""}"
           ) %>
         </div>
       </div>
@@ -237,8 +237,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
         :if={@id_input}
         field={f[:id]}
         type="hidden"
-        value={@id_input_key}
-        id={"font-style-id-#{Atom.to_string(@as)}"}
+        value={@id_input}
+        id={"font-style-id-#{Atom.to_string(@as)}-#{@id_input}"}
       />
     </MishkaCoreComponent.custom_simple_form>
     """
@@ -380,7 +380,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
     {:noreply, socket}
   end
 
-  def handle_event("validate", %{"public_tab_tag" => %{"tag" => tag}}, socket) do
+  def handle_event("validate", %{"public_tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3

@@ -72,15 +72,56 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
     >
-      <.accordion_header
-        header={@element["header"]}
-        children={MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])}
-      />
-
-      <.accordion_content
-        content={@element["content"]}
-        children={MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])}
-      />
+      <div id="accordion-collapse">
+        <h2 id="accordion-collapse-heading-1">
+          <button
+            type="button"
+            class="flex items-center justify-between w-full p-5 font-medium border border-b-0 border-gray-400 rounded-t-xl"
+          >
+            <span>Who we are?</span>
+            <Heroicons.chevron_up class="w-4 h-4 rotate-180 shrink-0" />
+          </button>
+        </h2>
+        <div id="accordion-collapse-body-1">
+          <div class="p-5 border border-b-0 border-gray-400">
+            <p class="mb-2 text-gray-500">
+              Mishka is a highly agile software group combining care and technology to help local businesses thrive.
+            </p>
+          </div>
+        </div>
+        <h2 id="accordion-collapse-heading-2">
+          <button
+            type="button"
+            class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-b-0 border-gray-400"
+          >
+            <span>What is Mishka Template Creator?</span>
+            <Heroicons.chevron_down class="w-4 h-4  rotate-180 shrink-0" />
+          </button>
+        </h2>
+        <div id="accordion-collapse-body-2" class="hidden">
+          <div class="p-5 border border-b-0 border-gray-400">
+            <p class="mb-2 text-gray-500">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas purus viverra accumsan in nisl nisi. Arcu cursus vitae congue mauris rhoncus aenean vel elit scelerisque. In egestas erat imperdiet sed euismod nisi porta lorem mollis. Morbi tristique senectus et netus. Mattis pellentesque id nibh tortor id aliquet lectus proin. Sapien faucibus et molestie ac feugiat sed lectus vestibulum. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget. Dictum varius duis at consectetur lorem. Nisi vitae suscipit tellus mauris a diam maecenas sed enim. Velit ut tortor pretium viverra suspendisse potenti nullam. Et molestie ac feugiat sed lectus. Non nisi est sit amet facilisis magna. Dignissim diam quis enim lobortis scelerisque fermentum. Odio ut enim blandit volutpat maecenas volutpat. Ornare lectus sit amet est placerat in egestas erat. Nisi vitae suscipit tellus mauris a diam maecenas sed. Placerat duis ultricies lacus sed turpis tincidunt id aliquet.
+            </p>
+          </div>
+        </div>
+        <h2 id="accordion-collapse-heading-3">
+          <button
+            type="button"
+            class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-gray-400"
+          >
+            <span>What is Mishka Installer?</span>
+            <Heroicons.chevron_down class="w-4 h-4 rotate-180 shrink-0" />
+          </button>
+        </h2>
+        <div id="accordion-collapse-body-3" class="hidden">
+          <div class="p-5 border border-t-0 border-gray-400">
+            <p class="mb-2 text-gray-500">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas purus viverra accumsan in nisl nisi. Arcu cursus vitae congue mauris rhoncus aenean vel elit scelerisque. In egestas erat imperdiet sed euismod nisi porta lorem mollis. Morbi tristique senectus et netus. Mattis pellentesque id nibh tortor id aliquet lectus proin. Sapien faucibus et molestie ac feugiat sed lectus vestibulum. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget. Dictum varius duis at consectetur lorem. Nisi vitae suscipit tellus mauris a diam maecenas sed enim. Velit ut tortor pretium viverra suspendisse potenti nullam. Et molestie ac feugiat sed lectus. Non nisi est sit amet facilisis magna. Dignissim diam quis enim lobortis scelerisque fermentum. Odio ut enim blandit volutpat maecenas volutpat. Ornare lectus sit amet est placerat in egestas erat. Nisi vitae suscipit tellus mauris a diam maecenas sed. Placerat duis ultricies lacus sed turpis tincidunt id aliquet.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
     """
   end
@@ -226,7 +267,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"accordion-#{@id}"} title="Font Style" open={false}>
-            <Text.font_style myself={@myself} classes={@element["class"]} as={:public_accordion_font_style} />
+            <Text.font_style
+              myself={@myself}
+              classes={@element["class"]}
+              as={:public_accordion_font_style}
+              id={@id}
+            />
             <Color.select
               myself={@myself}
               event_name="public_accordion_font_style"
@@ -258,46 +304,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
           </div>
         </Aside.aside_accordion>
       </Aside.aside_settings>
-    </div>
-    """
-  end
-
-  attr(:header, :map, required: true)
-  attr(:children, :list, required: false, default: [])
-
-  def accordion_header(assigns) do
-    ~H"""
-    <ul :if={length(@children) != 0} class={Enum.join(@header["container"], " ")}>
-      <li :for={{%{id: key, data: data}, index} <- Enum.with_index(@children)} id={key}>
-        <button
-          class={"#{Enum.join(@header["button"], " ")} #{if index == 0, do: "border-b border-blue-500"}"}
-          type="button"
-          phx-click={reset_and_select(@children, key)}
-          id={"button-#{key}"}
-        >
-          <Icon.dynamic module={data["icon"]} class={Enum.join(@header["icon"], " ")} />
-          <span class={Enum.join(@header["title"], " ")}><%= data["title"] %></span>
-        </button>
-      </li>
-    </ul>
-    """
-  end
-
-  attr(:content, :list, required: true)
-  attr(:children, :map, required: false, default: [])
-
-  def accordion_content(assigns) do
-    ~H"""
-    <p :if={length(@children) == 0} class={Enum.join(@content, " ") <> " text-center"}>
-      There is no accordion to show! Click here
-    </p>
-
-    <div
-      :for={{%{id: key, data: data}, index} <- Enum.with_index(@children)}
-      id={"content-#{key}"}
-      class={"#{Enum.join(@content, " ")} #{if index != 0, do: "hidden"}"}
-    >
-      <%= data["html"] %>
     </div>
     """
   end
@@ -342,10 +348,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
           myself={@myself}
           classes={@header["title"]}
           as={:accordion_title_font_style}
-          id_input={true}
-          id_input_key={@key}
+          id_input={@key}
+          id={@key}
         />
-        <Color.select myself={@myself} event_name="accordion_title_font_style" classes={@header["title"]} />
+        <Color.select
+          myself={@myself}
+          event_name="accordion_title_font_style"
+          classes={@header["title"]}
+        />
       </Aside.aside_accordion>
     </div>
     """
@@ -384,8 +394,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
           myself={@myself}
           classes={@content}
           as={:accordion_text_font_style}
-          id_input={true}
-          id_input_key={@key}
+          id_input={@key}
+          id={@key}
         />
         <Color.select myself={@myself} event_name="accordion_content_font_style" classes={@content} />
       </Aside.aside_accordion>
@@ -442,7 +452,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
   defp accordion_form(%{type: "icon"} = assigns) do
     ~H"""
     <div id={"form-icon-#{@key}"} class="hidden">
-      <p class="w-full font-bold text-sm pb-5 border-b border-gray-300 mb-5">Select accordion Icon:</p>
+      <p class="w-full font-bold text-sm pb-5 border-b border-gray-300 mb-5">
+        Select accordion Icon:
+      </p>
       <div class="px-5 pb-3">
         <Icon.select
           selected={String.replace(@data["icon"], "Heroicons.", "")}
@@ -457,8 +469,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
           classes={@header["icon"]}
           as={:accordion_icon_style}
           id_input={@key}
+          id={@key}
         />
-        <Color.select myself={@myself} event_name="accordion_icon_font_style" classes={@header["icon"]} />
+        <Color.select
+          myself={@myself}
+          event_name="accordion_icon_font_style"
+          classes={@header["icon"]}
+        />
       </Aside.aside_accordion>
     </div>
     """
@@ -492,7 +509,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
     {:noreply, socket}
   end
 
-  def handle_event("validate", %{"public_accordion_tag" => %{"tag" => tag}}, socket) do
+  def handle_event("validate", %{"public_tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3

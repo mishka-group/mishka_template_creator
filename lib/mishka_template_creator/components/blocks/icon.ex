@@ -65,6 +65,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Icon do
   attr(:myself, :integer, required: true)
   attr(:selected, :string, required: false, default: nil)
   attr(:block_id, :string, required: false, default: nil)
+  attr(:id, :string, required: false, default: nil)
 
   attr(:class, :string,
     required: false,
@@ -129,7 +130,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Icon do
             max: "18",
             value: find_index_svg_sizes(@classes).width,
             class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-            id: "font-style-width-#{Atom.to_string(@as)}"
+            id: "font-style-width-#{Atom.to_string(@as)}-#{@id || ""}"
           ) %>
 
           <span class="py-1 px-2 border border-gray-300 text-xs rounded-md">
@@ -144,7 +145,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Icon do
             max: "18",
             value: find_index_svg_sizes(@classes).height,
             class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
-            id: "font-style-height-#{Atom.to_string(@as)}"
+            id: "font-style-height-#{Atom.to_string(@as)}-#{@id || ""}"
           ) %>
 
           <.input
@@ -152,7 +153,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Icon do
             field={f[:id]}
             type="hidden"
             value={@id_input}
-            id={"font-style-id-#{Atom.to_string(@as)}"}
+            id={"font-style-id-#{Atom.to_string(@as)}-#{@id_input}"}
           />
         </div>
       </div>

@@ -9258,6 +9258,8 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
 
   def default_element("accordion") do
     id = Ecto.UUID.generate()
+    id1 = Ecto.UUID.generate()
+    id2 = Ecto.UUID.generate()
 
     %{
       "class" => ["text-black", "w-full", "text-base", "p-2"],
@@ -9280,13 +9282,25 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       "content" => ["p-4", "rounded-lg", "bg-gray-50", "text-sm", "text-gray-500"],
       "children" => %{
         "#{id}" => %{
-          "title" => "Title one",
+          "title" => "Who we are?",
           "html" =>
-            "This is some placeholder content the tab's associated content. for changing the data of this tab please click here.",
+            "Mishka is a highly agile software group combining care and technology to help local businesses thrive.",
+          "icon" => "Heroicons.inbox_stack"
+        },
+        "#{id1}" => %{
+          "title" => "What is Mishka Template Creator?",
+          "html" =>
+            "Mishka Template Creator for Phoenix and Phoenix LiveView.",
+          "icon" => "Heroicons.inbox_stack"
+        },
+        "#{id2}" => %{
+          "title" => "What is Mishka Installer?",
+          "html" =>
+            "Mishka Installer is a system plugin manager and run time installer for elixir.",
           "icon" => "Heroicons.inbox_stack"
         }
       },
-      "order" => [id]
+      "order" => [id, id1, id2]
     }
   end
 

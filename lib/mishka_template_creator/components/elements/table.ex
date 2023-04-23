@@ -589,7 +589,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Table do
     {:noreply, socket}
   end
 
-  def handle_event("validate", %{"public_tab_tag" => %{"tag" => tag}}, socket) do
+  def handle_event("validate", %{"public_tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3

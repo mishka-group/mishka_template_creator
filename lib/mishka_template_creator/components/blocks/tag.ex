@@ -47,7 +47,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Tag do
   attr(:myself, :integer, required: true)
   attr(:value, :any, required: true)
   attr(:id, :string, required: true)
-  attr(:as, :atom, required: false, default: :public_tab_tag)
+  attr(:as, :atom, required: false, default: :public_tag)
   attr(:submit_event, :string, required: false, default: "element")
   attr(:change_event, :string, required: false, default: "validate")
   attr(:placeholder, :string, required: false, default: "Change Tag name")

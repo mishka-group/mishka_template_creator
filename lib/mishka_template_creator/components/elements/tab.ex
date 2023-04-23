@@ -342,8 +342,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           myself={@myself}
           classes={@header["title"]}
           as={:tab_title_font_style}
-          id_input={true}
-          id_input_key={@key}
+          id_input={@key}
         />
         <Color.select myself={@myself} event_name="tab_title_font_style" classes={@header["title"]} />
       </Aside.aside_accordion>
@@ -384,8 +383,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           myself={@myself}
           classes={@content}
           as={:tab_text_font_style}
-          id_input={true}
-          id_input_key={@key}
+          id_input={@key}
         />
         <Color.select myself={@myself} event_name="tab_content_font_style" classes={@content} />
       </Aside.aside_accordion>
@@ -457,6 +455,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
           classes={@header["icon"]}
           as={:tab_icon_style}
           id_input={@key}
+          id={@key}
         />
         <Color.select myself={@myself} event_name="tab_icon_font_style" classes={@header["icon"]} />
       </Aside.aside_accordion>
@@ -492,7 +491,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Tab do
     {:noreply, socket}
   end
 
-  def handle_event("validate", %{"public_tab_tag" => %{"tag" => tag}}, socket) do
+  def handle_event("validate", %{"public_tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
         String.length(String.trim(tag)) > 3
