@@ -6,7 +6,7 @@ defmodule MishkaTemplateCreator.Data.Elements do
     {"tab", "Tab", "Heroicons.inbox_stack", ["section"]},
     {"table", "Table", "Heroicons.inbox_stack", ["section"]},
     {"accordion", "Accordion", "Heroicons.inbox_stack", ["section"]},
-    {"buttons", "Buttons", "Heroicons.inbox_stack", ["section"]}
+    {"button", "Button", "Heroicons.inbox_stack", ["section"]}
   ]
   @elements_items [
     {"alerts", "Alerts", "Heroicons.inbox_stack", ["section"]},
