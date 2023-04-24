@@ -86,9 +86,20 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
           >
             <button
               type="button"
-              class={"flex items-center justify-between w-full p-5 font-medium border #{if List.last(@element["order"]) != key, do: "border-b-0"} border-gray-400 #{if index == 0, do: "rounded-t-xl"}"}
+              class={"#{Enum.join(@element["header"]["button"], " ")} #{if List.last(@element["order"]) != key, do: "border-b-0"} border-gray-400 #{if index == 0, do: "rounded-t-xl"}"}
             >
-              <span><%= data["title"] %></span>
+              <span
+                class="flex flex-row gap-1 justify-start items-center"
+                phx-click={JS.exec("data-select-title", to: "#accordion-title-#{key}")}
+              >
+                <Icon.dynamic
+                  module={data["icon"]}
+                  class={Enum.join(@element["header"]["icon"], " ")}
+                />
+                <span class={Enum.join(@element["header"]["title"], " ")}>
+                  <%= data["title"] %>
+                </span>
+              </span>
               <Heroicons.chevron_up
                 class={"w-4 h-4 rotate-180 shrink-0 #{if index == 0, do: "hidden"}"}
                 id={"accordion-title-icon-up-#{key}"}
@@ -102,8 +113,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
             </button>
           </h2>
           <div id={"accordion-content-#{key}"} class={if index != 0, do: "hidden"}>
-            <div class={"p-5 border #{if List.last(@element["order"]) == key, do: "border-t-0", else: "border-b-0"} border-gray-400"}>
-              <p class="mb-2 text-gray-500">
+            <div class={"#{if List.last(@element["order"]) == key, do: "border-t-0", else: "border-b-0"} #{Enum.join(@element["content"], " ")}"}>
+              <p class="mb-2">
                 <%= data["html"] %>
               </p>
             </div>
@@ -377,7 +388,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
           Save
         </button>
       </MishkaCoreComponent.custom_simple_form>
-      <Aside.aside_accordion id={"title-#{@key}"} title="Content Font Style">
+      <Aside.aside_accordion id={"title-#{@key}"} title="Content Font Style" open={false}>
         <Text.font_style
           myself={@myself}
           classes={@content}
@@ -387,7 +398,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
         />
         <Color.select myself={@myself} event_name="accordion_content_font_style" classes={@content} />
       </Aside.aside_accordion>
-      <Aside.aside_accordion id={"accordion-#{@key}"} title="Content Border Radius">
+      <Aside.aside_accordion id={"accordion-#{@key}"} title="Content Border Radius" open={false}>
         <div class="flex flex-col w-full items-center justify-center">
           <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
             <li

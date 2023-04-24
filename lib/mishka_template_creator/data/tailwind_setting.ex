@@ -9277,9 +9277,18 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         ],
         "title" => ["text-base"],
         "icon" => ["w-5", "h-5"],
-        "button" => ["flex", "flex-row", "py-4", "gap-1", "justify-center", "items-center"]
+        "button" => [
+          "flex",
+          "items-center",
+          "justify-between",
+          "w-full",
+          "py-5",
+          "px-2",
+          "font-medium",
+          "border"
+        ]
       },
-      "content" => ["p-4", "rounded-lg", "bg-gray-50", "text-sm", "text-gray-500"],
+      "content" => ["p-5", "border", "border-gray-400", "text-sm", "text-gray-500"],
       "children" => %{
         "#{id}" => %{
           "title" => "Who we are?",
