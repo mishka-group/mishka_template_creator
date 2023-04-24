@@ -398,44 +398,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
         />
         <Color.select myself={@myself} event_name="accordion_content_font_style" classes={@content} />
       </Aside.aside_accordion>
-      <Aside.aside_accordion id={"accordion-#{@key}"} title="Content Border Radius" open={false}>
-        <div class="flex flex-col w-full items-center justify-center">
-          <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
-            <li
-              class={"#{create_border_radius(@content, "rounded-none")} px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer"}
-              phx-click="border_radius"
-              phx-value-type="rounded-none"
-              phx-target={@myself}
-            >
-              None
-            </li>
-            <li
-              class={"#{create_border_radius(@content, "rounded-sm")} px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer"}
-              phx-click="border_radius"
-              phx-value-type="rounded-sm"
-              phx-target={@myself}
-            >
-              SM
-            </li>
-            <li
-              class={"#{create_border_radius(@content, "rounded-md")} px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer"}
-              phx-click="border_radius"
-              phx-value-type="rounded-md"
-              phx-target={@myself}
-            >
-              MD
-            </li>
-            <li
-              class={"#{create_border_radius(@content, "rounded-lg")} px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"}
-              phx-click="border_radius"
-              phx-value-type="rounded-lg"
-              phx-target={@myself}
-            >
-              LG
-            </li>
-          </ul>
-        </div>
-      </Aside.aside_accordion>
       <Aside.aside_accordion id={"text-#{@key}"} title="Content Background Color">
         <Color.select
           myself={@myself}
@@ -674,21 +636,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
     class = Enum.reject(socket.assigns.element["content"], &(&1 in text_colors)) ++ [color]
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"content" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event("border_radius", %{"type" => type}, socket) do
-    borders = TailwindSetting.get_form_options("borders", "border-radius", nil, nil).form_configs
-
-    class = Enum.reject(socket.assigns.element["content"], &(&1 in borders)) ++ [type]
 
     updated =
       socket.assigns.element

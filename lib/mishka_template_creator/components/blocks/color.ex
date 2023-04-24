@@ -13,7 +13,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Color do
     default: "flex flex-col w-full justify-between items-stretch pt-3 pb-5"
   )
 
-  def select(%{type: type} = assigns) do
+  def select(assigns) do
     assigns =
       assign(assigns,
         colors:
