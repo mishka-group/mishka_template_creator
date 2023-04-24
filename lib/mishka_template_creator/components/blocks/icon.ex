@@ -99,6 +99,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Icon do
   attr(:title, :string, required: false, default: "Size")
   attr(:as, :atom, required: false, default: :tab_icon_style)
   attr(:id_input, :string, required: false, default: nil)
+  attr(:id, :string, required: false, default: nil)
 
   attr(:class, :string,
     required: false,

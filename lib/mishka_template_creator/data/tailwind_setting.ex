@@ -9289,8 +9289,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         },
         "#{id1}" => %{
           "title" => "What is Mishka Template Creator?",
-          "html" =>
-            "Mishka Template Creator for Phoenix and Phoenix LiveView.",
+          "html" => "Mishka Template Creator for Phoenix and Phoenix LiveView.",
           "icon" => "Heroicons.inbox_stack"
         },
         "#{id2}" => %{

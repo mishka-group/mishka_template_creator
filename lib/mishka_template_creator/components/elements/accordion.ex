@@ -72,55 +72,43 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
     >
-      <div id="accordion-collapse">
-        <h2 id="accordion-collapse-heading-1">
-          <button
-            type="button"
-            class="flex items-center justify-between w-full p-5 font-medium border border-b-0 border-gray-400 rounded-t-xl"
+      <div>
+        <%= for {%{id: key, data: data}, index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>
+          <h2
+            id={"accordion-title-#{key}"}
+            data-select-title={
+              JS.toggle(to: "#accordion-title-icon-up-#{key}")
+              |> JS.toggle(to: "#accordion-title-icon-down-#{key}")
+              |> JS.toggle(to: "#accordion-content-#{key}")
+              |> JS.push("get_element_layout_id", value: %{myself: @myself.cid})
+            }
+            phx-target={@myself}
           >
-            <span>Who we are?</span>
-            <Heroicons.chevron_up class="w-4 h-4 rotate-180 shrink-0" />
-          </button>
-        </h2>
-        <div id="accordion-collapse-body-1">
-          <div class="p-5 border border-b-0 border-gray-400">
-            <p class="mb-2 text-gray-500">
-              Mishka is a highly agile software group combining care and technology to help local businesses thrive.
-            </p>
+            <button
+              type="button"
+              class={"flex items-center justify-between w-full p-5 font-medium border #{if List.last(@element["order"]) != key, do: "border-b-0"} border-gray-400 #{if index == 0, do: "rounded-t-xl"}"}
+            >
+              <span><%= data["title"] %></span>
+              <Heroicons.chevron_up
+                class={"w-4 h-4 rotate-180 shrink-0 #{if index == 0, do: "hidden"}"}
+                id={"accordion-title-icon-up-#{key}"}
+                phx-click={JS.exec("data-select-title", to: "#accordion-title-#{key}")}
+              />
+              <Heroicons.chevron_down
+                class={"w-4 h-4 rotate-180 shrink-0 #{if index != 0, do: "hidden"}"}
+                id={"accordion-title-icon-down-#{key}"}
+                phx-click={JS.exec("data-select-title", to: "#accordion-title-#{key}")}
+              />
+            </button>
+          </h2>
+          <div id={"accordion-content-#{key}"} class={if index != 0, do: "hidden"}>
+            <div class={"p-5 border #{if List.last(@element["order"]) == key, do: "border-t-0", else: "border-b-0"} border-gray-400"}>
+              <p class="mb-2 text-gray-500">
+                <%= data["html"] %>
+              </p>
+            </div>
           </div>
-        </div>
-        <h2 id="accordion-collapse-heading-2">
-          <button
-            type="button"
-            class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-b-0 border-gray-400"
-          >
-            <span>What is Mishka Template Creator?</span>
-            <Heroicons.chevron_down class="w-4 h-4  rotate-180 shrink-0" />
-          </button>
-        </h2>
-        <div id="accordion-collapse-body-2" class="hidden">
-          <div class="p-5 border border-b-0 border-gray-400">
-            <p class="mb-2 text-gray-500">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas purus viverra accumsan in nisl nisi. Arcu cursus vitae congue mauris rhoncus aenean vel elit scelerisque. In egestas erat imperdiet sed euismod nisi porta lorem mollis. Morbi tristique senectus et netus. Mattis pellentesque id nibh tortor id aliquet lectus proin. Sapien faucibus et molestie ac feugiat sed lectus vestibulum. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget. Dictum varius duis at consectetur lorem. Nisi vitae suscipit tellus mauris a diam maecenas sed enim. Velit ut tortor pretium viverra suspendisse potenti nullam. Et molestie ac feugiat sed lectus. Non nisi est sit amet facilisis magna. Dignissim diam quis enim lobortis scelerisque fermentum. Odio ut enim blandit volutpat maecenas volutpat. Ornare lectus sit amet est placerat in egestas erat. Nisi vitae suscipit tellus mauris a diam maecenas sed. Placerat duis ultricies lacus sed turpis tincidunt id aliquet.
-            </p>
-          </div>
-        </div>
-        <h2 id="accordion-collapse-heading-3">
-          <button
-            type="button"
-            class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-500 border border-gray-400"
-          >
-            <span>What is Mishka Installer?</span>
-            <Heroicons.chevron_down class="w-4 h-4 rotate-180 shrink-0" />
-          </button>
-        </h2>
-        <div id="accordion-collapse-body-3" class="hidden">
-          <div class="p-5 border border-t-0 border-gray-400">
-            <p class="mb-2 text-gray-500">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas purus viverra accumsan in nisl nisi. Arcu cursus vitae congue mauris rhoncus aenean vel elit scelerisque. In egestas erat imperdiet sed euismod nisi porta lorem mollis. Morbi tristique senectus et netus. Mattis pellentesque id nibh tortor id aliquet lectus proin. Sapien faucibus et molestie ac feugiat sed lectus vestibulum. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget. Dictum varius duis at consectetur lorem. Nisi vitae suscipit tellus mauris a diam maecenas sed enim. Velit ut tortor pretium viverra suspendisse potenti nullam. Et molestie ac feugiat sed lectus. Non nisi est sit amet facilisis magna. Dignissim diam quis enim lobortis scelerisque fermentum. Odio ut enim blandit volutpat maecenas volutpat. Ornare lectus sit amet est placerat in egestas erat. Nisi vitae suscipit tellus mauris a diam maecenas sed. Placerat duis ultricies lacus sed turpis tincidunt id aliquet.
-            </p>
-          </div>
-        </div>
+        <% end %>
       </div>
     </div>
     """
@@ -847,20 +835,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
     send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
-  end
-
-  # Based on https://elixirforum.com/t/does-not-liveview-js-work-in-a-loop/55295/2
-  defp reset_and_select(js \\ %JS{}, children, id) do
-    children
-    |> Enum.reduce(js, fn %{id: key, data: _data}, acc ->
-      acc
-      |> JS.add_class("hidden", to: "#content-#{key}")
-      |> JS.remove_class("border-b", to: "#button-#{key}")
-      |> JS.remove_class("border-blue-500", to: "#button-#{key}")
-    end)
-    |> JS.remove_class("hidden", to: "#content-#{id}")
-    |> JS.add_class("border-b", to: "#button-#{id}")
-    |> JS.add_class("border-blue-500", to: "#button-#{id}")
   end
 
   defp create_border_radius(classes, type, bg_color \\ "") do
