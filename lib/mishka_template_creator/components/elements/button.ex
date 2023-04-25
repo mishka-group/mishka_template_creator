@@ -209,7 +209,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
           title_class="my-4 w-full text-center font-bold select-none text-lg"
           open={false}
         >
-          sss
+          <Icon.select
+            selected={String.replace(@element["icon"], "Heroicons.", "")}
+            myself={@myself}
+            block_id={@id}
+          />
+
+          <Icon.select_size
+            myself={@myself}
+            classes={@element["icon_class"]}
+            as={:button_icon_style}
+            id_input={@id}
+          />
         </Aside.aside_accordion>
 
         <Aside.aside_accordion
@@ -408,6 +419,34 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
     updated =
       socket.assigns.element
       |> Map.merge(%{"class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("select_icon", %{"name" => name}, socket) do
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"icon" => "Heroicons.#{name}"})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"button_icon_style" => %{"height" => height, "width" => width}},
+        socket
+      ) do
+    class = Icon.edit_icon_size(socket.assigns.element["icon_class"], [width, height])
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"icon_class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})

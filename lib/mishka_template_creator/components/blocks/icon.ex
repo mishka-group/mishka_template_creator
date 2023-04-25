@@ -64,6 +64,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Icon do
 
   attr(:myself, :integer, required: true)
   attr(:selected, :string, required: false, default: nil)
+  attr(:event_name, :string, required: false, default: "select_icon")
   attr(:block_id, :string, required: false, default: nil)
   attr(:id, :string, required: false, default: nil)
 
@@ -79,7 +80,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Icon do
     <div class="flex flex-wrap w-full gap-1 border border-gray-300 p-3 rounded-md mb-3 justify-start">
       <span
         :for={icon <- @icons}
-        phx-click="select_icon"
+        phx-click={@event_name}
         phx-value-name={icon}
         phx-value-block-id={@block_id}
         phx-target={@myself}
