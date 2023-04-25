@@ -70,7 +70,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
       dir={@element["direction"] || "LTR"}
     >
       <a href="#" class={Enum.join(@element["button_class"], " ")}>
-        <Icon.dynamic module={@element["icon"]} class={Enum.join(@element["icon_class"], " ")} />
+        <Icon.dynamic
+          :if={!is_nil(@element["icon"]) and @element["icon"] != ""}
+          module={@element["icon"]}
+          class={Enum.join(@element["icon_class"], " ")}
+        />
         <span><%= @element["title"] %></span>
       </a>
     </div>
@@ -195,6 +199,15 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
           id={"button-#{@id}"}
           title="Common Styles"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
+        >
+          sss
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"button-#{@id}"}
+          title="Icon Settings"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+          open={false}
         >
           sss
         </Aside.aside_accordion>
