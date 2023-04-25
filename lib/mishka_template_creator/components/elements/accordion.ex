@@ -73,7 +73,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
       dir={@element["direction"] || "LTR"}
     >
       <div>
-        <p :if={length(@element["order"]) == 0} class="p-4 rounded-lg bg-gray-50 text-sm text-gray-500 text-center">
+        <p
+          :if={length(@element["order"]) == 0}
+          class="p-4 rounded-lg bg-gray-50 text-sm text-gray-500 text-center"
+        >
           There is no accordion to show! Click here
         </p>
         <%= for {%{id: key, data: data}, index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>

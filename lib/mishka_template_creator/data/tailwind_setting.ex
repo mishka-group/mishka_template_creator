@@ -9313,7 +9313,35 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   end
 
   def default_element("button") do
-    %{"class" => ["text-black", "w-full", "p-2", "text-base"]}
+    # TODO: we need comon Styles, that our user can be able to select
+    # TODO: it should support LiveView SPA navigating
+    %{
+      "title" => "Button Title",
+      "hyperlink" => "",
+      "size" => "md",
+      "target" => "none",
+      "nofollow" => "true",
+      "icon" => "Heroicons.inbox_stack",
+      "button_class" => [
+        "bg-white",
+        "text-black",
+        "rounded-lg",
+        "px-5",
+        "py-2.5",
+        "text-center",
+        "inline-flex",
+        "items-center",
+        "font-bold",
+        "mr-2",
+        "mb-2",
+        "shadow-sm",
+        "border",
+        "border-gray-300",
+        "hover:text-gray-600"
+      ],
+      "icon_class" => ["w-5", "h-5", "mr-2", "-ml-1"],
+      "class" => ["text-black", "w-full", "p-2", "text-base"]
+    }
   end
 
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()

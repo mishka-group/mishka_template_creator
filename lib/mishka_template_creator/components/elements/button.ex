@@ -69,7 +69,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
     >
-      This is a test
+      <a href="#" class={Enum.join(@element["button_class"], " ")}>
+        <Icon.dynamic module={@element["icon"]} class={Enum.join(@element["icon_class"], " ")} />
+        <span><%= @element["title"] %></span>
+      </a>
     </div>
     """
   end
@@ -116,7 +119,91 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
 
         <Aside.aside_accordion
           id={"button-#{@id}"}
-          title="button Settings"
+          title="Button Settings"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+        >
+          <MishkaCoreComponent.custom_simple_form
+            :let={f}
+            for={%{}}
+            as={:button_component}
+            phx-submit="edit"
+            phx-target={@myself}
+            class="flex flex-col w-full justify-start gap-2"
+          >
+            <div class="flex flex-col gap-2 w-full my-5">
+              <span class="font-bold text-sm">Title:</span>
+              <%= text_input(f, :title,
+                class:
+                  "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                placeholder: "Change button name",
+                value: @element["title"],
+                id: "input-title-#{@id}"
+              ) %>
+            </div>
+
+            <div class="flex flex-col gap-2 w-full">
+              <span class="font-bold text-sm">Hyperlink:</span>
+              <%= text_input(f, :hyperlink,
+                class:
+                  "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                placeholder: "Change button hyperlink",
+                value: @element["hyperlink"],
+                id: "input-hyperlink-#{@id}"
+              ) %>
+            </div>
+
+            <div class="flex flex-row gap-2 w-full my-5">
+              <div class="flex flex-col gap-2 w-full">
+                <span class="font-bold text-sm">Size:</span>
+                <%= select(f, :size, ["xs", "sm", "md", "xl", "2xl", "3xl"],
+                  class:
+                    "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2",
+                  id: "select-size-#{@id}",
+                  selected: @element["size"]
+                ) %>
+              </div>
+
+              <div class="flex flex-col gap-2 w-full">
+                <span class="font-bold text-sm">Target:</span>
+                <%= select(
+                  f,
+                  :target,
+                  [
+                    None: "none",
+                    "New Window or Tab": "_blank",
+                    "Current Window": "_self",
+                    "Parent Window": "_parent",
+                    "Top Frame": "_top"
+                  ],
+                  selected: @element["target"],
+                  class:
+                    "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2",
+                  id: "select-target-#{@id}"
+                ) %>
+              </div>
+
+              <div class="flex flex-col gap-2 w-full">
+                <span class="font-bold text-sm">Nofollow:</span>
+                <%= select(f, :nofollow, [true, false],
+                  selected: @element["nofollow"],
+                  class:
+                    "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2",
+                  id: "select-nofollow-#{@id}"
+                ) %>
+              </div>
+            </div>
+
+            <:actions>
+              <div class="flex flex-row justify-center items-center w-full">
+                <.button class="w-24">Save</.button>
+              </div>
+            </:actions>
+          </MishkaCoreComponent.custom_simple_form>
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"button-#{@id}"}
+          title="Common Styles"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           sss
@@ -196,6 +283,20 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
          "type" => type,
          "layout_id" => layout_id,
          "parent_id" => parent_id
+       }}
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("edit", %{"button_component" => params}, socket) do
+    send(
+      self(),
+      {"element",
+       %{
+         "update_parame" =>
+           Map.merge(socket.assigns.element, params)
+           |> Map.merge(socket.assigns.selected_form)
        }}
     )
 
