@@ -9318,13 +9318,11 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     %{
       "title" => "Button Title",
       "hyperlink" => "",
-      "size" => "md",
       "target" => "none",
       "nofollow" => "true",
       "icon" => "Heroicons.inbox_stack",
       "button_class" => [
         "bg-white",
-        "text-black",
         "rounded-lg",
         "px-5",
         "py-2.5",

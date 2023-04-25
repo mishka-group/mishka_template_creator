@@ -154,16 +154,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
 
             <div class="flex flex-row gap-2 w-full my-5">
               <div class="flex flex-col gap-2 w-full">
-                <span class="font-bold text-sm">Size:</span>
-                <%= select(f, :size, ["xs", "sm", "md", "xl", "2xl", "3xl"],
-                  class:
-                    "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2",
-                  id: "select-size-#{@id}",
-                  selected: @element["size"]
-                ) %>
-              </div>
-
-              <div class="flex flex-col gap-2 w-full">
                 <span class="font-bold text-sm">Target:</span>
                 <%= select(
                   f,
@@ -392,6 +382,22 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
            |> Map.merge(socket.assigns.selected_form)
        }}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("public_button_font_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
