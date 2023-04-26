@@ -9194,7 +9194,10 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   end
 
   def default_element("text") do
-    %{"class" => ["text-black", "w-full", "p-2", "text-base"]}
+    %{
+      "class" => ["text-black", "w-full", "p-2", "text-base"],
+      "html" => "This is a predefined text. Please click on the text to edit."
+    }
   end
 
   def default_element("tab") do
@@ -9345,11 +9348,23 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   def default_element("alert") do
     %{
       "title" => "Alert Title",
-      "html" => "This is a test message to display the alert style, Please click on the text to edit.",
+      "html" =>
+        "This is a test message to display the alert style, Please click on the text to edit.",
       "title_class" => ["font-medium", "text-sm"],
       "content_class" => [],
-      "class" => ["flex", "flex-col", "gap-2", "px-4", "py-2", "text-blue-800", "border",
-      "border-blue-300", "rounded-lg", "bg-blue-50", "text-xs"],
+      "class" => [
+        "flex",
+        "flex-col",
+        "gap-2",
+        "px-4",
+        "py-2",
+        "text-blue-800",
+        "border",
+        "border-blue-300",
+        "rounded-lg",
+        "bg-blue-50",
+        "text-xs"
+      ]
     }
   end
 

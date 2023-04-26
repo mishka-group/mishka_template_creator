@@ -258,6 +258,32 @@ defmodule MishkaTemplateCreator.Components.Elements.Alert do
 
         <Aside.aside_accordion
           id={"alert-#{@id}"}
+          title="Title and Content custom Style"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+        >
+          <Aside.aside_accordion id={"alert-#{@id}"} title="Title style" open={false}>
+            <Text.alignment_selector myself={@myself} event_name="title_alignment" />
+            <Text.direction_selector myself={@myself} event_name="title_direction" />
+            <Color.select
+              myself={@myself}
+              event_name="title_alert_font_style"
+              classes={@element["title_class"]}
+            />
+          </Aside.aside_accordion>
+
+          <Aside.aside_accordion id={"alert-#{@id}"} title="Content style" open={false}>
+            <Text.alignment_selector myself={@myself} event_name="content_alignment" />
+            <Text.direction_selector myself={@myself} event_name="content_direction" />
+            <Color.select
+              myself={@myself}
+              event_name="content_alert_font_style"
+              classes={@element["content_class"]}
+            />
+          </Aside.aside_accordion>
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"alert-#{@id}"}
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
@@ -266,13 +292,51 @@ defmodule MishkaTemplateCreator.Components.Elements.Alert do
             <Text.direction_selector myself={@myself} />
           </Aside.aside_accordion>
 
-          <Aside.aside_accordion id={"alert-#{@id}"} title="Font and Button Style" open={false}>
+          <Aside.aside_accordion id={"alert-#{@id}"} title="Font and Alert Style" open={false}>
             <Text.font_style
               myself={@myself}
               classes={@element["class"]}
               as={:public_alert_font_style}
               id={@id}
             />
+
+            <div class="flex flex-col w-full items-center justify-center">
+              <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
+                <li
+                  class={"#{create_border_radius(@element["class"], "rounded-none")} px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer"}
+                  phx-click="border_radius"
+                  phx-value-type="rounded-none"
+                  phx-target={@myself}
+                >
+                  None
+                </li>
+                <li
+                  class={"#{create_border_radius(@element["class"], "rounded-sm")} px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer"}
+                  phx-click="border_radius"
+                  phx-value-type="rounded-sm"
+                  phx-target={@myself}
+                >
+                  SM
+                </li>
+                <li
+                  class={"#{create_border_radius(@element["class"], "rounded-md")} px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer"}
+                  phx-click="border_radius"
+                  phx-value-type="rounded-md"
+                  phx-target={@myself}
+                >
+                  MD
+                </li>
+                <li
+                  class={"#{create_border_radius(@element["class"], "rounded-lg")} px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"}
+                  phx-click="border_radius"
+                  phx-value-type="rounded-lg"
+                  phx-target={@myself}
+                >
+                  LG
+                </li>
+              </ul>
+            </div>
+
             <Color.select
               myself={@myself}
               event_name="public_alert_font_style"
@@ -491,6 +555,21 @@ defmodule MishkaTemplateCreator.Components.Elements.Alert do
     {:noreply, socket}
   end
 
+  def handle_event("border_radius", %{"type" => type}, socket) do
+    borders = TailwindSetting.get_form_options("borders", "border-radius", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in borders)) ++ [type]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("reset", _params, socket) do
     send(
       self(),
@@ -509,5 +588,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Alert do
     send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
 
     {:noreply, socket}
+  end
+
+  defp create_border_radius(classes, type, bg_color \\ "") do
+    Enum.find(classes, &(&1 == type))
+    |> case do
+      nil -> bg_color
+      _ -> "bg-gray-300"
+    end
   end
 end
