@@ -9,7 +9,7 @@ defmodule MishkaTemplateCreator.Data.Elements do
   ]
   @elements_items [
     {"button", "Button", "Heroicons.inbox_stack", ["section"]},
-    {"alerts", "Alerts", "Heroicons.inbox_stack", ["section"]},
+    {"alert", "Alert", "Heroicons.inbox_stack", ["section"]},
     {"quotes", "Quotes", "Heroicons.inbox_stack", ["section"]},
     {"links", "Links", "Heroicons.inbox_stack", ["section"]},
     {"code", "Code", "Heroicons.inbox_stack", ["section"]},
