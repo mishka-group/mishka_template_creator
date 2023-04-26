@@ -9329,13 +9329,14 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "text-center",
         "inline-flex",
         "items-center",
-        "font-bold",
+        "font-medium",
         "mr-2",
         "mb-2",
         "shadow-sm",
         "border",
         "border-gray-300",
-        "hover:text-gray-600"
+        "hover:text-gray-600",
+        "justify-center"
       ],
       "icon_class" => ["w-5", "h-5", "mr-2", "-ml-1"],
       "class" => ["text-black", "w-full", "p-2", "text-base"]

@@ -3,7 +3,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
   import Phoenix.HTML.Form
   use Phoenix.Component
 
-  alias Phoenix.LiveView.JS
   alias MishkaTemplateCreator.Components.Layout.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   import MishkaTemplateCreatorWeb.CoreComponents
@@ -12,6 +11,103 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
   alias MishkaTemplateCreator.Components.Blocks.Icon
   alias MishkaTemplateCreator.Components.Blocks.Color
   alias MishkaTemplateCreator.Components.Elements.Text
+
+  @common_style %{
+    "blue" => [
+      "text-white",
+      "rounded-lg",
+      "bg-blue-700",
+      "hover:bg-blue-800",
+      "px-5",
+      "py-2.5",
+      "text-center",
+      "inline-flex",
+      "items-center",
+      "font-medium",
+      "mr-2",
+      "mb-2",
+      "justify-center"
+    ],
+    "light" => [
+      "bg-white",
+      "rounded-lg",
+      "px-5",
+      "py-2.5",
+      "text-center",
+      "inline-flex",
+      "items-center",
+      "font-medium",
+      "mr-2",
+      "mb-2",
+      "border",
+      "border-gray-200",
+      "text-gray-900",
+      "focus:outline-none",
+      "hover:bg-gray-100",
+      "hover:text-blue-700",
+      "justify-center"
+    ],
+    "dark" => [
+      "bg-gray-800",
+      "hover:bg-gray-900",
+      "text-white",
+      "rounded-lg",
+      "px-5",
+      "py-2.5",
+      "text-center",
+      "inline-flex",
+      "items-center",
+      "font-medium",
+      "mr-2",
+      "mb-2",
+      "justify-center"
+    ],
+    "green" => [
+      "text-white",
+      "bg-green-700",
+      "hover:bg-green-800",
+      "rounded-lg",
+      "px-5",
+      "py-2.5",
+      "text-center",
+      "inline-flex",
+      "items-center",
+      "font-medium",
+      "mr-2",
+      "mb-2",
+      "justify-center"
+    ],
+    "red" => [
+      "text-white",
+      "bg-red-700",
+      "hover:bg-red-800",
+      "rounded-lg",
+      "px-5",
+      "py-2.5",
+      "text-center",
+      "inline-flex",
+      "items-center",
+      "font-medium",
+      "mr-2",
+      "mb-2",
+      "justify-center"
+    ],
+    "yellow" => [
+      "bg-yellow-400",
+      "hover:bg-yellow-500",
+      "rounded-lg",
+      "px-5",
+      "py-2.5",
+      "text-center",
+      "inline-flex",
+      "items-center",
+      "font-medium",
+      "mr-2",
+      "mb-2",
+      "text-white",
+      "justify-center"
+    ]
+  }
 
   @impl true
   def update(
@@ -39,7 +135,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
         render_type: render_type,
         selected_form: selected_form,
         element: element,
-        submit: submit
+        submit: submit,
+        common_style: @common_style
       )
 
     {:ok, new_socket}
@@ -200,7 +297,18 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
           title="Common Styles"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          sss
+          <div class="grid grid-cols-3 gap-2 w-full my-5 pt-2 items-center">
+            <button
+              :for={{key, classes} <- @common_style}
+              class={classes}
+              phx-click="common_style"
+              phx-value-type={key}
+              phx-target={@myself}
+            >
+              <Heroicons.server_stack class={Enum.join(@element["icon_class"], " ")} />
+              <span><%= String.upcase(key) %></span>
+            </button>
+          </div>
         </Aside.aside_accordion>
 
         <Aside.aside_accordion
@@ -426,6 +534,17 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
     {:noreply, socket}
   end
 
+  def handle_event("common_style", %{"type" => type}, socket) do
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"button_class" => @common_style[type]})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("select_icon", %{"name" => name}, socket) do
     updated =
       socket.assigns.element
@@ -460,7 +579,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
       {"element",
        %{
          "update_parame" =>
-           TailwindSetting.default_element("accordion")
+           TailwindSetting.default_element("button")
            |> Map.merge(socket.assigns.selected_form)
        }}
     )
