@@ -262,8 +262,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Alert do
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <Aside.aside_accordion id={"alert-#{@id}"} title="Title style" open={false}>
-            <Text.alignment_selector myself={@myself} event_name="title_alignment" />
-            <Text.direction_selector myself={@myself} event_name="title_direction" />
+            <Text.font_style
+              myself={@myself}
+              classes={@element["title_class"]}
+              as={:title_alert_font_style}
+              id={@id}
+            />
             <Color.select
               myself={@myself}
               event_name="title_alert_font_style"
@@ -272,8 +276,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Alert do
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"alert-#{@id}"} title="Content style" open={false}>
-            <Text.alignment_selector myself={@myself} event_name="content_alignment" />
-            <Text.direction_selector myself={@myself} event_name="content_direction" />
+            <Text.font_style
+              myself={@myself}
+              classes={@element["content_class"]}
+              as={:content_alert_font_style}
+              id={@id}
+            />
             <Color.select
               myself={@myself}
               event_name="content_alert_font_style"
@@ -512,6 +520,40 @@ defmodule MishkaTemplateCreator.Components.Elements.Alert do
     {:noreply, socket}
   end
 
+  def handle_event(
+        "font_style",
+        %{"title_alert_font_style" => %{"font" => font, "font_size" => font_size}},
+        socket
+      ) do
+    class = Text.edit_font_style_class(socket.assigns.element["title_class"], font_size, font)
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"title_class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"content_alert_font_style" => %{"font" => font, "font_size" => font_size}},
+        socket
+      ) do
+    class = Text.edit_font_style_class(socket.assigns.element["content_class"], font_size, font)
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content_class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("public_alert_font_style", %{"color" => color}, socket) do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
@@ -537,6 +579,38 @@ defmodule MishkaTemplateCreator.Components.Elements.Alert do
     updated =
       socket.assigns.element
       |> Map.merge(%{"class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("content_alert_font_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["content_class"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"content_class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("title_alert_font_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["title_class"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"title_class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
