@@ -247,7 +247,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Alert do
             >
               <span
                 :if={@element["title"] != "" and !is_nil(@element["title"])}
-                class={@element["title_class"]}
+                class="font-medium text-sm"
               >
                 The Title
               </span>
