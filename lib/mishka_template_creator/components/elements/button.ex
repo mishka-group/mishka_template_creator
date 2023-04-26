@@ -341,7 +341,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
             <Text.direction_selector myself={@myself} />
           </Aside.aside_accordion>
 
-          <Aside.aside_accordion id={"button-#{@id}"} title="Font Style" open={false}>
+          <Aside.aside_accordion id={"button-#{@id}"} title="Font and Button Style" open={false}>
             <Text.font_style
               myself={@myself}
               classes={@element["class"]}
@@ -352,6 +352,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
               myself={@myself}
               event_name="public_button_font_style"
               classes={@element["class"]}
+            />
+
+            <Color.select
+              title="Background Color:"
+              type="bg"
+              myself={@myself}
+              event_name="button_font_style"
+              classes={@element["button_class"]}
             />
           </Aside.aside_accordion>
 
@@ -527,6 +535,22 @@ defmodule MishkaTemplateCreator.Components.Elements.Button do
     updated =
       socket.assigns.element
       |> Map.merge(%{"class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("button_font_style", %{"color" => color}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["button_class"], &(&1 in bg_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"button_class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
