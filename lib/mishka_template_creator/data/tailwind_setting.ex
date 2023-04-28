@@ -9392,25 +9392,72 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   end
 
   def default_element("card") do
+    id = Ecto.UUID.generate()
+
     %{
-      "author" => "by Mishka Group",
-      "html" =>
-        "Mishka is a highly agile software group combining care and technology to help local businesses thrive.",
-      "author_class" => ["text-sm", "w-full", "text-gray-400"],
-      "content_class" => ["text-lg", "w-full"],
-      "class" => [
+      "image_class" => ["rounded-t-lg"],
+      "content_class" => ["mb-3", "font-normal", "text-gray-700", "dark:text-gray-400"],
+      "title_class" => [
+        "mb-2",
+        "text-2xl",
+        "font-bold",
+        "tracking-tight",
+        "text-gray-900",
+        "dark:text-white"
+      ],
+      "button_class" => [
         "flex",
-        "flex-col",
+        "flex-row",
         "w-full",
         "justify-center",
-        "items-start",
-        "gap-4",
-        "border-l-4",
-        "border-gray-300",
-        "p-5",
-        "text-gray-600",
-        "text-justify"
-      ]
+        "items-center",
+        "gap-3",
+        "pt-3"
+      ],
+      "class" => [
+        "max-w-sm",
+        "bg-white",
+        "border",
+        "border-gray-200",
+        "rounded-lg",
+        "shadow",
+        "dark:bg-gray-800",
+        "dark:border-gray-700"
+      ],
+      "children" => %{
+        "image" => "https://flowbite.com/docs/images/blog/image-1.jpg",
+        "title" => "Noteworthy technology acquisitions 2021",
+        "html" =>
+          "Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.",
+        "buttons" => %{
+          "#{id}" => %{
+            "title" => "Read more",
+            "icon" => "Heroicons.arrow_long_right",
+            "class" => [
+              "inline-flex",
+              "items-center",
+              "px-3",
+              "py-2",
+              "text-sm",
+              "font-medium",
+              "text-center",
+              "text-white",
+              "bg-blue-700",
+              "rounded-lg",
+              "hover:bg-blue-800",
+              "focus:ring-4",
+              "focus:outline-none",
+              "focus:ring-blue-300",
+              "dark:bg-blue-600",
+              "dark:hover:bg-blue-700",
+              "dark:focus:ring-blue-800"
+            ],
+            "icon_class" => ["w-4", "h-4", "ml-2", "-mr-1"]
+          }
+        }
+      },
+      "order" => ["image", "title", "html", "buttons"],
+      "buttons_order" => [id]
     }
   end
 
