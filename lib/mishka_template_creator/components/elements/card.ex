@@ -10,6 +10,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
   alias MishkaTemplateCreator.Components.Blocks.Tag
   alias MishkaTemplateCreator.Components.Blocks.Color
   alias MishkaTemplateCreator.Components.Elements.Text
+  alias MishkaTemplateCreator.Components.Blocks.Icon
 
   @impl true
   def update(
@@ -53,6 +54,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
     {:ok, socket}
   end
 
+  # TODO: we do not support `order` list for items of a card in this version
   @impl true
   def render(%{render_type: "call"} = assigns) do
     ~H"""
@@ -68,29 +70,33 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
       class={@element["class"]}
     >
       <a href="#">
-        <img class={@element["image_class"]} src={@element["image"]} alt="" />
+        <img class={@element["image_class"]} src={@element["children"]["image"]} alt="" />
       </a>
       <div class="p-5">
         <a href="#">
           <h5 class={@element["title_class"]}>
-            Noteworthy technology acquisitions 2021
+            <%= @element["children"]["title"] %>
           </h5>
         </a>
         <p class={@element["content_class"]}>
-          Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.
+          <%= @element["children"]["html"] %>
         </p>
         <div class={@element["button_class"]}>
           <a
+            :for={
+              {%{id: key, data: data}, _index} <-
+                Enum.with_index(
+                  MishkaCoreComponent.sorted_list_by_order(
+                    @element["buttons_order"],
+                    @element["children"]["buttons"]
+                  )
+                )
+            }
+            id={"card-button-#{@id}-#{key}"}
+            class={data["class"]}
             href="#"
-            class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            Read more <Heroicons.arrow_long_right class="w-4 h-4 ml-2 -mr-1" />
-          </a>
-          <a
-            href="#"
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700"
-          >
-            Message
+            <%= data["title"] %> <Icon.dynamic module={data["icon"]} class={data["icon_class"]} />
           </a>
         </div>
       </div>
