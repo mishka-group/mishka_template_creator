@@ -5,16 +5,17 @@ defmodule MishkaTemplateCreator.Data.Elements do
     {"text", "Text", "Heroicons.inbox_stack", ["section"]},
     {"tab", "Tab", "Heroicons.inbox_stack", ["section"]},
     {"table", "Table", "Heroicons.inbox_stack", ["section"]},
-    {"accordion", "Accordion", "Heroicons.inbox_stack", ["section"]}
+    {"accordion", "Accordion", "Heroicons.inbox_stack", ["section"]},
+    {"button", "Button", "Heroicons.inbox_stack", ["section"]}
   ]
+
   @elements_items [
-    {"button", "Button", "Heroicons.inbox_stack", ["section"]},
     {"alert", "Alert", "Heroicons.inbox_stack", ["section"]},
     {"quote", "Quote", "Heroicons.inbox_stack", ["section"]},
-    {"links", "Links", "Heroicons.inbox_stack", ["section"]},
     {"code", "Code", "Heroicons.inbox_stack", ["section"]},
-    {"notes", "Notes", "Heroicons.inbox_stack", ["section"]}
+    {"card", "Card", "Heroicons.inbox_stack", ["section"]}
   ]
+
   @media_items [
     {"image", "Image", "Heroicons.inbox_stack", ["section"]},
     {"video", "Video", "Heroicons.inbox_stack", ["section"]},
@@ -23,7 +24,8 @@ defmodule MishkaTemplateCreator.Data.Elements do
     {"audio", "Audio", "Heroicons.inbox_stack", ["section"]},
     {"file", "File", "Heroicons.inbox_stack", ["section"]},
     {"pdf", "PDF", "Heroicons.inbox_stack", ["section"]},
-    {"comparison", "Comparison", "Heroicons.inbox_stack", ["section"]}
+    {"comparison", "Comparison", "Heroicons.inbox_stack", ["section"]},
+    {"links", "Links", "Heroicons.inbox_stack", ["section"]}
   ]
 
   @spec elements :: [{String.t(), String.t(), String.t(), list(String.t())}]
