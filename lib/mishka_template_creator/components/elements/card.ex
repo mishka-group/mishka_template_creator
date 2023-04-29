@@ -244,7 +244,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
             :let={f}
             for={%{}}
             as={:card_component}
-            phx-submit="edit"
+            phx-change="edit"
             phx-target={@myself}
             class="flex flex-col w-full justify-start gap-4"
           >
@@ -327,12 +327,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
                 ) %>
               </div>
             </div>
-
-            <:actions>
-              <div class="flex flex-row justify-center items-center w-full">
-                <.button class="w-24">Save</.button>
-              </div>
-            </:actions>
           </MishkaCoreComponent.custom_simple_form>
         </Aside.aside_accordion>
 
@@ -404,7 +398,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
                   :let={f}
                   for={%{}}
                   as={:card_button}
-                  phx-submit="edit"
+                  phx-change="edit"
                   phx-target={@myself}
                   class="flex flex-col w-full justify-start gap-2"
                 >
@@ -640,6 +634,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
     {:noreply, socket}
   end
 
+  def handle_event("edit", %{"card_button" => params}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "buttons", params["id"]], fn selected_children ->
+        Map.merge(selected_children, params)
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("validate", %{"public_tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
@@ -770,6 +777,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
       socket.assigns.element
       |> update_in(["children", "buttons", id], fn selected_button ->
         Map.merge(selected_button, %{"class" => @common_button_style[type]})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("select_icon", %{"name" => name, "block-id" => id}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "buttons", id], fn selected_element ->
+        Map.merge(selected_element, %{"icon" => "Heroicons.#{name}"})
       end)
       |> Map.merge(socket.assigns.selected_form)
 
