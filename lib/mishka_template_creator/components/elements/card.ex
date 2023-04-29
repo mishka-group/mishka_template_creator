@@ -12,6 +12,95 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
   alias MishkaTemplateCreator.Components.Elements.Text
   alias MishkaTemplateCreator.Components.Blocks.Icon
 
+  @common_button_style %{
+    "blue" => [
+      "inline-flex",
+      "items-center",
+      "px-3",
+      "py-2",
+      "text-sm",
+      "font-medium",
+      "text-center",
+      "text-white",
+      "bg-blue-700",
+      "rounded-lg",
+      "hover:bg-blue-800",
+      "focus:ring-4",
+      "focus:outline-none",
+      "focus:ring-blue-300"
+    ],
+    "light" => [
+      "inline-flex",
+      "items-center",
+      "px-3",
+      "py-2",
+      "text-sm",
+      "font-medium",
+      "text-center",
+      "text-white",
+      "bg-white",
+      "rounded-lg",
+      "border",
+      "border-gray-200",
+      "text-gray-900",
+      "focus:outline-none",
+      "hover:bg-gray-100",
+      "hover:text-blue-700"
+    ],
+    "dark" => [
+      "inline-flex",
+      "items-center",
+      "px-3",
+      "py-2",
+      "text-sm",
+      "font-medium",
+      "text-center",
+      "text-white",
+      "bg-gray-800",
+      "rounded-lg",
+      "hover:bg-gray-900"
+    ],
+    "green" => [
+      "inline-flex",
+      "items-center",
+      "px-3",
+      "py-2",
+      "text-sm",
+      "font-medium",
+      "text-center",
+      "text-white",
+      "bg-green-700",
+      "hover:bg-green-800",
+      "rounded-lg"
+    ],
+    "red" => [
+      "inline-flex",
+      "items-center",
+      "px-3",
+      "py-2",
+      "text-sm",
+      "font-medium",
+      "text-center",
+      "text-white",
+      "bg-red-700",
+      "hover:bg-red-800",
+      "rounded-lg"
+    ],
+    "yellow" => [
+      "inline-flex",
+      "items-center",
+      "px-3",
+      "py-2",
+      "text-sm",
+      "font-medium",
+      "text-center",
+      "text-white",
+      "bg-yellow-400",
+      "hover:bg-yellow-500",
+      "rounded-lg"
+    ]
+  }
+
   @impl true
   def update(
         %{
@@ -38,7 +127,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
         render_type: render_type,
         selected_form: selected_form,
         element: element,
-        submit: submit
+        submit: submit,
+        common_button_style: @common_button_style
       )
 
     {:ok, new_socket}
@@ -263,23 +353,32 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
                     @element["children"]["buttons"]
                   )
               }
-              class="w-full flex flex-row justify-between items-center"
+              class="w-full flex flex-col justify-normal"
             >
-              <span class="font-bold text-base">
-                <%= data["title"] %>
-              </span>
+              <div class="w-full flex flex-row justify-between items-center">
+                <span class="font-bold text-base">
+                  <%= data["title"] %>
+                </span>
 
-              <div class="flex flex-row justify-end items-center gap-2">
-                <div class="flex flex-row justify-center items-start gap-2 cursor-pointer">
-                  <Heroicons.pencil_square class="w-5 h-5" />
-                  <span class="text-base select-none">
-                    Edit
-                  </span>
+                <div class="flex flex-row justify-end items-center gap-2">
+                  <div class="flex flex-row justify-center items-start gap-2 cursor-pointer">
+                    <Heroicons.pencil_square class="w-5 h-5" />
+                    <span class="text-base select-none">
+                      Edit
+                    </span>
+                  </div>
+                  <div class="flex flex-row justify-center items-start gap-2 cursor-pointer">
+                    <Heroicons.trash class="w-5 h-5 text-red-600" />
+                    <span class="text-base select-none">Delete</span>
+                  </div>
                 </div>
-                <div class="flex flex-row justify-center items-start gap-2 cursor-pointer">
-                  <Heroicons.trash class="w-5 h-5 text-red-600" />
-                  <span class="text-base select-none">Delete</span>
-                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 w-full my-5 pt-2 items-center">
+                <a :for={{key, classes} <- @common_button_style} class={classes}>
+                  <%= String.upcase(key) %>
+                  <Icon.dynamic module={data["icon"]} class="w-4 h-4 ml-2 -mr-1" />
+                </a>
               </div>
             </div>
           </div>
