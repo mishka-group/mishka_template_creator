@@ -246,9 +246,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
             as={:card_component}
             phx-submit="edit"
             phx-target={@myself}
-            class="flex flex-col w-full justify-start gap-2"
+            class="flex flex-col w-full justify-start gap-4"
           >
-            <div class="flex flex-col gap-2 w-full my-5">
+            <div class="flex flex-col gap-2 w-full">
               <span class="font-bold text-sm">Title:</span>
               <%= text_input(f, :title,
                 class:
@@ -259,7 +259,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
               ) %>
             </div>
 
-            <div class="flex flex-col w-full items-center justify-center pb-5">
+            <div class="flex flex-col gap-2 w-full">
+              <span class="font-bold text-sm">Image:</span>
+              <%= text_input(f, :image,
+                class:
+                  "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                placeholder: "Change button name",
+                value: @element["children"]["image"],
+                id: "input-image-#{@id}"
+              ) %>
+            </div>
+
+            <div class="flex flex-col w-full">
+              <span class="font-bold text-sm mb-2">Text:</span>
               <%= textarea(f, :html,
                 class:
                   "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
@@ -334,7 +346,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
             <Heroicons.plus
               class="w-5 h-5 cursor-pointer"
               phx-click="add"
-              phx-value-type="header"
+              phx-value-type="button"
               phx-target={@myself}
             />
           </:before_title_block>
@@ -364,14 +376,23 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
                 <div class="flex flex-row justify-end items-center gap-2">
                   <div
                     class="flex flex-row justify-center items-start gap-2 cursor-pointer"
-                    phx-click={JS.toggle(to: "#card-common-button-#{button_key}")}
+                    phx-click={
+                      JS.toggle(to: "#card-common-button-#{button_key}")
+                      |> JS.toggle(to: "#card-common-close-#{button_key}")
+                    }
                   >
                     <Heroicons.pencil_square class="w-5 h-5" />
                     <span class="text-base select-none">
                       Edit
                     </span>
                   </div>
-                  <div class="flex flex-row justify-center items-start gap-2 cursor-pointer">
+                  <div
+                    class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                    phx-click="delete"
+                    phx-value-type="button"
+                    phx-value-id={button_key}
+                    phx-target={@myself}
+                  >
                     <Heroicons.trash class="w-5 h-5 text-red-600" />
                     <span class="text-base select-none">Delete</span>
                   </div>
@@ -438,7 +459,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
                       ) %>
                     </div>
 
-                    <.input field={f[:id]} type="hidden" value={button_key} id={"input-id-#{button_key}"} />
+                    <.input
+                      field={f[:id]}
+                      type="hidden"
+                      value={button_key}
+                      id={"input-id-#{button_key}"}
+                    />
                   </div>
                 </MishkaCoreComponent.custom_simple_form>
                 <div class="grid grid-cols-3 gap-2 w-full my-5 pt-2 items-center">
@@ -454,7 +480,23 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
                     <Icon.dynamic module={data["icon"]} class="w-4 h-4 ml-2 -mr-1" />
                   </a>
                 </div>
+
+                <Icon.select
+                  selected={String.replace(data["icon"], "Heroicons.", "")}
+                  myself={@myself}
+                  block_id={button_key}
+                />
               </div>
+              <p
+                id={"card-common-close-#{button_key}"}
+                class="text-blue-400 my-2 w-full text-center hidden"
+                phx-click={
+                  JS.toggle(to: "#card-common-button-#{button_key}")
+                  |> JS.toggle(to: "#card-common-close-#{button_key}")
+                }
+              >
+                Close this settings
+              </p>
             </div>
           </div>
         </Aside.aside_accordion>
@@ -581,6 +623,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
          "parent_id" => parent_id
        }}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("edit", %{"card_component" => params}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children"], fn selected_children ->
+        Map.merge(selected_children, params)
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
