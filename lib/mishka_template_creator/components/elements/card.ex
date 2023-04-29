@@ -821,9 +821,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
 
     class = Enum.reject(socket.assigns.element["class"], &(&1 in borders)) ++ [type]
 
+    image_class =
+      Enum.reject(socket.assigns.element["image_class"], &(&1 in borders)) ++
+        [String.replace(type, "rounded", "rounded-t")]
+
     updated =
       socket.assigns.element
-      |> Map.merge(%{"class" => class})
+      |> Map.merge(%{"class" => class, "image_class" => image_class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
