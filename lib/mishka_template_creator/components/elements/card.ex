@@ -94,7 +94,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
             }
             id={"card-button-#{@id}-#{key}"}
             class={data["class"]}
-            href="#"
+            href={data["hyperlink"]}
           >
             <%= data["title"] %> <Icon.dynamic module={data["icon"]} class={data["icon_class"]} />
           </a>
@@ -143,6 +143,147 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
             </li>
           </ul>
         </div>
+
+        <Aside.aside_accordion
+          id={"card-#{@id}"}
+          title="Card Settings"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+        >
+          <MishkaCoreComponent.custom_simple_form
+            :let={f}
+            for={%{}}
+            as={:card_component}
+            phx-submit="edit"
+            phx-target={@myself}
+            class="flex flex-col w-full justify-start gap-2"
+          >
+            <div class="flex flex-col gap-2 w-full my-5">
+              <span class="font-bold text-sm">Title:</span>
+              <%= text_input(f, :title,
+                class:
+                  "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                placeholder: "Change button name",
+                value: @element["children"]["title"],
+                id: "input-title-#{@id}"
+              ) %>
+            </div>
+
+            <div class="flex flex-col w-full items-center justify-center pb-5">
+              <%= textarea(f, :html,
+                class:
+                  "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                rows: "4",
+                value: @element["children"]["html"]
+              ) %>
+              <span class="w-full text-start text-xs mt-2 cursor-pointer">
+                <a
+                  href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+                  target="_blank"
+                  class="text-blue-400"
+                >
+                  Styling with Markdown is supported, click here
+                </a>
+              </span>
+            </div>
+
+            <div class="flex flex-col gap-2 w-full">
+              <span class="font-bold text-sm">Hyperlink:</span>
+              <%= text_input(f, :hyperlink,
+                class:
+                  "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                placeholder: "Change button hyperlink",
+                value: @element["children"]["hyperlink"]
+              ) %>
+            </div>
+
+            <div class="flex flex-row gap-2 w-full my-5">
+              <div class="flex flex-col gap-2 w-full">
+                <span class="font-bold text-sm">Target:</span>
+                <%= select(
+                  f,
+                  :target,
+                  [
+                    None: "none",
+                    "New Window or Tab": "_blank",
+                    "Current Window": "_self",
+                    "Parent Window": "_parent",
+                    "Top Frame": "_top"
+                  ],
+                  selected: @element["children"]["target"],
+                  class:
+                    "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
+                ) %>
+              </div>
+
+              <div class="flex flex-col gap-2 w-full">
+                <span class="font-bold text-sm">Nofollow:</span>
+                <%= select(f, :nofollow, [true, false],
+                  selected: @element["children"]["nofollow"],
+                  class:
+                    "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
+                ) %>
+              </div>
+            </div>
+
+            <:actions>
+              <div class="flex flex-row justify-center items-center w-full">
+                <.button class="w-24">Save</.button>
+              </div>
+            </:actions>
+          </MishkaCoreComponent.custom_simple_form>
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"card-#{@id}"}
+          title="Buttons Settings"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+          open={false}
+        >
+          <:before_title_block>
+            <Heroicons.plus
+              class="w-5 h-5 cursor-pointer"
+              phx-click="add"
+              phx-value-type="header"
+              phx-target={@myself}
+            />
+          </:before_title_block>
+          <div class="w-full flex flex-col gap-3 space-y-4 pt-3">
+            <span
+              :if={length(Map.keys(@element["children"]["buttons"])) == 0}
+              class="mx-auto border border-gray-200 bg-gray-100 font-bold py-2 px-3"
+            >
+              There is no button item for this card
+            </span>
+
+            <div
+              :for={
+                %{id: _button_key, data: data} <-
+                  MishkaCoreComponent.sorted_list_by_order(
+                    @element["buttons_order"],
+                    @element["children"]["buttons"]
+                  )
+              }
+              class="w-full flex flex-row justify-between items-center"
+            >
+              <span class="font-bold text-base">
+                <%= data["title"] %>
+              </span>
+
+              <div class="flex flex-row justify-end items-center gap-2">
+                <div class="flex flex-row justify-center items-start gap-2 cursor-pointer">
+                  <Heroicons.pencil_square class="w-5 h-5" />
+                  <span class="text-base select-none">
+                    Edit
+                  </span>
+                </div>
+                <div class="flex flex-row justify-center items-start gap-2 cursor-pointer">
+                  <Heroicons.trash class="w-5 h-5 text-red-600" />
+                  <span class="text-base select-none">Delete</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Aside.aside_accordion>
 
         <Aside.aside_accordion
           id={"card-#{@id}"}
@@ -368,6 +509,22 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
     class = Enum.reject(socket.assigns.element["class"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("card_font_style", %{"color" => color}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in bg_colors)) ++ [color]
 
     updated =
       socket.assigns.element
