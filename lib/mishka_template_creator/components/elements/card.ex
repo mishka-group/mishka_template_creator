@@ -621,6 +621,24 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
     {:noreply, socket}
   end
 
+  def handle_event("add", %{"type" => "button"}, socket) do
+    unique_id = Ecto.UUID.generate()
+    buttons = TailwindSetting.default_element("card")["children"]["buttons"]
+    first_button = Map.keys(buttons) |> List.first()
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "buttons"], fn selected_children ->
+        Map.merge(selected_children, %{"#{unique_id}" => buttons[first_button]})
+      end)
+      |> Map.merge(%{"buttons_order" => socket.assigns.element["buttons_order"] ++ [unique_id]})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("edit", %{"card_component" => params}, socket) do
     updated =
       socket.assigns.element
@@ -823,6 +841,20 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
            |> Map.merge(socket.assigns.selected_form)
        }}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("delete", %{"type" => "button", "id" => id}, socket) do
+    {_, elements} = pop_in(socket.assigns.element, ["children", "buttons", id])
+
+    updated =
+      Map.merge(elements, %{
+        "buttons_order" => Enum.reject(socket.assigns.element["buttons_order"], &(&1 == id))
+      })
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
