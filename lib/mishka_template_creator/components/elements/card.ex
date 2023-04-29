@@ -3,6 +3,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
   import Phoenix.HTML.Form
   use Phoenix.Component
 
+  alias Phoenix.LiveView.JS
   alias MishkaTemplateCreator.Components.Layout.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   import MishkaTemplateCreatorWeb.CoreComponents
@@ -347,7 +348,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
 
             <div
               :for={
-                %{id: _button_key, data: data} <-
+                %{id: button_key, data: data} <-
                   MishkaCoreComponent.sorted_list_by_order(
                     @element["buttons_order"],
                     @element["children"]["buttons"]
@@ -361,7 +362,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
                 </span>
 
                 <div class="flex flex-row justify-end items-center gap-2">
-                  <div class="flex flex-row justify-center items-start gap-2 cursor-pointer">
+                  <div
+                    class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                    phx-click={JS.toggle(to: "#card-common-button-#{button_key}")}
+                  >
                     <Heroicons.pencil_square class="w-5 h-5" />
                     <span class="text-base select-none">
                       Edit
@@ -374,11 +378,82 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
                 </div>
               </div>
 
-              <div class="grid grid-cols-3 gap-2 w-full my-5 pt-2 items-center">
-                <a :for={{key, classes} <- @common_button_style} class={classes}>
-                  <%= String.upcase(key) %>
-                  <Icon.dynamic module={data["icon"]} class="w-4 h-4 ml-2 -mr-1" />
-                </a>
+              <div id={"card-common-button-#{button_key}"} class="w-full hidden">
+                <MishkaCoreComponent.custom_simple_form
+                  :let={f}
+                  for={%{}}
+                  as={:card_button}
+                  phx-submit="edit"
+                  phx-target={@myself}
+                  class="flex flex-col w-full justify-start gap-2"
+                >
+                  <div class="flex flex-col gap-2 w-full my-5">
+                    <span class="font-bold text-sm">Title:</span>
+                    <%= text_input(f, :title,
+                      class:
+                        "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                      placeholder: "Change button name",
+                      value: data["title"],
+                      id: "input-title-#{button_key}"
+                    ) %>
+                  </div>
+                  <div class="flex flex-col gap-2 w-full">
+                    <span class="font-bold text-sm">Hyperlink:</span>
+                    <%= text_input(f, :hyperlink,
+                      class:
+                        "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                      placeholder: "Change button hyperlink",
+                      value: data["hyperlink"],
+                      id: "input-hyperlink-#{button_key}"
+                    ) %>
+                  </div>
+
+                  <div class="flex flex-row gap-2 w-full my-5">
+                    <div class="flex flex-col gap-2 w-full">
+                      <span class="font-bold text-sm">Target:</span>
+                      <%= select(
+                        f,
+                        :target,
+                        [
+                          None: "none",
+                          "New Window or Tab": "_blank",
+                          "Current Window": "_self",
+                          "Parent Window": "_parent",
+                          "Top Frame": "_top"
+                        ],
+                        selected: data["target"],
+                        class:
+                          "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2",
+                        id: "input-target-#{button_key}"
+                      ) %>
+                    </div>
+
+                    <div class="flex flex-col gap-2 w-full">
+                      <span class="font-bold text-sm">Nofollow:</span>
+                      <%= select(f, :nofollow, [true, false],
+                        selected: data["nofollow"],
+                        class:
+                          "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2",
+                        id: "input-nofollow-#{button_key}"
+                      ) %>
+                    </div>
+
+                    <.input field={f[:id]} type="hidden" value={button_key} id={"input-id-#{button_key}"} />
+                  </div>
+                </MishkaCoreComponent.custom_simple_form>
+                <div class="grid grid-cols-3 gap-2 w-full my-5 pt-2 items-center">
+                  <a
+                    :for={{key, classes} <- @common_button_style}
+                    class={classes}
+                    phx-click="common_button_style"
+                    phx-value-id={button_key}
+                    phx-value-type={key}
+                    phx-target={@myself}
+                  >
+                    <%= String.upcase(key) %>
+                    <Icon.dynamic module={data["icon"]} class="w-4 h-4 ml-2 -mr-1" />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -628,6 +703,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Card do
     updated =
       socket.assigns.element
       |> Map.merge(%{"class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("common_button_style", %{"type" => type, "id" => id}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "buttons", id], fn selected_button ->
+        Map.merge(selected_button, %{"class" => @common_button_style[type]})
+      end)
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
