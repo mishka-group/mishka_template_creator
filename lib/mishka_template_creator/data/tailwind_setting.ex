@@ -9396,13 +9396,12 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
 
     %{
       "image_class" => ["rounded-t-lg"],
-      "content_class" => ["mb-3", "font-normal", "text-gray-700"],
+      "content_class" => ["mb-3", "font-normal"],
       "title_class" => [
         "mb-2",
         "text-2xl",
         "font-bold",
         "tracking-tight",
-        "text-gray-900"
       ],
       "button_class" => [
         "flex",
@@ -9458,6 +9457,31 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       },
       "order" => ["image", "title", "html", "buttons"],
       "buttons_order" => [id]
+    }
+  end
+
+  def default_element("avatar") do
+    id = Ecto.UUID.generate()
+    id1 = Ecto.UUID.generate()
+
+    %{
+      "class" => ["text-black", "w-full", "text-base", "p-2"],
+      "header" => %{
+        "row" => ["text-justify"],
+        "column" => ["px-6", "py-3"]
+      },
+      "content" => %{
+        "row" => ["border-b", "border-gray-400"],
+        "column" => ["px-6", "py-4"]
+      },
+      "children" => %{
+        "headers" => ["Product name", "Color", "Category", "Price"],
+        "content" => %{
+          "#{id}" => ["Apple MacBook Pro 17\"", "Silver", "Laptop", "$2999"],
+          "#{id1}" => ["Microsoft Surface Pro", "White", "Laptop PC", "$1999"]
+        }
+      },
+      "order" => [id, id1]
     }
   end
 
