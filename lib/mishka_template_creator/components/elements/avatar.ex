@@ -192,73 +192,35 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
                   </div>
                 </div>
               </div>
-
               <div id={"avatar-common-avatar-#{key}"} class="w-full hidden">
-                <MishkaCoreComponent.custom_simple_form
-                  :let={f}
-                  for={%{}}
-                  as={:avatar_avatar}
-                  phx-change="edit"
-                  phx-target={@myself}
-                  class="flex flex-col w-full justify-start gap-2"
-                >
-                  <div class="flex flex-col gap-2 w-full my-5">
-                    <span class="font-bold text-sm">Title:</span>
-                    <%= text_input(f, :title,
-                      class:
-                        "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                      placeholder: "Change avatar name",
-                      value: data["title"],
-                      id: "input-title-#{key}"
-                    ) %>
-                  </div>
-                  <div class="flex flex-col gap-2 w-full">
-                    <span class="font-bold text-sm">Hyperlink:</span>
-                    <%= text_input(f, :hyperlink,
-                      class:
-                        "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                      placeholder: "Change avatar hyperlink",
-                      value: data["hyperlink"],
-                      id: "input-hyperlink-#{key}"
-                    ) %>
-                  </div>
-
-                  <div class="flex flex-row gap-2 w-full my-5">
-                    <div class="flex flex-col gap-2 w-full">
-                      <span class="font-bold text-sm">Target:</span>
-                      <%= select(
-                        f,
-                        :target,
-                        [
-                          None: "none",
-                          "New Window or Tab": "_blank",
-                          "Current Window": "_self",
-                          "Parent Window": "_parent",
-                          "Top Frame": "_top"
-                        ],
-                        selected: data["target"],
-                        class:
-                          "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2",
-                        id: "input-target-#{key}"
-                      ) %>
-                    </div>
-
-                    <div class="flex flex-col gap-2 w-full">
-                      <span class="font-bold text-sm">Nofollow:</span>
-                      <%= select(f, :nofollow, [true, false],
-                        selected: data["nofollow"],
-                        class:
-                          "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2",
-                        id: "input-nofollow-#{key}"
-                      ) %>
-                    </div>
-
-                    <.input field={f[:id]} type="hidden" value={key} id={"input-id-#{key}"} />
-                  </div>
-                </MishkaCoreComponent.custom_simple_form>
-                <div class="grid grid-cols-3 gap-2 w-full my-5 pt-2 items-center">
-                  sss
-                </div>
+                <.avatar_form myself={@myself} data={data} key={key} />
+                <h3 class="mb-5 text-lg font-bold text-gray-900">Choose a Type:</h3>
+                <ul class="grid w-full gap-6 grid-cols-2">
+                  <li>
+                    <input type="checkbox" id="react-option" value="" class="hidden peer" required="" />
+                    <label
+                      for="react-option"
+                      class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50"
+                    >
+                      <div class="block text-center w-full">
+                        <Heroicons.users class="mb-2 w-7 h-7 mx-auto" />
+                        <div class="w-full text-lg font-semibold text-center">Avatar</div>
+                      </div>
+                    </label>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="flowbite-option" value="" class="hidden peer" />
+                    <label
+                      for="flowbite-option"
+                      class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50"
+                    >
+                      <div class="block text-center w-full">
+                        <Heroicons.pencil_square class="mb-2 w-7 h-7 mx-auto" />
+                        <div class="w-full text-lg font-semibold">Text</div>
+                      </div>
+                    </label>
+                  </li>
+                </ul>
               </div>
               <p
                 id={"avatar-common-close-#{key}"}
@@ -308,6 +270,87 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
         </Aside.aside_accordion>
       </Aside.aside_settings>
     </div>
+    """
+  end
+
+  attr(:myself, :integer, required: true)
+  attr(:data, :map, required: true)
+  attr(:key, :string, required: true)
+
+  def avatar_form(%{data: %{"image" => image, "text" => text}} = assigns)
+      when image != "" and text == "" do
+    ~H"""
+    <MishkaCoreComponent.custom_simple_form
+      :let={f}
+      for={%{}}
+      as={:avatar_component}
+      phx-change="edit"
+      phx-target={@myself}
+      class="flex flex-col w-full justify-start gap-2"
+    >
+      <div class="flex flex-col gap-2 w-full my-5">
+        <span class="font-bold text-sm">Avatar URL:</span>
+        <%= text_input(f, :image,
+          class:
+            "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+          placeholder: "Change avatar image URL",
+          value: @data["image"],
+          id: "input-image-#{@key}"
+        ) %>
+      </div>
+      <div class="flex flex-col gap-2 w-full">
+        <span class="font-bold text-sm">Aavatar description:</span>
+        <%= text_input(f, :alt,
+          class:
+            "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+          placeholder: "Change avatar alt",
+          value: @data["alt"],
+          id: "input-alt-#{@key}"
+        ) %>
+      </div>
+
+      <.input field={f[:id]} type="hidden" value={@key} id={"input-id-#{@key}"} />
+      <.input field={f[:text]} type="hidden" value="" id={"input-text-#{@key}"} />
+      <.input field={f[:link]} type="hidden" value="" id={"input-link-#{@key}"} />
+    </MishkaCoreComponent.custom_simple_form>
+    """
+  end
+
+  def avatar_form(assigns) do
+    ~H"""
+    <MishkaCoreComponent.custom_simple_form
+      :let={f}
+      for={%{}}
+      as={:avatar_component}
+      phx-change="edit"
+      phx-target={@myself}
+      class="flex flex-col w-full justify-start gap-2"
+    >
+      <div class="flex flex-col gap-2 w-full my-5">
+        <span class="font-bold text-sm">Avatar Text:</span>
+        <%= text_input(f, :text,
+          class:
+            "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+          placeholder: "Change avatar name",
+          value: @data["title"],
+          id: "input-title-#{@key}"
+        ) %>
+      </div>
+      <div class="flex flex-col gap-2 w-full">
+        <span class="font-bold text-sm">Hyperlink:</span>
+        <%= text_input(f, :link,
+          class:
+            "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+          placeholder: "Change avatar link",
+          value: @data["link"],
+          id: "input-link-#{@key}"
+        ) %>
+      </div>
+
+      <.input field={f[:id]} type="hidden" value={@key} id={"input-id-#{@key}"} />
+      <.input field={f[:image]} type="hidden" value="" id={"input-image-#{@key}"} />
+      <.input field={f[:alt]} type="hidden" value="" id={"input-alt-#{@key}"} />
+    </MishkaCoreComponent.custom_simple_form>
     """
   end
 

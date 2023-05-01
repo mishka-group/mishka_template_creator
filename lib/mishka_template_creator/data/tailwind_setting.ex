@@ -9489,22 +9489,19 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
           "image" => "https://flowbite.com/docs/images/people/profile-picture-1.jpg",
           "alt" => "The person concerned",
           "link" => "http://localhost:4000",
-          "text" => "",
-          "text_class" => ""
+          "text" => ""
         },
         "#{id1}" => %{
           "image" => "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
           "alt" => "The person concerned",
           "link" => "http://localhost:4000",
-          "text" => "",
-          "text_class" => ""
+          "text" => ""
         },
         "#{id2}" => %{
           "image" => "https://flowbite.com/docs/images/people/profile-picture-3.jpg",
           "alt" => "The person concerned",
           "link" => "http://localhost:4000",
-          "text" => "",
-          "text_class" => ""
+          "text" => ""
         },
         "#{id3}" => %{
           "image" => "",
