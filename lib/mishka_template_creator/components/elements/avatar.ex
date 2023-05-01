@@ -400,6 +400,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
     {:noreply, socket}
   end
 
+  def handle_event("edit", %{"avatar_component" => params}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", params["id"]], fn selected_children ->
+        Map.merge(selected_children, params)
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("validate", %{"public_tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
