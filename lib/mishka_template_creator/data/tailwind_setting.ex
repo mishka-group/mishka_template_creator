@@ -9401,7 +9401,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "mb-2",
         "text-2xl",
         "font-bold",
-        "tracking-tight",
+        "tracking-tight"
       ],
       "button_class" => [
         "flex",
@@ -9463,25 +9463,57 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   def default_element("avatar") do
     id = Ecto.UUID.generate()
     id1 = Ecto.UUID.generate()
+    id2 = Ecto.UUID.generate()
+    id3 = Ecto.UUID.generate()
 
     %{
-      "class" => ["text-black", "w-full", "text-base", "p-2"],
-      "header" => %{
-        "row" => ["text-justify"],
-        "column" => ["px-6", "py-3"]
-      },
-      "content" => %{
-        "row" => ["border-b", "border-gray-400"],
-        "column" => ["px-6", "py-4"]
-      },
+      "class" => ["flex", "-space-x-4"],
+      "image_class" => ["w-10", "h-10", "border-2", "border-white", "rounded-full"],
+      "text_class" => [
+        "flex",
+        "items-center",
+        "justify-center",
+        "w-10",
+        "h-10",
+        "text-xs",
+        "font-medium",
+        "text-white",
+        "bg-gray-700",
+        "border-2",
+        "border-white",
+        "rounded-full",
+        "hover:bg-gray-600"
+      ],
       "children" => %{
-        "headers" => ["Product name", "Color", "Category", "Price"],
-        "content" => %{
-          "#{id}" => ["Apple MacBook Pro 17\"", "Silver", "Laptop", "$2999"],
-          "#{id1}" => ["Microsoft Surface Pro", "White", "Laptop PC", "$1999"]
+        "#{id}" => %{
+          "image" => "https://flowbite.com/docs/images/people/profile-picture-1.jpg",
+          "alt" => "The person concerned",
+          "link" => "http://localhost:4000",
+          "text" => "",
+          "text_class" => ""
+        },
+        "#{id1}" => %{
+          "image" => "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
+          "alt" => "The person concerned",
+          "link" => "http://localhost:4000",
+          "text" => "",
+          "text_class" => ""
+        },
+        "#{id2}" => %{
+          "image" => "https://flowbite.com/docs/images/people/profile-picture-3.jpg",
+          "alt" => "The person concerned",
+          "link" => "http://localhost:4000",
+          "text" => "",
+          "text_class" => ""
+        },
+        "#{id3}" => %{
+          "image" => "",
+          "alt" => "",
+          "link" => "http://localhost:4000",
+          "text" => "+99"
         }
       },
-      "order" => [id, id1]
+      "order" => [id, id1, id2, id3]
     }
   end
 

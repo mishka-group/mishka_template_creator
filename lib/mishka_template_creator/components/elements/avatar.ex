@@ -11,7 +11,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
   alias MishkaTemplateCreator.Components.Blocks.Tag
   alias MishkaTemplateCreator.Components.Blocks.Color
   alias MishkaTemplateCreator.Components.Elements.Text
-  alias MishkaTemplateCreator.Components.Blocks.Icon
 
   @impl true
   def update(
@@ -69,7 +68,20 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
       dir={@element["direction"] || "LTR"}
       class={@element["class"]}
     >
-      ss
+      <div :for={
+        %{id: _key, data: data} <-
+          MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])
+      }>
+        <img
+          :if={data["image"] != ""}
+          class={@element["image_class"]}
+          src={data["image"]}
+          alt={data["alt"]}
+        />
+        <a :if={data["image"] == "" and data["text"] != ""} class={@element["text_class"]} href="#">
+          <%= data["text"] %>
+        </a>
+      </div>
     </div>
     """
   end
@@ -114,7 +126,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
           </ul>
         </div>
 
-
         <Aside.aside_accordion
           id={"avatar-#{@id}"}
           title="Avatar Settings"
@@ -129,7 +140,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
               phx-target={@myself}
             />
           </:before_title_block>
-
         </Aside.aside_accordion>
 
         <Aside.aside_accordion
@@ -137,6 +147,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
+          <Aside.aside_accordion id={"table-#{@id}"} title="Alignment" open={false}>
+            <Text.direction_selector myself={@myself} />
+          </Aside.aside_accordion>
+
           <Aside.aside_accordion id={"avatar-#{@id}"} title="Custom Tag name" open={false}>
             <div class="flex flex-col w-full items-center justify-center pb-5">
               <Tag.input_tag myself={@myself} value={@element["tag"]} submit={@submit} id={@id} />
@@ -222,6 +236,23 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
       _ ->
         send(self(), {"validate", %{"tag" => tag}})
     end
+
+    {:noreply, socket}
+  end
+
+  def handle_event("text_direction", %{"type" => type}, socket) when type in ["RTL", "LTR"] do
+    send(
+      self(),
+      {"element",
+       %{
+         "update_parame" =>
+           %{
+             "key" => "direction",
+             "value" => type
+           }
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
 
     {:noreply, socket}
   end
