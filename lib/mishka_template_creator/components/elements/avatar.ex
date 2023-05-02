@@ -194,12 +194,27 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
               </div>
               <div id={"avatar-common-avatar-#{key}"} class="w-full hidden">
                 <.avatar_form myself={@myself} data={data} key={key} />
-                <h3 class="mb-5 text-lg font-bold text-gray-900">Choose a Type:</h3>
+                <h3 class="mb-1 text-lg font-bold text-gray-900">Choose a Type:</h3>
+                <p class="w-full text-xs text-gray-400 text-justify mb-5">
+                  It should be noted that when you select a type, you are actually resetting the field data
+                </p>
                 <ul class="grid w-full gap-6 grid-cols-2">
-                  <li>
-                    <input type="checkbox" id="react-option" value="" class="hidden peer" required="" />
+                  <li
+                    phx-click="avatar_type"
+                    phx-value-type="avatar"
+                    phx-value-id={key}
+                    phx-target={@myself}
+                  >
+                    <input
+                      type="radio"
+                      id={"select-avatar-#{key}"}
+                      value=""
+                      class="hidden peer"
+                      name="avatar-type"
+                      required=""
+                    />
                     <label
-                      for="react-option"
+                      for={"select-avatar-#{key}"}
                       class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50"
                     >
                       <div class="block text-center w-full">
@@ -208,10 +223,21 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
                       </div>
                     </label>
                   </li>
-                  <li>
-                    <input type="checkbox" id="flowbite-option" value="" class="hidden peer" />
+                  <li
+                    phx-click="avatar_type"
+                    phx-value-type="text"
+                    phx-value-id={key}
+                    phx-target={@myself}
+                  >
+                    <input
+                      type="radio"
+                      id={"select-text-#{key}"}
+                      value=""
+                      class="hidden peer"
+                      name="avatar-type"
+                    />
                     <label
-                      for="flowbite-option"
+                      for={"select-text-#{key}"}
                       class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50"
                     >
                       <div class="block text-center w-full">
@@ -224,7 +250,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
               </div>
               <p
                 id={"avatar-common-close-#{key}"}
-                class="text-blue-400 my-2 w-full text-center hidden"
+                class="text-blue-400 mt-6 w-full text-center hidden"
                 phx-click={
                   JS.toggle(to: "#avatar-common-avatar-#{key}")
                   |> JS.toggle(to: "#avatar-common-close-#{key}")
@@ -331,8 +357,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
         <%= text_input(f, :text,
           class:
             "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-          placeholder: "Change avatar name",
-          value: @data["title"],
+          placeholder: "Change avatar text",
+          value: @data["text"],
           id: "input-title-#{@key}"
         ) %>
       </div>
@@ -493,6 +519,30 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
 
   def handle_event("delete", _params, socket) do
     send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("avatar_type", %{"type" => type, "id" => id}, socket) do
+    avatars = TailwindSetting.default_element("avatar")
+
+    params =
+      case type do
+        "avatar" -> avatars["children"][List.first(avatars["order"])]
+        "text" -> avatars["children"][List.last(avatars["order"])]
+      end
+
+    IO.inspect(params)
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", id], fn selected_children ->
+        Map.merge(selected_children, params)
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+      |> IO.inspect()
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
