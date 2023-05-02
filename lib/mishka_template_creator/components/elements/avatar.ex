@@ -9,7 +9,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
   import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias MishkaTemplateCreator.Components.Blocks.Tag
-  alias MishkaTemplateCreator.Components.Blocks.Color
   alias MishkaTemplateCreator.Components.Elements.Text
 
   @impl true
@@ -267,8 +266,26 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <Aside.aside_accordion id={"table-#{@id}"} title="Alignment" open={false}>
+          <Aside.aside_accordion id={"table-#{@id}"} title="Alignment and Size" open={false}>
             <Text.direction_selector myself={@myself} />
+
+            <p class="font-bold text-base mb-4">Change Avatar Size:</p>
+            <MishkaCoreComponent.custom_simple_form
+              :let={f}
+              for={%{}}
+              as="avatar_size"
+              phx-change="edit"
+              phx-target={@myself}
+              class="w-full flex flex-col pb-10"
+            >
+              <%= range_input(f, :size,
+                min: "0",
+                max: "12",
+                class: "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer",
+                id: "avatar-image-size-#{@id}",
+                value: avatar_size(@element["image_class"])
+              ) %>
+            </MishkaCoreComponent.custom_simple_form>
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"avatar-#{@id}"} title="Custom Tag name" open={false}>
@@ -439,6 +456,29 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
     {:noreply, socket}
   end
 
+  def handle_event("edit", %{"avatar_size" => %{"size" => size}}, socket) do
+    widths = TailwindSetting.get_form_options("sizing", "width", nil, nil).form_configs
+    heights = TailwindSetting.get_form_options("sizing", "height", nil, nil).form_configs
+
+    new_image_class =
+      Enum.reject(socket.assigns.element["image_class"], &(&1 in (widths ++ heights))) ++
+        ["h-#{size}", "w-#{size}"]
+
+    new_text_class =
+      Enum.reject(socket.assigns.element["text_class"], &(&1 in (widths ++ heights))) ++
+        ["h-#{size}", "w-#{size}"]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"image_class" => new_image_class})
+      |> Map.merge(%{"text_class" => new_text_class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("validate", %{"public_tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
@@ -532,18 +572,32 @@ defmodule MishkaTemplateCreator.Components.Elements.Avatar do
         "text" -> avatars["children"][List.last(avatars["order"])]
       end
 
-    IO.inspect(params)
-
     updated =
       socket.assigns.element
       |> update_in(["children", id], fn selected_children ->
         Map.merge(selected_children, params)
       end)
       |> Map.merge(socket.assigns.selected_form)
-      |> IO.inspect()
 
     send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
+  end
+
+  defp avatar_size(classes) do
+    Enum.find(classes, &String.contains?(&1, "w-"))
+    |> case do
+      nil ->
+        "10"
+
+      data ->
+        string_int = String.replace(data, "w-", "")
+
+        if string_int in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"] do
+          string_int
+        else
+          "10"
+        end
+    end
   end
 end
