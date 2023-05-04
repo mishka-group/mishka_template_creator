@@ -9462,7 +9462,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
 
   def default_element("badge") do
     %{
-      "title" => "save data",
+      "title" => "Test Title",
       "class" => [
         "w-fit",
         "bg-blue-100",

@@ -312,9 +312,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
               </ul>
             </div>
 
+            <Color.select myself={@myself} event_name="badge_font_style" classes={@element["class"]} />
+
             <Color.select
+              title="Border Color:"
+              type="border"
               myself={@myself}
-              event_name="public_badge_font_style"
+              event_name="badge_border_style"
               classes={@element["class"]}
             />
 
@@ -322,7 +326,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
               title="Background Color:"
               type="bg"
               myself={@myself}
-              event_name="badge_font_style"
+              event_name="badge_background_style"
               classes={@element["class"]}
             />
           </Aside.aside_accordion>
@@ -383,10 +387,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
     {:noreply, socket}
   end
 
-  def handle_event("text_edit", %{"badge_edit" => %{"html" => html, "author" => author}}, socket) do
+  def handle_event("text_edit", %{"badge_edit" => %{"title" => title}}, socket) do
     updated =
       socket.assigns.element
-      |> Map.merge(%{"html" => html, "author" => author})
+      |> Map.merge(%{"title" => title})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
@@ -427,46 +431,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
     {:noreply, socket}
   end
 
-  def handle_event("text_direction", %{"type" => type}, socket) when type in ["RTL", "LTR"] do
-    send(
-      self(),
-      {"element",
-       %{
-         "update_parame" =>
-           %{
-             "key" => "direction",
-             "value" => type
-           }
-           |> Map.merge(socket.assigns.selected_form)
-       }}
-    )
-
-    {:noreply, socket}
-  end
-
-  def handle_event("text_alignment", %{"type" => type}, socket)
-      when type in ["start", "center", "end", "justify"] do
-    text_aligns =
-      TailwindSetting.get_form_options("typography", "text-align", nil, nil).form_configs
-
-    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_aligns)) ++ ["text-#{type}"]
-
-    send(
-      self(),
-      {"element",
-       %{
-         "update_class" =>
-           %{
-             "class" => Enum.join(class, " "),
-             "action" => :string_classes
-           }
-           |> Map.merge(socket.assigns.selected_form)
-       }}
-    )
-
-    {:noreply, socket}
-  end
-
   def handle_event(
         "font_style",
         %{"public_badge_font_style" => %{"font" => font, "font_size" => font_size}},
@@ -487,41 +451,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
     {:noreply, socket}
   end
 
-  def handle_event(
-        "font_style",
-        %{"title_badge_font_style" => %{"font" => font, "font_size" => font_size}},
-        socket
-      ) do
-    class = Text.edit_font_style_class(socket.assigns.element["author_class"], font_size, font)
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"author_class" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event(
-        "font_style",
-        %{"content_badge_font_style" => %{"font" => font, "font_size" => font_size}},
-        socket
-      ) do
-    class = Text.edit_font_style_class(socket.assigns.element["content_class"], font_size, font)
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"content_class" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event("public_badge_font_style", %{"color" => color}, socket) do
+  def handle_event("badge_font_style", %{"color" => color}, socket) do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
@@ -537,11 +467,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
     {:noreply, socket}
   end
 
-  def handle_event("badge_font_style", %{"color" => color}, socket) do
-    bg_colors =
-      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+  def handle_event("badge_border_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("borders", "border-color", nil, nil).form_configs
 
-    class = Enum.reject(socket.assigns.element["class"], &(&1 in bg_colors)) ++ [color]
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_colors)) ++ [color]
 
     updated =
       socket.assigns.element
@@ -553,31 +483,15 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
     {:noreply, socket}
   end
 
-  def handle_event("content_badge_font_style", %{"color" => color}, socket) do
-    text_colors =
-      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+  def handle_event("badge_background_style", %{"color" => color}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
 
-    class = Enum.reject(socket.assigns.element["content_class"], &(&1 in text_colors)) ++ [color]
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"content_class" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event("title_badge_font_style", %{"color" => color}, socket) do
-    text_colors =
-      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
-
-    class = Enum.reject(socket.assigns.element["author_class"], &(&1 in text_colors)) ++ [color]
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in bg_colors)) ++ [color]
 
     updated =
       socket.assigns.element
-      |> Map.merge(%{"author_class" => class})
+      |> Map.merge(%{"class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
