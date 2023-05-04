@@ -9460,6 +9460,29 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     }
   end
 
+  def default_element("badge") do
+    %{
+      "author" => "by Mishka Group",
+      "html" =>
+        "Mishka is a highly agile software group combining care and technology to help local businesses thrive.",
+      "author_class" => ["text-sm", "w-full", "text-gray-400"],
+      "content_class" => ["text-lg", "w-full"],
+      "class" => [
+        "flex",
+        "flex-col",
+        "w-full",
+        "justify-center",
+        "items-start",
+        "gap-4",
+        "border-l-4",
+        "border-gray-300",
+        "p-5",
+        "text-gray-600",
+        "text-justify"
+      ]
+    }
+  end
+
   def default_element("avatar") do
     id = Ecto.UUID.generate()
     id1 = Ecto.UUID.generate()
