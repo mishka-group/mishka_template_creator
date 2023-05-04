@@ -13,47 +13,108 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
 
   @common_style %{
     "default" => [
-      "flex",
-      "flex-col",
-      "w-full",
-      "justify-center",
-      "items-start",
-      "gap-4",
-      "border-l-4",
-      "border-gray-300",
-      "p-5",
-      "text-gray-600",
-      "text-justify"
-    ],
-    "box" => [
-      "flex",
-      "flex-col",
-      "w-full",
-      "justify-center",
-      "items-start",
-      "gap-4",
-      "border-l-4",
+      "w-fit",
+      "bg-blue-100",
+      "text-blue-800",
+      "text-xs",
+      "font-medium",
+      "mr-2",
+      "px-2.5",
+      "py-0.5",
+      "rounded",
       "border",
-      "border-gray-300",
-      "p-5",
-      "text-gray-600",
-      "text-justify"
+      "border-blue-400"
     ],
-    "modern" => [
-      "flex",
-      "flex-col",
-      "w-full",
-      "justify-center",
-      "items-start",
-      "gap-4",
+    "dark" => [
+      "w-fit",
+      "bg-gray-100",
+      "text-gray-800",
+      "text-xs",
+      "font-medium",
+      "mr-2",
+      "px-2.5",
+      "py-0.5",
+      "rounded",
       "border",
-      "border-b-4",
-      "border-gray-300",
-      "p-5",
-      "text-gray-600",
-      "text-justify",
-      "shadow-lg",
-      "rounded-3xl"
+      "border-gray-500"
+    ],
+    "red" => [
+      "w-fit",
+      "bg-red-100",
+      "text-red-800",
+      "text-xs",
+      "font-medium",
+      "mr-2",
+      "px-2.5",
+      "py-0.5",
+      "rounded",
+      "border",
+      "border-red-400"
+    ],
+    "green" => [
+      "w-fit",
+      "bg-green-100",
+      "text-green-800",
+      "text-xs",
+      "font-medium",
+      "mr-2",
+      "px-2.5",
+      "py-0.5",
+      "rounded",
+      "border",
+      "border-green-400"
+    ],
+    "yellow" => [
+      "w-fit",
+      "bg-yellow-100",
+      "text-yellow-800",
+      "text-xs",
+      "font-medium",
+      "mr-2",
+      "px-2.5",
+      "py-0.5",
+      "rounded",
+      "border",
+      "border-yellow-300"
+    ],
+    "indigo" => [
+      "w-fit",
+      "bg-indigo-100",
+      "text-indigo-800",
+      "text-xs",
+      "font-medium",
+      "mr-2",
+      "px-2.5",
+      "py-0.5",
+      "rounded",
+      "border",
+      "border-indigo-400"
+    ],
+    "purple" => [
+      "w-fit",
+      "bg-purple-100",
+      "text-purple-800",
+      "text-xs",
+      "font-medium",
+      "mr-2",
+      "px-2.5",
+      "py-0.5",
+      "rounded",
+      "border",
+      "border-purple-400"
+    ],
+    "pink" => [
+      "w-fit",
+      "bg-pink-100",
+      "text-pink-800",
+      "text-xs",
+      "font-medium",
+      "mr-2",
+      "px-2.5",
+      "py-0.5",
+      "rounded",
+      "border",
+      "border-pink-400"
     ]
   }
 
@@ -103,7 +164,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
   @impl true
   def render(%{render_type: "call"} = assigns) do
     ~H"""
-    <div
+    <span
       data-type="badge"
       id={"badge-#{@id}"}
       data-id={String.replace(@id, "-call", "")}
@@ -114,31 +175,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
       dir={@element["direction"] || "LTR"}
       class={@element["class"]}
     >
-      <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-blue-400">
-        Default
-      </span>
-      <span class="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-gray-500">
-        Dark
-      </span>
-      <span class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-red-400">
-        Red
-      </span>
-      <span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-green-400">
-        Green
-      </span>
-      <span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-yellow-300">
-        Yellow
-      </span>
-      <span class="bg-indigo-100 text-indigo-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-indigo-400">
-        Indigo
-      </span>
-      <span class="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-purple-400">
-        Purple
-      </span>
-      <span class="bg-pink-100 text-pink-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded border border-pink-400">
-        Pink
-      </span>
-    </div>
+      <%= @element["title"] %>
+    </span>
     """
   end
 
@@ -184,7 +222,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
 
         <Aside.aside_accordion
           id={"badge-#{@id}"}
-          title="badge Settings"
+          title="Badge Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <MishkaCoreComponent.custom_simple_form
@@ -196,31 +234,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
             class="w-full m-0 p-0 flex flex-col"
           >
             <div class="flex flex-col w-full items-center justify-center pb-5 gap-4">
-              <%= text_input(f, :author,
+              <%= text_input(f, :title,
                 class:
                   "block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                value: @element["author"],
-                placeholder: "Author name"
+                value: @element["title"],
+                placeholder: "Badge title"
               ) %>
-
-              <div class="block w-full">
-                <%= textarea(f, :html,
-                  class:
-                    "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                  rows: "4",
-                  value: @element["html"]
-                ) %>
-
-                <span class="w-full text-start text-xs mt-2 cursor-pointer">
-                  <a
-                    href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
-                    target="_blank"
-                    class="text-blue-400"
-                  >
-                    Styling with Markdown is supported, click here
-                  </a>
-                </span>
-              </div>
             </div>
           </MishkaCoreComponent.custom_simple_form>
         </Aside.aside_accordion>
@@ -230,54 +249,17 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
           title="Common Styles"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <div class="grid grid-cols-1 gap-5 w-full my-5 pt-2 items-center">
-            <div
+          <div class="flex flex-wrap gap-2 w-full my-5 pt-2 items-center justify-center">
+            <span
               :for={{key, classes} <- @common_style}
               class={classes}
               phx-click="common_style"
               phx-value-type={key}
               phx-target={@myself}
             >
-              <div class="text-lg w-full">
-                Quoting something
-              </div>
-              <span class="text-sm w-full text-gray-400">by Author</span>
-            </div>
+              <%= String.upcase(key) %>
+            </span>
           </div>
-        </Aside.aside_accordion>
-
-        <Aside.aside_accordion
-          id={"badge-#{@id}"}
-          title="Custom Style"
-          title_class="my-4 w-full text-center font-bold select-none text-lg"
-        >
-          <Aside.aside_accordion id={"badge-#{@id}"} title="Author style" open={false}>
-            <Text.font_style
-              myself={@myself}
-              classes={@element["author_class"]}
-              as={:title_badge_font_style}
-              id={@id}
-            />
-            <Color.select
-              myself={@myself}
-              event_name="title_badge_font_style"
-              classes={@element["author_class"]}
-            />
-          </Aside.aside_accordion>
-
-          <Aside.aside_accordion id={"badge-#{@id}"} title="Content style" open={false}>
-            <Text.font_style
-              myself={@myself}
-              classes={@element["content_class"]}
-              as={:content_badge_font_style}
-              id={@id}
-            />
-            <Color.select
-              myself={@myself}
-              event_name="content_badge_font_style"
-              classes={@element["content_class"]}
-            />
-          </Aside.aside_accordion>
         </Aside.aside_accordion>
 
         <Aside.aside_accordion
@@ -285,12 +267,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Badge do
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <Aside.aside_accordion id={"badge-#{@id}"} title="Alignment" open={false}>
-            <Text.alignment_selector myself={@myself} />
-            <Text.direction_selector myself={@myself} />
-          </Aside.aside_accordion>
-
-          <Aside.aside_accordion id={"badge-#{@id}"} title="Font and badge Style" open={false}>
+          <Aside.aside_accordion id={"badge-#{@id}"} title="Font and Badge Style" open={false}>
             <Text.font_style
               myself={@myself}
               classes={@element["class"]}
