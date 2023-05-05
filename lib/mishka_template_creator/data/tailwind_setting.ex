@@ -9507,7 +9507,8 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
           "link" => "#"
         },
         "#{id2}" => %{
-          "title" => "Mishka group released another library"
+          "title" => "Mishka group released another library",
+          "link" => "#"
         }
       },
       "order" => [id, id1, id2]

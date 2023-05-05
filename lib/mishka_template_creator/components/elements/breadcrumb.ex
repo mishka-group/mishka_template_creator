@@ -13,95 +13,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
   alias MishkaTemplateCreator.Components.Elements.Text
   alias MishkaTemplateCreator.Components.Blocks.Icon
 
-  @common_button_style %{
-    "blue" => [
-      "inline-flex",
-      "items-center",
-      "px-3",
-      "py-2",
-      "text-sm",
-      "font-medium",
-      "text-center",
-      "text-white",
-      "bg-blue-700",
-      "rounded-lg",
-      "hover:bg-blue-800",
-      "focus:ring-4",
-      "focus:outline-none",
-      "focus:ring-blue-300"
-    ],
-    "light" => [
-      "inline-flex",
-      "items-center",
-      "px-3",
-      "py-2",
-      "text-sm",
-      "font-medium",
-      "text-center",
-      "text-white",
-      "bg-white",
-      "rounded-lg",
-      "border",
-      "border-gray-200",
-      "text-gray-900",
-      "focus:outline-none",
-      "hover:bg-gray-100",
-      "hover:text-blue-700"
-    ],
-    "dark" => [
-      "inline-flex",
-      "items-center",
-      "px-3",
-      "py-2",
-      "text-sm",
-      "font-medium",
-      "text-center",
-      "text-white",
-      "bg-gray-800",
-      "rounded-lg",
-      "hover:bg-gray-900"
-    ],
-    "green" => [
-      "inline-flex",
-      "items-center",
-      "px-3",
-      "py-2",
-      "text-sm",
-      "font-medium",
-      "text-center",
-      "text-white",
-      "bg-green-700",
-      "hover:bg-green-800",
-      "rounded-lg"
-    ],
-    "red" => [
-      "inline-flex",
-      "items-center",
-      "px-3",
-      "py-2",
-      "text-sm",
-      "font-medium",
-      "text-center",
-      "text-white",
-      "bg-red-700",
-      "hover:bg-red-800",
-      "rounded-lg"
-    ],
-    "yellow" => [
-      "inline-flex",
-      "items-center",
-      "px-3",
-      "py-2",
-      "text-sm",
-      "font-medium",
-      "text-center",
-      "text-white",
-      "bg-yellow-400",
-      "hover:bg-yellow-500",
-      "rounded-lg"
-    ]
-  }
-
   @impl true
   def update(
         %{
@@ -128,8 +39,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
         render_type: render_type,
         selected_form: selected_form,
         element: element,
-        submit: submit,
-        common_button_style: @common_button_style
+        submit: submit
       )
 
     {:ok, new_socket}
@@ -185,7 +95,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
             :if={key == List.last(@element["order"]) and length(@element["order"]) > 1}
             class={@element["curent_item_class"]}
           >
-            <Heroicons.chevron_right class={@element["curent_icon_class"]} />
+            <Heroicons.chevron_right class={@element["icon_class"]} />
             <span class="ml-1 md:ml-2"><%= data["title"] %></span>
           </div>
         </li>
@@ -294,7 +204,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
                 <MishkaCoreComponent.custom_simple_form
                   :let={f}
                   for={%{}}
-                  as={:breadcrumb_button}
+                  as={:breadcrumb_component}
                   phx-change="edit"
                   phx-target={@myself}
                   class="flex flex-col w-full justify-start gap-2"
@@ -304,7 +214,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
                     <%= text_input(f, :title,
                       class:
                         "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                      placeholder: "Change button name",
+                      placeholder: "Change title",
                       value: data["title"],
                       id: "input-title-#{key}"
                     ) %>
@@ -314,64 +224,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
                     <%= text_input(f, :hyperlink,
                       class:
                         "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                      placeholder: "Change button hyperlink",
-                      value: data["hyperlink"],
-                      id: "input-hyperlink-#{key}"
+                      placeholder: "Change hyperlink",
+                      value: data["link"],
+                      id: "input-link-#{key}"
                     ) %>
                   </div>
 
-                  <div class="flex flex-row gap-2 w-full my-5">
-                    <div class="flex flex-col gap-2 w-full">
-                      <span class="font-bold text-sm">Target:</span>
-                      <%= select(
-                        f,
-                        :target,
-                        [
-                          None: "none",
-                          "New Window or Tab": "_blank",
-                          "Current Window": "_self",
-                          "Parent Window": "_parent",
-                          "Top Frame": "_top"
-                        ],
-                        selected: data["target"],
-                        class:
-                          "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2",
-                        id: "input-target-#{key}"
-                      ) %>
-                    </div>
-
-                    <div class="flex flex-col gap-2 w-full">
-                      <span class="font-bold text-sm">Nofollow:</span>
-                      <%= select(f, :nofollow, [true, false],
-                        selected: data["nofollow"],
-                        class:
-                          "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2",
-                        id: "input-nofollow-#{key}"
-                      ) %>
-                    </div>
-
-                    <.input field={f[:id]} type="hidden" value={key} id={"input-id-#{key}"} />
-                  </div>
+                  <.input field={f[:id]} type="hidden" value={key} id={"input-id-#{key}"} />
                 </MishkaCoreComponent.custom_simple_form>
-                <div class="grid grid-cols-3 gap-2 w-full my-5 pt-2 items-center">
-                  <a
-                    :for={{key, classes} <- @common_button_style}
-                    class={classes}
-                    phx-click="common_button_style"
-                    phx-value-id={key}
-                    phx-value-type={key}
-                    phx-target={@myself}
-                  >
-                    <%= String.upcase(key) %>
-                    <Icon.dynamic module={data["icon"]} class="w-4 h-4 ml-2 -mr-1" />
-                  </a>
-                </div>
-
-                <Icon.select
-                  selected={String.replace(data["icon"], "Heroicons.", "")}
-                  myself={@myself}
-                  block_id={key}
-                />
               </div>
               <p
                 id={"breadcrumb-common-close-#{key}"}
@@ -406,11 +266,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
               id={@id}
             />
 
+            <Icon.select_size
+              myself={@myself}
+              classes={@element["icon_class"]}
+              as={:breadcrumb_icon_style}
+              id_input={@id}
+              id={@id}
+            />
+
             <Color.select
               title="Curent Text Color:"
               myself={@myself}
               event_name="breadcrumb_curent_text_style"
-              classes={@element["class"]}
+              classes={@element["curent_item_class"]}
             />
 
             <Color.select
@@ -424,7 +292,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
               title="Icon Color:"
               myself={@myself}
               event_name="breadcrumb_icon_style"
-              classes={@element["class"]}
+              classes={@element["icon_class"]}
             />
           </Aside.aside_accordion>
 
@@ -484,15 +352,15 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
     {:noreply, socket}
   end
 
-  def handle_event("add", %{"type" => "button"}, socket) do
+  def handle_event("add", _params, socket) do
     unique_id = Ecto.UUID.generate()
-    buttons = TailwindSetting.default_element("breadcrumb")["children"]["buttons"]
-    first_button = Map.keys(buttons) |> List.first()
 
     updated =
       socket.assigns.element
-      |> update_in(["children", "buttons"], fn selected_children ->
-        Map.merge(selected_children, %{"#{unique_id}" => buttons[first_button]})
+      |> update_in(["children"], fn selected_children ->
+        Map.merge(selected_children, %{
+          "#{unique_id}" => %{"title" => "Test Title", "link" => "#"}
+        })
       end)
       |> Map.merge(%{"order" => socket.assigns.element["order"] ++ [unique_id]})
       |> Map.merge(socket.assigns.selected_form)
@@ -505,20 +373,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
   def handle_event("edit", %{"breadcrumb_component" => params}, socket) do
     updated =
       socket.assigns.element
-      |> update_in(["children"], fn selected_children ->
-        Map.merge(selected_children, params)
-      end)
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event("edit", %{"breadcrumb_button" => params}, socket) do
-    updated =
-      socket.assigns.element
-      |> update_in(["children", "buttons", params["id"]], fn selected_children ->
+      |> update_in(["children", params["id"]], fn selected_children ->
         Map.merge(selected_children, params)
       end)
       |> Map.merge(socket.assigns.selected_form)
@@ -614,15 +469,16 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
     {:noreply, socket}
   end
 
-  def handle_event("breadcrumb_font_style", %{"color" => color}, socket) do
-    bg_colors =
-      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+  def handle_event("breadcrumb_curent_text_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
-    class = Enum.reject(socket.assigns.element["class"], &(&1 in bg_colors)) ++ [color]
+    class =
+      Enum.reject(socket.assigns.element["curent_item_class"], &(&1 in text_colors)) ++ [color]
 
     updated =
       socket.assigns.element
-      |> Map.merge(%{"class" => class})
+      |> Map.merge(%{"curent_item_class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
@@ -630,12 +486,33 @@ defmodule MishkaTemplateCreator.Components.Elements.Breadcrumb do
     {:noreply, socket}
   end
 
-  def handle_event("common_button_style", %{"type" => type, "id" => id}, socket) do
+  def handle_event("breadcrumb_icon_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["icon_class"], &(&1 in text_colors)) ++ [color]
+
     updated =
       socket.assigns.element
-      |> update_in(["children", "buttons", id], fn selected_button ->
-        Map.merge(selected_button, %{"class" => @common_button_style[type]})
-      end)
+      |> Map.merge(%{"icon_class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+      |> IO.inspect()
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"breadcrumb_icon_style" => %{"height" => height, "width" => width}},
+        socket
+      ) do
+    class = Icon.edit_icon_size(socket.assigns.element["icon_class"], [width, height])
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"icon_class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
