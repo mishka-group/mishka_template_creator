@@ -2,20 +2,21 @@ defmodule MishkaTemplateCreator.Data.Elements do
   @layout_items [
     {"layout", "Layout", "Heroicons.inbox_stack", ["dragLocation"]},
     {"section", "Section", "Heroicons.inbox_stack", ["layout", "section"]},
+  ]
+
+  @elements_items [
     {"text", "Text", "Heroicons.inbox_stack", ["section"]},
     {"tab", "Tab", "Heroicons.inbox_stack", ["section"]},
     {"table", "Table", "Heroicons.inbox_stack", ["section"]},
     {"accordion", "Accordion", "Heroicons.inbox_stack", ["section"]},
-    {"button", "Button", "Heroicons.inbox_stack", ["section"]}
-  ]
-
-  @elements_items [
+    {"button", "Button", "Heroicons.inbox_stack", ["section"]},
     {"alert", "Alert", "Heroicons.inbox_stack", ["section"]},
     {"quote", "Quote", "Heroicons.inbox_stack", ["section"]},
     {"code", "Code", "Heroicons.inbox_stack", ["section"]},
     {"card", "Card", "Heroicons.inbox_stack", ["section"]},
     {"avatar", "Avatar", "Heroicons.inbox_stack", ["section"]},
     {"badge", "Badge", "Heroicons.inbox_stack", ["section"]},
+    {"breadcrumb", "Breadcrumb", "Heroicons.inbox_stack", ["section"]}
   ]
 
   @media_items [

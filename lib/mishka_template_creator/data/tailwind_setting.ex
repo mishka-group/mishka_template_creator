@@ -9479,6 +9479,41 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     }
   end
 
+  def default_element("breadcrumb") do
+    id = Ecto.UUID.generate()
+    id1 = Ecto.UUID.generate()
+    id2 = Ecto.UUID.generate()
+
+    %{
+      "title" => "Test Title",
+      "icon_class" => ["w-5", "h-5", "mr-2", "text-gray-600"],
+      "class" => [
+        "inline-flex",
+        "items-center",
+        "ml-1",
+        "text-gray-700",
+        "hover:text-blue-600",
+        "md:ml-2"
+      ],
+      "curent_item_class" => ["flex", "items-center", "text-gray-600"],
+      "curent_icon_class" => ["w-5", "h-5", "mr-2"],
+      "children" => %{
+        "#{id}" => %{
+          "title" => "Home",
+          "link" => "#"
+        },
+        "#{id1}" => %{
+          "title" => "News",
+          "link" => "#"
+        },
+        "#{id2}" => %{
+          "title" => "Mishka group released another library"
+        }
+      },
+      "order" => [id, id1, id2]
+    }
+  end
+
   def default_element("avatar") do
     id = Ecto.UUID.generate()
     id1 = Ecto.UUID.generate()
