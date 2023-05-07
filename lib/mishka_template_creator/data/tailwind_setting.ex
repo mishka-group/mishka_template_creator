@@ -9569,6 +9569,20 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     }
   end
 
+  def default_element("banner") do
+    %{
+      "html" => "Test Title",
+      "class" => [
+        "inline-flex",
+        "items-center",
+        "ml-1",
+        "text-gray-700",
+        "hover:text-blue-600",
+        "md:ml-2"
+      ]
+    }
+  end
+
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()
   def convert_arbitrary_value(config) do
     [h | t] = String.split(config, "-[")
