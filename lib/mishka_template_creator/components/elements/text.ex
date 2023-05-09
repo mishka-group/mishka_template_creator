@@ -63,7 +63,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
       class={@element["class"]}
       dir={@element["direction"] || "LTR"}
     >
-      <span :if={String.trim(@element["html"]) |> String.length == 0}>
+      <span :if={String.trim(@element["html"]) |> String.length() == 0}>
         This is a predefined text. Please click on the text to edit.
       </span>
       <%= @element["html"] %>

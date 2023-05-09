@@ -3,6 +3,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
   import Phoenix.HTML.Form
   use Phoenix.Component
 
+  alias MishkaTemplateCreator.Components.Elements.Banner
+  alias Phoenix.LiveView.JS
   alias MishkaTemplateCreator.Components.Layout.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
   import MishkaTemplateCreatorWeb.CoreComponents
@@ -10,6 +12,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
   alias MishkaTemplateCreator.Components.Blocks.Tag
   alias MishkaTemplateCreator.Components.Blocks.Color
   alias MishkaTemplateCreator.Components.Elements.Text
+  alias MishkaTemplateCreator.Components.Blocks.Icon
 
   @common_style %{
     "info" => [
@@ -134,16 +137,53 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
       phx-value-myself={@myself}
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
+      reset-banner={
+        JS.toggle(to: "#banner-box-#{@id}")
+        |> JS.toggle(to: "#banner-show-#{@id}")
+        |> JS.toggle(to: "#banner-hide-#{@id}")
+        |> JS.push("get_element_layout_id", value: %{myself: @myself.cid})
+      }
     >
-      <div class={@element["class"]} role="banner">
-        <span
-          :if={@element["title"] != "" and !is_nil(@element["title"])}
-          class={@element["title_class"]}
-        >
-          <%= @element["title"] %>
-        </span>
-        <div class={@element["content_class"]}><%= @element["html"] %></div>
+      <div id={"banner-box-#{@id}"} tabindex="-1">
+        <div class={@element["class"]}>
+          <div class="flex items-center mx-auto">
+            <p class="flex items-center text-sm font-normal text-gray-500">
+              <span class="inline-flex p-1 mr-3 bg-gray-200 rounded-full">
+                <Heroicons.light_bulb class="w-4 h-4 text-gray-500" />
+                <span class="sr-only">Light bulb</span>
+              </span>
+              <%= Phoenix.HTML.raw(@element["html"]) %>
+            </p>
+          </div>
+          <div class="flex items-center">
+            <button
+              phx-click={JS.exec("reset-banner", to: "#banner-#{@id}")}
+              type="button"
+              class="flex-shrink-0 inline-flex justify-center items-center text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              <Icon.dynamic module={@element["icon"]} class={@element["icon_class"]} />
+              <span class="sr-only">Close banner</span>
+            </button>
+          </div>
+        </div>
       </div>
+
+      <button
+        id={"banner-hide-#{@id}"}
+        phx-click={JS.exec("reset-banner", to: "#banner-#{@id}")}
+        type="button"
+        class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+      >
+        Hide Banner
+      </button>
+      <button
+        id={"banner-show-#{@id}"}
+        phx-click={JS.exec("reset-banner", to: "#banner-#{@id}")}
+        type="button"
+        class="hidden py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+      >
+        Show Banner
+      </button>
     </div>
     """
   end

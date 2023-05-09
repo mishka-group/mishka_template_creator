@@ -1,7 +1,7 @@
 defmodule MishkaTemplateCreator.Data.Elements do
   @layout_items [
     {"layout", "Layout", "Heroicons.inbox_stack", ["dragLocation"]},
-    {"section", "Section", "Heroicons.inbox_stack", ["layout", "section"]},
+    {"section", "Section", "Heroicons.inbox_stack", ["layout", "section"]}
   ]
 
   @elements_items [
@@ -16,7 +16,8 @@ defmodule MishkaTemplateCreator.Data.Elements do
     {"card", "Card", "Heroicons.inbox_stack", ["section"]},
     {"avatar", "Avatar", "Heroicons.inbox_stack", ["section"]},
     {"badge", "Badge", "Heroicons.inbox_stack", ["section"]},
-    {"breadcrumb", "Breadcrumb", "Heroicons.inbox_stack", ["section"]}
+    {"breadcrumb", "Breadcrumb", "Heroicons.inbox_stack", ["section"]},
+    {"banner", "Banner", "Heroicons.inbox_stack", ["section"]}
   ]
 
   @media_items [
