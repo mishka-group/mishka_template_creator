@@ -26,7 +26,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
       "border",
       "border-gray-200",
       "bg-gray-50",
-      "text-base",
+      "text-base"
     ],
     "sticky_bottom" => [
       "fixed",
@@ -40,7 +40,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
       "border",
       "border-gray-200",
       "bg-gray-50",
-      "text-base",
+      "text-base"
     ]
   }
 
@@ -130,22 +130,27 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
         </div>
       </div>
 
-      <button
-        id={"banner-hide-#{@id}"}
-        phx-click={JS.exec("reset-banner", to: "#banner-#{@id}")}
-        type="button"
-        class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
-      >
-        Hide Banner
-      </button>
-      <button
-        id={"banner-show-#{@id}"}
-        phx-click={JS.exec("reset-banner", to: "#banner-#{@id}")}
-        type="button"
-        class="hidden py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
-      >
-        Show Banner
-      </button>
+      <div class="flex justify-between w-full p-4 border border-gray-200 bg-gray-50 text-base">
+        <div class="flex items-center mx-auto">
+          <p class="flex items-center text-sm font-normal text-gray-500">
+            <span class="inline-flex p-1 mx-3 bg-gray-200 rounded-full">
+              <Icon.dynamic module={@element["icon"]} class={@element["icon_class"]} />
+              <span class="sr-only">Light bulb</span>
+            </span>
+            <%= Phoenix.HTML.raw(@element["html"]) %>
+          </p>
+        </div>
+        <div class="flex items-center">
+          <button
+            phx-click={JS.exec("reset-banner", to: "#banner-#{@id}")}
+            type="button"
+            class={@element["close_btn"]}
+          >
+            <Icon.dynamic module={@element["close_icon"]} class={@element["close_icon_class"]} />
+            <span class="sr-only">Close banner</span>
+          </button>
+        </div>
+      </div>
     </div>
     """
   end
@@ -188,6 +193,25 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
               </a>
             </li>
           </ul>
+        </div>
+
+        <div class="flex flex-row justify-center items-center w-full">
+          <button
+            id={"banner-hide-#{@id}"}
+            phx-click={JS.exec("reset-banner", to: "#banner-#{String.replace(@id, "form", "call")}")}
+            type="button"
+            class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+          >
+            Hide Banner
+          </button>
+          <button
+            id={"banner-show-#{@id}"}
+            phx-click={JS.exec("reset-banner", to: "#banner-#{String.replace(@id, "form", "call")}")}
+            type="button"
+            class="hidden py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+          >
+            Show Banner
+          </button>
         </div>
 
         <Aside.aside_accordion
