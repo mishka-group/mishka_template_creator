@@ -3,7 +3,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
   import Phoenix.HTML.Form
   use Phoenix.Component
 
-  alias MishkaTemplateCreator.Components.Elements.Banner
   alias Phoenix.LiveView.JS
   alias MishkaTemplateCreator.Components.Layout.Aside
   alias MishkaTemplateCreatorWeb.MishkaCoreComponent
@@ -15,70 +14,33 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
   alias MishkaTemplateCreator.Components.Blocks.Icon
 
   @common_style %{
-    "info" => [
+    "sticky_top" => [
+      "fixed",
+      "top-0",
+      "left-0",
+      "z-50",
       "flex",
-      "flex-col",
-      "gap-2",
-      "px-4",
-      "py-2",
-      "text-blue-800",
+      "justify-between",
+      "w-full",
+      "p-4",
       "border",
-      "border-blue-300",
-      "rounded-lg",
-      "bg-blue-50",
-      "text-xs"
-    ],
-    "danger" => [
-      "flex",
-      "flex-col",
-      "gap-2",
-      "px-4",
-      "py-2",
-      "text-red-800",
-      "border",
-      "border-red-300",
-      "rounded-lg",
-      "bg-red-50",
-      "text-xs"
-    ],
-    "success" => [
-      "flex",
-      "flex-col",
-      "gap-2",
-      "px-4",
-      "py-2",
-      "text-green-800",
-      "border",
-      "border-green-300",
-      "rounded-lg",
-      "bg-green-50",
-      "text-xs"
-    ],
-    "warning" => [
-      "flex",
-      "flex-col",
-      "gap-2",
-      "px-4",
-      "py-2",
-      "text-yellow-800",
-      "border",
-      "border-yellow-300",
-      "rounded-lg",
-      "bg-yellow-50",
-      "text-xs"
-    ],
-    "light" => [
-      "flex",
-      "flex-col",
-      "gap-2",
-      "px-4",
-      "py-2",
-      "text-gray-800",
-      "border",
-      "border-gray-300",
-      "rounded-lg",
+      "border-gray-200",
       "bg-gray-50",
-      "text-xs"
+      "text-base",
+    ],
+    "sticky_bottom" => [
+      "fixed",
+      "bottom-0",
+      "left-0",
+      "z-50",
+      "flex",
+      "justify-between",
+      "w-full",
+      "p-4",
+      "border",
+      "border-gray-200",
+      "bg-gray-50",
+      "text-base",
     ]
   }
 
@@ -148,8 +110,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
         <div class={@element["class"]}>
           <div class="flex items-center mx-auto">
             <p class="flex items-center text-sm font-normal text-gray-500">
-              <span class="inline-flex p-1 mr-3 bg-gray-200 rounded-full">
-                <Heroicons.light_bulb class="w-4 h-4 text-gray-500" />
+              <span class="inline-flex p-1 mx-3 bg-gray-200 rounded-full">
+                <Icon.dynamic module={@element["icon"]} class={@element["icon_class"]} />
                 <span class="sr-only">Light bulb</span>
               </span>
               <%= Phoenix.HTML.raw(@element["html"]) %>
@@ -159,9 +121,9 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
             <button
               phx-click={JS.exec("reset-banner", to: "#banner-#{@id}")}
               type="button"
-              class="flex-shrink-0 inline-flex justify-center items-center text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white"
+              class={@element["close_btn"]}
             >
-              <Icon.dynamic module={@element["icon"]} class={@element["icon_class"]} />
+              <Icon.dynamic module={@element["close_icon"]} class={@element["close_icon_class"]} />
               <span class="sr-only">Close banner</span>
             </button>
           </div>
@@ -242,13 +204,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
             class="w-full m-0 p-0 flex flex-col"
           >
             <div class="flex flex-col w-full items-center justify-center pb-5 gap-4">
-              <%= text_input(f, :title,
-                class:
-                  "block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                value: @element["title"],
-                placeholder: "banner Title"
-              ) %>
-
               <div class="block w-full">
                 <%= textarea(f, :html,
                   class:
@@ -276,58 +231,25 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
           title="Common Styles"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <div class="grid grid-cols-3 gap-2 w-full my-5 pt-2 items-center">
+          <div class="flex flex-warp gap-2 w-full my-5 pt-2 items-center">
             <div
               :for={{key, classes} <- @common_style}
-              class={classes}
               role="banner"
               phx-click="common_style"
               phx-value-type={key}
               phx-target={@myself}
             >
-              <span
-                :if={@element["title"] != "" and !is_nil(@element["title"])}
-                class="font-medium text-sm"
-              >
-                The Title
+              <span class="flex flex-row items-center px-2 py-1 text-sm font-medium text-gray-800 bg-gray-100 rounded cursor-pointer hover:bg-gray-300 hover:text-gray-900">
+                <button
+                  type="button"
+                  class="inline-flex items-center p-0.5 text-sm bg-transparent rounded-sm hover:bg-gray-200 hover:text-gray-900"
+                >
+                  <Heroicons.stop class="w-5 h-5" />
+                </button>
+                <%= String.replace(key, "_", " ") |> String.upcase() %>
               </span>
-              <div class={@element["content_class"]}>Some Text here</div>
             </div>
           </div>
-        </Aside.aside_accordion>
-
-        <Aside.aside_accordion
-          id={"banner-#{@id}"}
-          title="Title and Content custom Style"
-          title_class="my-4 w-full text-center font-bold select-none text-lg"
-        >
-          <Aside.aside_accordion id={"banner-#{@id}"} title="Title style" open={false}>
-            <Text.font_style
-              myself={@myself}
-              classes={@element["title_class"]}
-              as={:title_banner_font_style}
-              id={@id}
-            />
-            <Color.select
-              myself={@myself}
-              event_name="title_banner_font_style"
-              classes={@element["title_class"]}
-            />
-          </Aside.aside_accordion>
-
-          <Aside.aside_accordion id={"banner-#{@id}"} title="Content style" open={false}>
-            <Text.font_style
-              myself={@myself}
-              classes={@element["content_class"]}
-              as={:content_banner_font_style}
-              id={@id}
-            />
-            <Color.select
-              myself={@myself}
-              event_name="content_banner_font_style"
-              classes={@element["content_class"]}
-            />
-          </Aside.aside_accordion>
         </Aside.aside_accordion>
 
         <Aside.aside_accordion
@@ -335,55 +257,29 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <Aside.aside_accordion id={"banner-#{@id}"} title="Alignment" open={false}>
-            <Text.alignment_selector myself={@myself} />
-            <Text.direction_selector myself={@myself} />
+          <Aside.aside_accordion id={"banner-#{@id}"} title="Icon Settings" open={false}>
+            <Icon.select
+              selected={String.replace(@element["icon"], "Heroicons.", "")}
+              myself={@myself}
+              block_id={@id}
+            />
+
+            <Icon.select_size
+              myself={@myself}
+              classes={@element["icon_class"]}
+              as={:banner_icon_style}
+              id_input={@id}
+            />
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"banner-#{@id}"} title="Font and banner Style" open={false}>
+            <Text.direction_selector myself={@myself} />
             <Text.font_style
               myself={@myself}
               classes={@element["class"]}
               as={:public_banner_font_style}
               id={@id}
             />
-
-            <div class="flex flex-col w-full items-center justify-center">
-              <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
-                <li
-                  class={"#{create_border_radius(@element["class"], "rounded-none")} px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer"}
-                  phx-click="border_radius"
-                  phx-value-type="rounded-none"
-                  phx-target={@myself}
-                >
-                  None
-                </li>
-                <li
-                  class={"#{create_border_radius(@element["class"], "rounded-sm")} px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer"}
-                  phx-click="border_radius"
-                  phx-value-type="rounded-sm"
-                  phx-target={@myself}
-                >
-                  SM
-                </li>
-                <li
-                  class={"#{create_border_radius(@element["class"], "rounded-md")} px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer"}
-                  phx-click="border_radius"
-                  phx-value-type="rounded-md"
-                  phx-target={@myself}
-                >
-                  MD
-                </li>
-                <li
-                  class={"#{create_border_radius(@element["class"], "rounded-lg")} px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"}
-                  phx-click="border_radius"
-                  phx-value-type="rounded-lg"
-                  phx-target={@myself}
-                >
-                  LG
-                </li>
-              </ul>
-            </div>
 
             <Color.select
               myself={@myself}
@@ -395,7 +291,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
               title="Background Color:"
               type="bg"
               myself={@myself}
-              event_name="banner_font_style"
+              event_name="banner_background_style"
               classes={@element["class"]}
             />
           </Aside.aside_accordion>
@@ -456,10 +352,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
     {:noreply, socket}
   end
 
-  def handle_event("text_edit", %{"banner_edit" => %{"html" => html, "title" => title}}, socket) do
+  def handle_event("text_edit", %{"banner_edit" => %{"html" => html}}, socket) do
     updated =
       socket.assigns.element
-      |> Map.merge(%{"html" => html, "title" => title})
+      |> Map.merge(%{"html" => html})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
@@ -517,29 +413,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
     {:noreply, socket}
   end
 
-  def handle_event("text_alignment", %{"type" => type}, socket)
-      when type in ["start", "center", "end", "justify"] do
-    text_aligns =
-      TailwindSetting.get_form_options("typography", "text-align", nil, nil).form_configs
-
-    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_aligns)) ++ ["text-#{type}"]
-
-    send(
-      self(),
-      {"element",
-       %{
-         "update_class" =>
-           %{
-             "class" => Enum.join(class, " "),
-             "action" => :string_classes
-           }
-           |> Map.merge(socket.assigns.selected_form)
-       }}
-    )
-
-    {:noreply, socket}
-  end
-
   def handle_event(
         "font_style",
         %{"public_banner_font_style" => %{"font" => font, "font_size" => font_size}},
@@ -560,40 +433,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
     {:noreply, socket}
   end
 
-  def handle_event(
-        "font_style",
-        %{"title_banner_font_style" => %{"font" => font, "font_size" => font_size}},
-        socket
-      ) do
-    class = Text.edit_font_style_class(socket.assigns.element["title_class"], font_size, font)
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"title_class" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event(
-        "font_style",
-        %{"content_banner_font_style" => %{"font" => font, "font_size" => font_size}},
-        socket
-      ) do
-    class = Text.edit_font_style_class(socket.assigns.element["content_class"], font_size, font)
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"content_class" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
   def handle_event("public_banner_font_style", %{"color" => color}, socket) do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
@@ -610,7 +449,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
     {:noreply, socket}
   end
 
-  def handle_event("banner_font_style", %{"color" => color}, socket) do
+  def handle_event("banner_background_style", %{"color" => color}, socket) do
     bg_colors =
       TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
 
@@ -619,38 +458,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
     updated =
       socket.assigns.element
       |> Map.merge(%{"class" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event("content_banner_font_style", %{"color" => color}, socket) do
-    text_colors =
-      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
-
-    class = Enum.reject(socket.assigns.element["content_class"], &(&1 in text_colors)) ++ [color]
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"content_class" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event("title_banner_font_style", %{"color" => color}, socket) do
-    text_colors =
-      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
-
-    class = Enum.reject(socket.assigns.element["title_class"], &(&1 in text_colors)) ++ [color]
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"title_class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
@@ -669,14 +476,27 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
     {:noreply, socket}
   end
 
-  def handle_event("border_radius", %{"type" => type}, socket) do
-    borders = TailwindSetting.get_form_options("borders", "border-radius", nil, nil).form_configs
+  def handle_event("select_icon", %{"name" => name}, socket) do
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"icon" => "Heroicons.#{name}"})
+      |> Map.merge(socket.assigns.selected_form)
 
-    class = Enum.reject(socket.assigns.element["class"], &(&1 in borders)) ++ [type]
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"banner_icon_style" => %{"height" => height, "width" => width}},
+        socket
+      ) do
+    class = Icon.edit_icon_size(socket.assigns.element["icon_class"], [width, height])
 
     updated =
       socket.assigns.element
-      |> Map.merge(%{"class" => class})
+      |> Map.merge(%{"icon_class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})

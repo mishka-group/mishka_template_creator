@@ -9572,9 +9572,23 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   def default_element("banner") do
     %{
       "html" =>
-        "<p>This is an HTML test line you should change it, <a href=\"#\">More information</a></p>",
-      "icon" => "Heroicons.x_mark",
-      "icon_class" => "w-4 h-4",
+        "<p>This is an HTML test line you should change it, <a href=\"#\" class=\"text-blue-500\">More information</a></p>",
+      "close_icon" => "Heroicons.x_mark",
+      "icon" => "Heroicons.light_bulb",
+      "icon_class" => ["w-4", "h-4", "text-gray-500"],
+      "close_icon_class" => ["w-4", "h-4"],
+      "close_btn" => [
+        "flex-shrink-0",
+        "inline-flex",
+        "justify-center",
+        "items-center",
+        "text-gray-400",
+        "hover:bg-gray-200",
+        "hover:text-gray-900",
+        "rounded-lg",
+        "text-sm",
+        "p-1.5"
+      ],
       "class" => [
         "fixed",
         "top-0",
@@ -9584,9 +9598,10 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "justify-between",
         "w-full",
         "p-4",
-        "border-b",
+        "border",
         "border-gray-200",
-        "bg-gray-50"
+        "bg-gray-50",
+        "text-base",
       ]
     }
   end
