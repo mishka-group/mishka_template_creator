@@ -197,7 +197,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
 
         <div class="flex flex-row justify-center items-center w-full">
           <button
-            id={"banner-hide-#{@id}"}
+            id={"banner-hide-#{String.replace(@id, "form", "call")}"}
             phx-click={JS.exec("reset-banner", to: "#banner-#{String.replace(@id, "form", "call")}")}
             type="button"
             class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
@@ -205,7 +205,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
             Hide Banner
           </button>
           <button
-            id={"banner-show-#{@id}"}
+            id={"banner-show-#{String.replace(@id, "form", "call")}"}
             phx-click={JS.exec("reset-banner", to: "#banner-#{String.replace(@id, "form", "call")}")}
             type="button"
             class="hidden py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
@@ -257,7 +257,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
         >
           <div class="flex flex-warp gap-2 w-full my-5 pt-2 items-center">
             <div
-              :for={{key, classes} <- @common_style}
+              :for={{key, _classes} <- @common_style}
               role="banner"
               phx-click="common_style"
               phx-value-type={key}
@@ -546,13 +546,5 @@ defmodule MishkaTemplateCreator.Components.Elements.Banner do
     send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
 
     {:noreply, socket}
-  end
-
-  defp create_border_radius(classes, type, bg_color \\ "") do
-    Enum.find(classes, &(&1 == type))
-    |> case do
-      nil -> bg_color
-      _ -> "bg-gray-300"
-    end
   end
 end
