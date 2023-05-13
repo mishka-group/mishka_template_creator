@@ -9601,7 +9601,26 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "border",
         "border-gray-200",
         "bg-gray-50",
-        "text-base",
+        "text-base"
+      ]
+    }
+  end
+
+  def default_element("bottom_navigation") do
+    %{
+      "class" => [
+        "fixed",
+        "top-0",
+        "left-0",
+        "z-50",
+        "flex",
+        "justify-between",
+        "w-full",
+        "p-4",
+        "border",
+        "border-gray-200",
+        "bg-gray-50",
+        "text-base"
       ]
     }
   end

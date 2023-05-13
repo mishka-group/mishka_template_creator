@@ -111,10 +111,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Section do
   attr(:rest, :global)
 
   def element(%{rest: %{type: type}} = assigns) do
+    module_converted_name =
+      if String.contains?(type, "_") do
+        String.split(type, "_")
+        |> Enum.map(&String.capitalize(&1))
+        |> Enum.join()
+      else
+        String.capitalize(type)
+      end
+
     atom_created =
       Module.safe_concat(
         "Elixir.MishkaTemplateCreator.Components.Elements",
-        String.capitalize(type)
+        module_converted_name
       )
 
     assigns = assign(assigns, :block_module, atom_created)

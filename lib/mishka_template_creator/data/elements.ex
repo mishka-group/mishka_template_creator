@@ -17,7 +17,8 @@ defmodule MishkaTemplateCreator.Data.Elements do
     {"avatar", "Avatar", "Heroicons.inbox_stack", ["section"]},
     {"badge", "Badge", "Heroicons.inbox_stack", ["section"]},
     {"breadcrumb", "Breadcrumb", "Heroicons.inbox_stack", ["section"]},
-    {"banner", "Banner", "Heroicons.inbox_stack", ["section"]}
+    {"banner", "Banner", "Heroicons.inbox_stack", ["section"]},
+    {"bottom_navigation", "Bottom Navigation", "Heroicons.inbox_stack", ["section"]}
   ]
 
   @media_items [

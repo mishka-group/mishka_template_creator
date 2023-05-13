@@ -43,7 +43,7 @@ defmodule MishkaTemplateCreator.MixProject do
       {:floki, ">= 0.34.2", only: :test},
       {:phoenix_live_dashboard, "~> 0.7.2"},
       {:esbuild, "~> 0.6", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.1.10", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.9.1"},
       {:finch, "~> 0.14"},
       {:telemetry_metrics, "~> 0.6"},

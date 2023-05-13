@@ -14,7 +14,13 @@ defmodule MishkaTemplateCreator.Components.Layout.Aside do
         do:
           Module.safe_concat(
             "Elixir.MishkaTemplateCreator.Components.Elements",
-            String.capitalize(selected_form["type"])
+            if String.contains?(selected_form["type"], "_") do
+              String.split(selected_form["type"], "_")
+              |> Enum.map(&String.capitalize(&1))
+              |> Enum.join()
+            else
+              String.capitalize(selected_form["type"])
+            end
           ),
         else: nil
 
