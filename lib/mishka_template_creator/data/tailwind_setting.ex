@@ -9615,17 +9615,14 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     %{
       "class" => [
         "fixed",
-        "top-0",
+        "bottom-0",
         "left-0",
         "z-50",
-        "flex",
-        "justify-between",
         "w-full",
-        "p-4",
-        "border",
-        "border-gray-200",
-        "bg-gray-50",
-        "text-base"
+        "h-16",
+        "bg-white",
+        "border-t",
+        "border-gray-200"
       ],
       "button_class" => [
         "inline-flex",

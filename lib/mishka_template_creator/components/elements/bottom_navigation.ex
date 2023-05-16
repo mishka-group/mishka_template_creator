@@ -13,74 +13,6 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
   alias MishkaTemplateCreator.Components.Elements.Text
   alias MishkaTemplateCreator.Components.Blocks.Icon
 
-  @common_style %{
-    "info" => [
-      "flex",
-      "flex-col",
-      "gap-2",
-      "px-4",
-      "py-2",
-      "text-blue-800",
-      "border",
-      "border-blue-300",
-      "rounded-lg",
-      "bg-blue-50",
-      "text-xs"
-    ],
-    "danger" => [
-      "flex",
-      "flex-col",
-      "gap-2",
-      "px-4",
-      "py-2",
-      "text-red-800",
-      "border",
-      "border-red-300",
-      "rounded-lg",
-      "bg-red-50",
-      "text-xs"
-    ],
-    "success" => [
-      "flex",
-      "flex-col",
-      "gap-2",
-      "px-4",
-      "py-2",
-      "text-green-800",
-      "border",
-      "border-green-300",
-      "rounded-lg",
-      "bg-green-50",
-      "text-xs"
-    ],
-    "warning" => [
-      "flex",
-      "flex-col",
-      "gap-2",
-      "px-4",
-      "py-2",
-      "text-yellow-800",
-      "border",
-      "border-yellow-300",
-      "rounded-lg",
-      "bg-yellow-50",
-      "text-xs"
-    ],
-    "light" => [
-      "flex",
-      "flex-col",
-      "gap-2",
-      "px-4",
-      "py-2",
-      "text-gray-800",
-      "border",
-      "border-gray-300",
-      "rounded-lg",
-      "bg-gray-50",
-      "text-xs"
-    ]
-  }
-
   @impl true
   def update(
         %{
@@ -107,8 +39,7 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
         render_type: render_type,
         selected_form: selected_form,
         element: element,
-        submit: submit,
-        common_style: @common_style
+        submit: submit
       )
 
     {:ok, new_socket}
@@ -143,10 +74,7 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
         |> JS.push("get_element_layout_id", value: %{myself: @myself.cid})
       }
     >
-      <div
-        class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200"
-        id={"bottom-navigation-#{@id}"}
-      >
+      <div class={@element["class"]} id={"bottom-navigation-#{@id}"}>
         <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
           <%= for {%{id: _key, data: data}, _index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>
             <button type="button" class={@element["button_class"]}>
@@ -160,7 +88,7 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
       </div>
 
       <div
-        class="w-full h-16 bg-white border-t border-gray-200"
+        class={Enum.reject(@element["class"], &(&1 in ["fixed", "bottom-0", "left-0", "z-50"]))}
         id={"bottom-navigation-section-#{@id}"}
       >
         <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
@@ -228,47 +156,19 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
 
         <Aside.aside_accordion
           id={"bottom_navigation-#{@id}"}
-          title="Common Styles"
-          title_class="my-4 w-full text-center font-bold select-none text-lg"
-        >
-          <div class="grid grid-cols-3 gap-2 w-full my-5 pt-2 items-center">
-            <div
-              :for={{key, classes} <- @common_style}
-              class={classes}
-              role="bottom_navigation"
-              phx-click="common_style"
-              phx-value-type={key}
-              phx-target={@myself}
-            >
-              <span
-                :if={@element["title"] != "" and !is_nil(@element["title"])}
-                class="font-medium text-sm"
-              >
-                The Title
-              </span>
-              <div class={@element["content_class"]}>Some Text here</div>
-            </div>
-          </div>
-        </Aside.aside_accordion>
-
-        <Aside.aside_accordion
-          id={"bottom_navigation-#{@id}"}
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <Aside.aside_accordion id={"bottom_navigation-#{@id}"} title="Alignment" open={false}>
-            <Text.alignment_selector myself={@myself} />
-            <Text.direction_selector myself={@myself} />
-          </Aside.aside_accordion>
-
           <Aside.aside_accordion
             id={"bottom_navigation-#{@id}"}
-            title="Font and bottom_navigation Style"
+            title="Font and Bottom Navigation Style"
             open={false}
           >
+            <Text.direction_selector myself={@myself} />
+
             <Text.font_style
               myself={@myself}
-              classes={@element["class"]}
+              classes={@element["title_class"]}
               as={:public_bottom_navigation_font_style}
               id={@id}
             />
@@ -276,14 +176,14 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
             <Color.select
               myself={@myself}
               event_name="public_bottom_navigation_font_style"
-              classes={@element["class"]}
+              classes={@element["title_class"]}
             />
 
             <Color.select
               title="Background Color:"
               type="bg"
               myself={@myself}
-              event_name="bottom_navigation_font_style"
+              event_name="bottom_navigation_background_style"
               classes={@element["class"]}
             />
           </Aside.aside_accordion>
@@ -409,45 +309,19 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
     {:noreply, socket}
   end
 
-  def handle_event("text_alignment", %{"type" => type}, socket)
-      when type in ["start", "center", "end", "justify"] do
-    text_aligns =
-      TailwindSetting.get_form_options("typography", "text-align", nil, nil).form_configs
-
-    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_aligns)) ++ ["text-#{type}"]
-
-    send(
-      self(),
-      {"element",
-       %{
-         "update_class" =>
-           %{
-             "class" => Enum.join(class, " "),
-             "action" => :string_classes
-           }
-           |> Map.merge(socket.assigns.selected_form)
-       }}
-    )
-
-    {:noreply, socket}
-  end
-
   def handle_event(
         "font_style",
         %{"public_bottom_navigation_font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    class = Text.edit_font_style_class(socket.assigns.element["class"], font_size, font)
+    class = Text.edit_font_style_class(socket.assigns.element["title_class"], font_size, font)
 
-    send(
-      self(),
-      {"element",
-       %{
-         "update_class" =>
-           %{"class" => Enum.join(class, " "), "action" => :string_classes}
-           |> Map.merge(socket.assigns.selected_form)
-       }}
-    )
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"title_class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
@@ -456,11 +330,14 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
-    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_colors)) ++ [color]
+    class = Enum.reject(socket.assigns.element["title_class"], &(&1 in text_colors)) ++ [color]
+
+    icon_class =
+      Enum.reject(socket.assigns.element["icon_class"], &(&1 in text_colors)) ++ [color]
 
     updated =
       socket.assigns.element
-      |> Map.merge(%{"class" => class})
+      |> Map.merge(%{"title_class" => class, "icon_class" => icon_class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
@@ -468,10 +345,15 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
     {:noreply, socket}
   end
 
-  def handle_event("common_style", %{"type" => type}, socket) do
+  def handle_event("bottom_navigation_background_style", %{"color" => color}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in bg_colors)) ++ [color]
+
     updated =
       socket.assigns.element
-      |> Map.merge(%{"class" => @common_style[type]})
+      |> Map.merge(%{"class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
