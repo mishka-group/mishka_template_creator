@@ -149,7 +149,9 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
         <div class="flex flex-row justify-center items-center w-full">
           <button
             id={"bottom-navigation-hide-#{String.replace(@id, "form", "call")}"}
-            phx-click={JS.exec("reset-banner", to: "#bottom-navigation-#{String.replace(@id, "form", "call")}")}
+            phx-click={
+              JS.exec("reset-banner", to: "#bottom-navigation-#{String.replace(@id, "form", "call")}")
+            }
             type="button"
             class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
           >
@@ -157,7 +159,9 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
           </button>
           <button
             id={"bottom-navigation-show-#{String.replace(@id, "form", "call")}"}
-            phx-click={JS.exec("reset-banner", to: "#bottom-navigation-#{String.replace(@id, "form", "call")}")}
+            phx-click={
+              JS.exec("reset-banner", to: "#bottom-navigation-#{String.replace(@id, "form", "call")}")
+            }
             type="button"
             class="hidden py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
           >
@@ -170,7 +174,102 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
           title="Bottom Navigation Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          sss
+          <:before_title_block>
+            <Heroicons.plus class="w-5 h-5 cursor-pointer" phx-click="add" phx-target={@myself} />
+          </:before_title_block>
+
+          <div class="w-full flex flex-col gap-3 space-y-4 pt-3">
+            <span
+              :if={length(@element["order"]) == 0}
+              class="mx-auto border border-gray-200 bg-gray-100 font-bold py-2 px-3"
+            >
+              There is no menu item for this Bottom Navigation
+            </span>
+
+            <div
+              :for={
+                {%{id: key, data: data}, index} <-
+                  Enum.with_index(
+                    MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])
+                  )
+              }
+              class="w-full flex flex-col justify-between items-center"
+            >
+              <div class="w-full flex flex-row justify-between items-center">
+                <span
+                  class="font-bold text-base select-none cursor-pointer"
+                  id={"title-#{key}-#{index}"}
+                  phx-click={JS.toggle(to: "#bottom-navigation-#{key}-#{index}")}
+                >
+                  <%= data["title"] %>
+                </span>
+
+                <div class="flex flex-row justify-end items-center gap-2">
+                  <div
+                    class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                    phx-click={JS.toggle(to: "#bottom-navigation-#{key}-#{index}")}
+                  >
+                    <Heroicons.pencil_square class="w-5 h-5" />
+                    <span class="text-base select-none">
+                      Edit
+                    </span>
+                  </div>
+                  <div
+                    class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                    phx-click="delete"
+                    phx-value-type="header"
+                    phx-value-index={index}
+                    phx-target={@myself}
+                  >
+                    <Heroicons.trash class="w-5 h-5 text-red-600" />
+                    <span class="text-base select-none">Delete</span>
+                  </div>
+                </div>
+              </div>
+
+              <div id={"bottom-navigation-#{key}-#{index}"} class="hidden">
+                <MishkaCoreComponent.custom_simple_form
+                  :let={f}
+                  for={%{}}
+                  as={:bottom_navigation_component}
+                  phx-submit="edit"
+                  phx-target={@myself}
+                  class="flex flex-row w-full justify-start gap-2 py-5"
+                >
+                  <%= text_input(f, :title,
+                    class:
+                      "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                    placeholder: "Change Title",
+                    value: data["title"],
+                    id: "title-#{key}-#{index}-field"
+                  ) %>
+
+                  <%= text_input(f, :link,
+                    class:
+                      "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                    placeholder: "Change Title",
+                    value: data["link"],
+                    id: "link-#{key}-#{index}-field"
+                  ) %>
+
+                  <.input
+                    field={f[:key]}
+                    type="hidden"
+                    value={key}
+                    id={"navigation-#{key}-#{index}-id"}
+                  />
+
+                  <button
+                    type="submit"
+                    class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
+                    phx-click={JS.toggle(to: "#bottom-navigation-#{key}-#{index}")}
+                  >
+                    Save
+                  </button>
+                </MishkaCoreComponent.custom_simple_form>
+              </div>
+            </div>
+          </div>
         </Aside.aside_accordion>
 
         <Aside.aside_accordion
