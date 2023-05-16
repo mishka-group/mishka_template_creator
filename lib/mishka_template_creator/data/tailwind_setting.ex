@@ -9607,6 +9607,11 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
   end
 
   def default_element("bottom_navigation") do
+    id = Ecto.UUID.generate()
+    id1 = Ecto.UUID.generate()
+    id2 = Ecto.UUID.generate()
+    id3 = Ecto.UUID.generate()
+
     %{
       "class" => [
         "fixed",
@@ -9621,7 +9626,41 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "border-gray-200",
         "bg-gray-50",
         "text-base"
-      ]
+      ],
+      "button_class" => [
+        "inline-flex",
+        "flex-col",
+        "items-center",
+        "justify-center",
+        "px-5",
+        "hover:bg-gray-50",
+        "group/btnav"
+      ],
+      "title_class" => ["text-sm", "text-gray-500", "group-hover/btnav:text-blue-600"],
+      "icon_class" => ["w-6", "h-6", "mb-1", "text-gray-500", "group-hover/btnav:text-blue-600"],
+      "children" => %{
+        "#{id}" => %{
+          "title" => "Home",
+          "link" => "#",
+          "icon" => "Heroicons.home"
+        },
+        "#{id1}" => %{
+          "title" => "Wallet",
+          "link" => "#",
+          "icon" => "Heroicons.wallet"
+        },
+        "#{id2}" => %{
+          "title" => "Server",
+          "link" => "#",
+          "icon" => "Heroicons.server"
+        },
+        "#{id3}" => %{
+          "title" => "User",
+          "link" => "#",
+          "icon" => "Heroicons.user"
+        }
+      },
+      "order" => [id, id1, id2, id3]
     }
   end
 

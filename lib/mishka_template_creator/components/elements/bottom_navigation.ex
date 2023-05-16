@@ -136,45 +136,42 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
       phx-value-myself={@myself}
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
+      reset-banner={
+        JS.toggle(to: "#banner-box-#{@id}")
+        |> JS.toggle(to: "#banner-show-#{@id}")
+        |> JS.toggle(to: "#banner-hide-#{@id}")
+        |> JS.push("get_element_layout_id", value: %{myself: @myself.cid})
+      }
     >
-      <div class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200">
+      <div
+        class="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200"
+        id={"bottom-navigation-#{@id}"}
+      >
         <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
-          <button
-            type="button"
-            class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group/item"
-          >
-            <Heroicons.home class="w-6 h-6 mb-1 text-gray-500 group-hover/item:text-red-600" />
-            <span class="text-sm text-gray-500 group-hover/item:text-red-600">
-              Home
-            </span>
-          </button>
-          <button
-            type="button"
-            class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group/item"
-          >
-            <Heroicons.wallet class="w-6 h-6 mb-1 text-gray-500 group-hover/item:text-blue-600" />
-            <span class="text-sm text-gray-500 group-hover/item:text-blue-600">
-              Wallet
-            </span>
-          </button>
-          <button
-            type="button"
-            class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group/item"
-          >
-            <Heroicons.server class="w-6 h-6 mb-1 text-gray-500 group-hover/item:text-blue-600" />
-            <span class="text-sm text-gray-500 group-hover/item:text-blue-600">
-              Settings
-            </span>
-          </button>
-          <button
-            type="button"
-            class="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group/item"
-          >
-            <Heroicons.user class="w-6 h-6 mb-1 text-gray-500 group-hover/item:text-blue-600" />
-            <span class="text-sm text-gray-500 group-hover/item:text-blue-600">
-              Profile
-            </span>
-          </button>
+          <%= for {%{id: _key, data: data}, _index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>
+            <button type="button" class={@element["button_class"]}>
+              <Icon.dynamic module={data["icon"]} class={@element["icon_class"]} />
+              <span class={@element["title_class"]}>
+                <%= data["title"] %>
+              </span>
+            </button>
+          <% end %>
+        </div>
+      </div>
+
+      <div
+        class="w-full h-16 bg-white border-t border-gray-200"
+        id={"bottom-navigation-section-#{@id}"}
+      >
+        <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+          <%= for {%{id: _key, data: data}, _index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>
+            <button type="button" class={@element["button_class"]}>
+              <Icon.dynamic module={data["icon"]} class={@element["icon_class"]} />
+              <span class={@element["title_class"]}>
+                <%= data["title"] %>
+              </span>
+            </button>
+          <% end %>
         </div>
       </div>
     </div>
