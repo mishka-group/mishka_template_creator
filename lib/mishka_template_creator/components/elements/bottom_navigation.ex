@@ -217,8 +217,7 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
                   <div
                     class="flex flex-row justify-center items-start gap-2 cursor-pointer"
                     phx-click="delete"
-                    phx-value-type="header"
-                    phx-value-index={index}
+                    phx-value-id={key}
                     phx-target={@myself}
                   >
                     <Heroicons.trash class="w-5 h-5 text-red-600" />
@@ -234,8 +233,10 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
                   as={:bottom_navigation_component}
                   phx-submit="edit"
                   phx-target={@myself}
-                  class="flex flex-row w-full justify-start gap-2 py-5"
+                  class="flex flex-col w-full justify-start gap-2 py-5"
                 >
+
+                  <p class="font-bold text-sm">Title</p>
                   <%= text_input(f, :title,
                     class:
                       "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
@@ -244,6 +245,7 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
                     id: "title-#{key}-#{index}-field"
                   ) %>
 
+                  <p class="font-bold text-sm">Link</p>
                   <%= text_input(f, :link,
                     class:
                       "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
@@ -251,6 +253,13 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
                     value: data["link"],
                     id: "link-#{key}-#{index}-field"
                   ) %>
+
+                  <p class="font-bold text-sm">Icon</p>
+                  <Icon.select
+                    selected={String.replace(data["icon"], "Heroicons.", "")}
+                    myself={@myself}
+                    block_id={key}
+                  />
 
                   <.input
                     field={f[:key]}
@@ -261,7 +270,7 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
 
                   <button
                     type="submit"
-                    class="px-4 py-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
+                    class="w-24 px-4 py-2 mx-auto text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
                     phx-click={JS.toggle(to: "#bottom-navigation-#{key}-#{index}")}
                   >
                     Save
@@ -489,6 +498,19 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
            |> Map.merge(socket.assigns.selected_form)
        }}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("delete", %{"id" => id}, socket) do
+    {_, elements} = pop_in(socket.assigns.element, ["children", id])
+
+    updated =
+      elements
+      |> Map.merge(%{"order" => Enum.reject(socket.assigns.element["order"], &(&1 == id))})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end

@@ -753,6 +753,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Accordion do
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
+
     {:noreply, socket}
   end
 
