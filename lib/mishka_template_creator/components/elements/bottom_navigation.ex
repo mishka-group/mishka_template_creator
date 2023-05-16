@@ -60,7 +60,7 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
     ~H"""
     <div
       data-type="bottom_navigation"
-      id={"bottom_navigation-#{@id}"}
+      id={"bottom-navigation-#{@id}"}
       data-id={String.replace(@id, "-call", "")}
       data-parent-type="section"
       phx-click="get_element_layout_id"
@@ -68,13 +68,13 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
       reset-banner={
-        JS.toggle(to: "#banner-box-#{@id}")
-        |> JS.toggle(to: "#banner-show-#{@id}")
-        |> JS.toggle(to: "#banner-hide-#{@id}")
+        JS.toggle(to: "#bottom-navigation-box-#{@id}")
+        |> JS.toggle(to: "#bottom-navigation-show-#{@id}")
+        |> JS.toggle(to: "#bottom-navigation-hide-#{@id}")
         |> JS.push("get_element_layout_id", value: %{myself: @myself.cid})
       }
     >
-      <div class={@element["class"]} id={"bottom-navigation-#{@id}"}>
+      <div class={@element["class"]} id={"bottom-navigation-box-#{@id}"}>
         <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
           <%= for {%{id: _key, data: data}, _index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>
             <button type="button" class={@element["button_class"]}>
@@ -144,6 +144,25 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
               </a>
             </li>
           </ul>
+        </div>
+
+        <div class="flex flex-row justify-center items-center w-full">
+          <button
+            id={"bottom-navigation-hide-#{String.replace(@id, "form", "call")}"}
+            phx-click={JS.exec("reset-banner", to: "#bottom-navigation-#{String.replace(@id, "form", "call")}")}
+            type="button"
+            class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+          >
+            Hide Navigation
+          </button>
+          <button
+            id={"bottom-navigation-show-#{String.replace(@id, "form", "call")}"}
+            phx-click={JS.exec("reset-banner", to: "#bottom-navigation-#{String.replace(@id, "form", "call")}")}
+            type="button"
+            class="hidden py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+          >
+            Show Navigation
+          </button>
         </div>
 
         <Aside.aside_accordion
