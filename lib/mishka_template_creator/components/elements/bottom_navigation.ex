@@ -393,6 +393,23 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
   end
 
   def handle_event(
+        "edit",
+        %{"bottom_navigation_component" => %{"title" => title, "link" => link, "key" => id}},
+        socket
+      ) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", id], fn selected_element ->
+        Map.merge(selected_element, %{"title" => title, "link" => link})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
         "text_edit",
         %{"bottom_navigation_edit" => %{"html" => html, "title" => title}},
         socket
