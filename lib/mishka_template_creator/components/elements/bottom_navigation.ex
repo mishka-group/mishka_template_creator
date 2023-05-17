@@ -299,6 +299,14 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
               id={@id}
             />
 
+            <Icon.select_size
+              myself={@myself}
+              classes={@element["icon_class"]}
+              as={:bottom_navigation_icon_style}
+              id_input={@id}
+              id={@id}
+            />
+
             <Color.select
               myself={@myself}
               event_name="public_bottom_navigation_font_style"
@@ -402,6 +410,23 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
       |> update_in(["children", id], fn selected_element ->
         Map.merge(selected_element, %{"title" => title, "link" => link})
       end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"bottom_navigation_icon_style" => %{"height" => height, "width" => width}},
+        socket
+      ) do
+    class = Icon.edit_icon_size(socket.assigns.element["icon_class"], [width, height])
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"icon_class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
