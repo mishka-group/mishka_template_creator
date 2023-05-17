@@ -75,7 +75,7 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
       }
     >
       <div class={@element["class"]} id={"bottom-navigation-box-#{@id}"}>
-        <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+        <div class="flex flex-warp h-full mx-auto font-medium justify-center items-stretch">
           <%= for {%{id: _key, data: data}, _index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>
             <button type="button" class={@element["button_class"]}>
               <Icon.dynamic module={data["icon"]} class={@element["icon_class"]} />
@@ -91,7 +91,7 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
         class={Enum.reject(@element["class"], &(&1 in ["fixed", "bottom-0", "left-0", "z-50"]))}
         id={"bottom-navigation-section-#{@id}"}
       >
-        <div class="grid h-full max-w-lg grid-cols-4 mx-auto font-medium">
+        <div class="flex flex-warp h-full mx-auto font-medium justify-center items-stretch">
           <%= for {%{id: _key, data: data}, _index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>
             <button type="button" class={@element["button_class"]}>
               <Icon.dynamic module={data["icon"]} class={@element["icon_class"]} />
@@ -235,7 +235,6 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
                   phx-target={@myself}
                   class="flex flex-col w-full justify-start gap-2 py-5"
                 >
-
                   <p class="font-bold text-sm">Title</p>
                   <%= text_input(f, :title,
                     class:
@@ -367,6 +366,28 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
          "parent_id" => parent_id
        }}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("add", _params, socket) do
+    unique_id = Ecto.UUID.generate()
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children"], fn selected_element ->
+        Map.merge(selected_element, %{
+          "#{unique_id}" => %{
+            "title" => "New Title",
+            "link" => "#",
+            "icon" => "Heroicons.bolt"
+          }
+        })
+      end)
+      |> Map.merge(%{"order" => socket.assigns.element["order"] ++ [unique_id]})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
