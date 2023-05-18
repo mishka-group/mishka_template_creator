@@ -9678,7 +9678,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "top-1/2",
         "left-1/2"
       ],
-      "item_class" => ["hidden", "duration-700", "ease-in-out"],
+      "item_class" => ["hidden"],
       "navigation_span_class" => [
         "inline-flex",
         "items-center",

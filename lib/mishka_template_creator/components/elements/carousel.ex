@@ -65,16 +65,23 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
     >
-      <div id="carousel-#{@id}" class="relative w-full">
+      <div id={"carousel-preview-#{@id}"} class="relative w-full">
         <!-- Carousel wrapper -->
         <div class={@element["class"]}>
           <!-- Items -->
           <div
             :for={
-              %{id: key, data: data} <-
-                MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])
+              {%{id: key, data: data}, index} <-
+                Enum.with_index(
+                  MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])
+                )
             }
-            class={@element["item_class"]}
+            class={
+              if(index == 0,
+                do: List.delete(@element["item_class"], "hidden"),
+                else: @element["item_class"]
+              )
+            }
             id={"carousel-item-#{key}"}
           >
             <img
@@ -88,13 +95,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
         <!-- Slider indicators -->
         <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
           <button
-            :for={{id, index} <- Enum.with_index(@element["order"])}
+            :for={{key, _index} <- Enum.with_index(@element["order"])}
             type="button"
             class={@element["selected_slide_preview"]}
-            phx-click="selected_slide"
-            phx-value-id={id}
-            phx-value-index={index}
-            phx-target={@myself}
+            phx-click={reset_and_select(@element["order"], key)}
           >
           </button>
         </div>
@@ -481,5 +485,17 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
     send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
 
     {:noreply, socket}
+  end
+
+  defp reset_and_select(js \\ %JS{}, children, id) do
+    children
+    |> Enum.reduce(js, fn key, acc ->
+      acc
+      |> JS.add_class("hidden", to: "#carousel-item-#{key}")
+    end)
+    |> JS.remove_class("hidden",
+      to: "#carousel-item-#{id}",
+      transition: "transition delay-50 duration-50 ease-in-out"
+    )
   end
 end
