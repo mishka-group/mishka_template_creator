@@ -9724,21 +9724,25 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
       "selected_slide_preview" => ["w-3", "h-3", "rounded-full", "bg-white"],
       "children" => %{
         "#{id}" => %{
+          "title" => "image 1",
           "image" => "https://flowbite.com/docs/images/carousel/carousel-1.svg",
           "alt" => "Test image of Carousel 1",
           "link" => "#"
         },
         "#{id1}" => %{
+          "title" => "image 2",
           "image" => "https://flowbite.com/docs/images/carousel/carousel-2.svg",
           "alt" => "Test image of Carousel 2",
           "link" => "#"
         },
         "#{id2}" => %{
+          "title" => "image 3",
           "image" => "https://flowbite.com/docs/images/carousel/carousel-3.svg",
           "alt" => "Test image of Carousel 3",
           "link" => "#"
         },
         "#{id3}" => %{
+          "title" => "image 4",
           "image" => "https://flowbite.com/docs/images/carousel/carousel-4.svg",
           "alt" => "Test image of Carousel 4",
           "link" => "#"

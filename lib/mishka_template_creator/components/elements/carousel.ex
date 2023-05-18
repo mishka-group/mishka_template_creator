@@ -191,7 +191,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
 
         <Aside.aside_accordion
           id={"carousel-#{@id}"}
-          title="Bottom Navigation Settings"
+          title="Carousel Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <:before_title_block>
@@ -246,29 +246,53 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
                 </div>
               </div>
 
-              <div id={"carousel-#{key}-#{index}"} class="hidden">
+              <div id={"carousel-#{key}-#{index}"} class="hidden w-full">
                 <MishkaCoreComponent.custom_simple_form
                   :let={f}
                   for={%{}}
                   as={:carousel_component}
                   phx-submit="edit"
                   phx-target={@myself}
-                  class="flex flex-col w-full justify-start gap-2 py-5"
+                  class="flex flex-col w-full justify-start gap-3 py-5"
                 >
-                  <p class="font-bold text-sm">Title</p>
-                  <%= text_input(f, :title,
+                  <div class="flex flex-row justify-between items-center w-full gap-5">
+                    <div class="flex flex-col gap-2 w-full">
+                      <p class="font-bold text-sm">Title</p>
+                      <%= text_input(f, :title,
+                        class:
+                          "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                        placeholder: "Change Title",
+                        value: data["title"],
+                        id: "title-#{key}-#{index}-field"
+                      ) %>
+                    </div>
+
+                    <div class="flex flex-col gap-2 w-full">
+                      <p class="font-bold text-sm">Image description</p>
+                      <%= text_input(f, :alt,
+                        class:
+                          "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                        placeholder: "Change image description",
+                        value: data["alt"],
+                        id: "alt-#{key}-#{index}-field"
+                      ) %>
+                    </div>
+                  </div>
+
+                  <p class="font-bold text-sm">Image</p>
+                  <%= text_input(f, :image,
                     class:
                       "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                    placeholder: "Change Title",
-                    value: data["title"],
-                    id: "title-#{key}-#{index}-field"
+                    placeholder: "Change image",
+                    value: data["image"],
+                    id: "image-#{key}-#{index}-field"
                   ) %>
 
-                  <p class="font-bold text-sm">Link</p>
+                  <p class="font-bold text-sm">Image link</p>
                   <%= text_input(f, :link,
                     class:
                       "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                    placeholder: "Change Title",
+                    placeholder: "Change image link",
                     value: data["link"],
                     id: "link-#{key}-#{index}-field"
                   ) %>
@@ -392,7 +416,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
 
     {:noreply, socket}
   end
-
 
   def handle_event("validate", %{"public_tag" => %{"tag" => tag}}, socket) do
     submit_status =
