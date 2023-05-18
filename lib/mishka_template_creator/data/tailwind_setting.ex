@@ -9679,6 +9679,49 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "left-1/2"
       ],
       "item_class" => ["hidden", "duration-700", "ease-in-out"],
+      "navigation_span_class" => [
+        "inline-flex",
+        "items-center",
+        "justify-center",
+        "w-8",
+        "h-8",
+        "rounded-full",
+        "sm:w-10",
+        "sm:h-10",
+        "bg-white/30",
+        "group-focus:ring-4",
+        "group-focus:ring-white",
+        "group-focus:outline-none"
+      ],
+      "right_navigation_class" => [
+        "absolute",
+        "top-0",
+        "right-0",
+        "z-30",
+        "flex",
+        "items-center",
+        "justify-center",
+        "h-full",
+        "px-4",
+        "cursor-pointer",
+        "group",
+        "focus:outline-none"
+      ],
+      "left_navigation_class" => [
+        "absolute",
+        "top-0",
+        "left-0",
+        "z-30",
+        "flex",
+        "items-center",
+        "justify-center",
+        "h-full",
+        "px-4",
+        "cursor-pointer",
+        "group",
+        "focus:outline-none"
+      ],
+      "selected_slide_preview" => ["w-3", "h-3", "rounded-full", "bg-white"],
       "children" => %{
         "#{id}" => %{
           "image" => "https://flowbite.com/docs/images/carousel/carousel-1.svg",

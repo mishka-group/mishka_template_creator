@@ -9,9 +9,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
   import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias MishkaTemplateCreator.Components.Blocks.Tag
-  alias MishkaTemplateCreator.Components.Blocks.Color
-  alias MishkaTemplateCreator.Components.Elements.Text
-  alias MishkaTemplateCreator.Components.Blocks.Icon
 
   @impl true
   def update(
@@ -93,55 +90,34 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
           <button
             :for={{id, index} <- Enum.with_index(@element["order"])}
             type="button"
-            class="w-3 h-3 rounded-full bg-white"
+            class={@element["selected_slide_preview"]}
+            phx-click="selected_slide"
             phx-value-id={id}
             phx-value-index={index}
+            phx-target={@myself}
           >
           </button>
         </div>
         <!-- Slider controls -->
         <button
           type="button"
-          class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-          data-carousel-prev
+          class={@element["left_navigation_class"]}
+          phx-click="navigation"
+          phx-value-type="previous"
         >
-          <span class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-            <svg
-              aria-hidden="true"
-              class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
-              >
-              </path>
-            </svg>
+          <span class={@element["navigation_span_class"]}>
+            <Heroicons.chevron_left class="w-5 h-5 text-white sm:w-6 sm:h-6" />
             <span class="sr-only">Previous</span>
           </span>
         </button>
         <button
           type="button"
-          class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-          data-carousel-next
+          class={@element["right_navigation_class"]}
+          phx-click="navigation"
+          phx-value-type="next"
         >
-          <span class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-            <svg
-              aria-hidden="true"
-              class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-              </path>
-            </svg>
+          <span class={@element["navigation_span_class"]}>
+            <Heroicons.chevron_right class="w-5 h-5 text-white sm:w-6 sm:h-6" />
             <span class="sr-only">Next</span>
           </span>
         </button>
@@ -297,13 +273,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
                     id: "link-#{key}-#{index}-field"
                   ) %>
 
-                  <p class="font-bold text-sm">Icon</p>
-                  <Icon.select
-                    selected={String.replace(data["icon"], "Heroicons.", "")}
-                    myself={@myself}
-                    block_id={key}
-                  />
-
                   <.input
                     field={f[:key]}
                     type="hidden"
@@ -329,43 +298,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <Aside.aside_accordion
-            id={"carousel-#{@id}"}
-            title="Font and Bottom Navigation Style"
-            open={false}
-          >
-            <Text.direction_selector myself={@myself} />
-
-            <Text.font_style
-              myself={@myself}
-              classes={@element["title_class"]}
-              as={:public_carousel_font_style}
-              id={@id}
-            />
-
-            <Icon.select_size
-              myself={@myself}
-              classes={@element["icon_class"]}
-              as={:carousel_icon_style}
-              id_input={@id}
-              id={@id}
-            />
-
-            <Color.select
-              myself={@myself}
-              event_name="public_carousel_font_style"
-              classes={@element["title_class"]}
-            />
-
-            <Color.select
-              title="Background Color:"
-              type="bg"
-              myself={@myself}
-              event_name="carousel_background_style"
-              classes={@element["class"]}
-            />
-          </Aside.aside_accordion>
-
           <Aside.aside_accordion id={"carousel-#{@id}"} title="Custom Tag name" open={false}>
             <div class="flex flex-col w-full items-center justify-center pb-5">
               <Tag.input_tag myself={@myself} value={@element["tag"]} submit={@submit} id={@id} />
@@ -461,37 +393,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
     {:noreply, socket}
   end
 
-  def handle_event(
-        "font_style",
-        %{"carousel_icon_style" => %{"height" => height, "width" => width}},
-        socket
-      ) do
-    class = Icon.edit_icon_size(socket.assigns.element["icon_class"], [width, height])
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"icon_class" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event(
-        "text_edit",
-        %{"carousel_edit" => %{"html" => html, "title" => title}},
-        socket
-      ) do
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"html" => html, "title" => title})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
 
   def handle_event("validate", %{"public_tag" => %{"tag" => tag}}, socket) do
     submit_status =
@@ -522,88 +423,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
       _ ->
         send(self(), {"validate", %{"tag" => tag}})
     end
-
-    {:noreply, socket}
-  end
-
-  def handle_event("text_direction", %{"type" => type}, socket) when type in ["RTL", "LTR"] do
-    send(
-      self(),
-      {"element",
-       %{
-         "update_parame" =>
-           %{
-             "key" => "direction",
-             "value" => type
-           }
-           |> Map.merge(socket.assigns.selected_form)
-       }}
-    )
-
-    {:noreply, socket}
-  end
-
-  def handle_event(
-        "font_style",
-        %{"public_carousel_font_style" => %{"font" => font, "font_size" => font_size}},
-        socket
-      ) do
-    class = Text.edit_font_style_class(socket.assigns.element["title_class"], font_size, font)
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"title_class" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event("public_carousel_font_style", %{"color" => color}, socket) do
-    text_colors =
-      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
-
-    class = Enum.reject(socket.assigns.element["title_class"], &(&1 in text_colors)) ++ [color]
-
-    icon_class =
-      Enum.reject(socket.assigns.element["icon_class"], &(&1 in text_colors)) ++ [color]
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"title_class" => class, "icon_class" => icon_class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event("carousel_background_style", %{"color" => color}, socket) do
-    bg_colors =
-      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
-
-    class = Enum.reject(socket.assigns.element["class"], &(&1 in bg_colors)) ++ [color]
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"class" => class})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event("select_icon", %{"name" => name, "block-id" => id}, socket) do
-    updated =
-      socket.assigns.element
-      |> update_in(["children", id], fn selected_element ->
-        Map.merge(selected_element, %{"icon" => "Heroicons.#{name}"})
-      end)
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
