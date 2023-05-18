@@ -9661,6 +9661,50 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     }
   end
 
+  def default_element("carousel") do
+    id = Ecto.UUID.generate()
+    id1 = Ecto.UUID.generate()
+    id2 = Ecto.UUID.generate()
+    id3 = Ecto.UUID.generate()
+
+    %{
+      "class" => ["relative", "h-56", "overflow-hidden", "rounded-lg", "md:h-96"],
+      "image_class" => [
+        "absolute",
+        "block",
+        "w-full",
+        "-translate-x-1/2",
+        "-translate-y-1/2",
+        "top-1/2",
+        "left-1/2"
+      ],
+      "item_class" => ["hidden", "duration-700", "ease-in-out"],
+      "children" => %{
+        "#{id}" => %{
+          "image" => "https://flowbite.com/docs/images/carousel/carousel-1.svg",
+          "alt" => "Test image of Carousel 1",
+          "link" => "#"
+        },
+        "#{id1}" => %{
+          "image" => "https://flowbite.com/docs/images/carousel/carousel-2.svg",
+          "alt" => "Test image of Carousel 2",
+          "link" => "#"
+        },
+        "#{id2}" => %{
+          "image" => "https://flowbite.com/docs/images/carousel/carousel-3.svg",
+          "alt" => "Test image of Carousel 3",
+          "link" => "#"
+        },
+        "#{id3}" => %{
+          "image" => "https://flowbite.com/docs/images/carousel/carousel-4.svg",
+          "alt" => "Test image of Carousel 4",
+          "link" => "#"
+        }
+      },
+      "order" => [id, id1, id2, id3]
+    }
+  end
+
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()
   def convert_arbitrary_value(config) do
     [h | t] = String.split(config, "-[")
