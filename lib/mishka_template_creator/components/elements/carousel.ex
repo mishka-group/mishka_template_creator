@@ -106,7 +106,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
         <button
           type="button"
           class={@element["left_navigation_class"]}
-          phx-click={JS.dispatch("slider:navigation", detail: %{id: @id, type: "previous", slides: @element["order"]})}
+          phx-click={
+            JS.dispatch("slider:navigation",
+              detail: %{id: @id, type: "previous", slides: @element["order"]}
+            )
+          }
         >
           <span class={@element["navigation_span_class"]}>
             <Heroicons.chevron_left class="w-5 h-5 text-white sm:w-6 sm:h-6" />
@@ -116,7 +120,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
         <button
           type="button"
           class={@element["right_navigation_class"]}
-          phx-click={JS.dispatch("slider:navigation", detail: %{id: @id, type: "next", slides: @element["order"]})}
+          phx-click={
+            JS.dispatch("slider:navigation",
+              detail: %{id: @id, type: "next", slides: @element["order"]}
+            )
+          }
         >
           <span class={@element["navigation_span_class"]}>
             <Heroicons.chevron_right class="w-5 h-5 text-white sm:w-6 sm:h-6" />
@@ -166,29 +174,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
               </a>
             </li>
           </ul>
-        </div>
-
-        <div class="flex flex-row justify-center items-center w-full">
-          <button
-            id={"carousel-hide-#{String.replace(@id, "form", "call")}"}
-            phx-click={
-              JS.exec("reset-banner", to: "#carousel-#{String.replace(@id, "form", "call")}")
-            }
-            type="button"
-            class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
-          >
-            Hide Navigation
-          </button>
-          <button
-            id={"carousel-show-#{String.replace(@id, "form", "call")}"}
-            phx-click={
-              JS.exec("reset-banner", to: "#carousel-#{String.replace(@id, "form", "call")}")
-            }
-            type="button"
-            class="hidden py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
-          >
-            Show Navigation
-          </button>
         </div>
 
         <Aside.aside_accordion
@@ -388,9 +373,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
       |> update_in(["children"], fn selected_element ->
         Map.merge(selected_element, %{
           "#{unique_id}" => %{
-            "title" => "New Title",
-            "link" => "#",
-            "icon" => "Heroicons.bolt"
+            "title" => "New Image",
+            "image" => "https://flowbite.com/docs/images/carousel/carousel-1.svg",
+            "alt" => "Test image of Carousel",
+            "link" => "#"
           }
         })
       end)
@@ -404,13 +390,26 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
 
   def handle_event(
         "edit",
-        %{"carousel_component" => %{"title" => title, "link" => link, "key" => id}},
+        %{
+          "carousel_component" => %{
+            "title" => title,
+            "image" => image,
+            "alt" => alt,
+            "link" => link,
+            "key" => id
+          }
+        },
         socket
       ) do
     updated =
       socket.assigns.element
       |> update_in(["children", id], fn selected_element ->
-        Map.merge(selected_element, %{"title" => title, "link" => link})
+        Map.merge(selected_element, %{
+          "title" => title,
+          "image" => image,
+          "alt" => alt,
+          "link" => link
+        })
       end)
       |> Map.merge(socket.assigns.selected_form)
 

@@ -93,6 +93,7 @@ Sortable.create(previewHelper, {
 window.addEventListener('slider:navigation', (e) => {
   const silder = document.getElementById(`carousel-preview-${e.detail.id}`);
   const selectedSlideAttr = silder.getAttribute('selected-slide');
+  let selectedIndex = 0;
 
   e.detail.slides.map((item) => {
     slide = document.getElementById(`carousel-item-${item}`);
@@ -105,12 +106,14 @@ window.addEventListener('slider:navigation', (e) => {
       document
         .getElementById(`carousel-item-${nextSlide}`)
         .classList.remove('hidden');
-      silder.setAttribute('selected-slide', parseInt(selectedSlideAttr) + 1);
+
+      selectedIndex = parseInt(selectedSlideAttr) + 1;
     } else {
       document
         .getElementById(`carousel-item-${e.detail.slides[0]}`)
         .classList.remove('hidden');
-      silder.setAttribute('selected-slide', 0);
+
+      selectedIndex = 0;
     }
   } else {
     const previousSlide = e.detail.slides[parseInt(selectedSlideAttr) - 1];
@@ -118,16 +121,19 @@ window.addEventListener('slider:navigation', (e) => {
       document
         .getElementById(`carousel-item-${previousSlide}`)
         .classList.remove('hidden');
-      silder.setAttribute('selected-slide', parseInt(selectedSlideAttr) - 1);
+      selectedIndex = parseInt(selectedSlideAttr) - 1;
     } else {
       document
         .getElementById(
           `carousel-item-${e.detail.slides[e.detail.slides.length - 1]}`
         )
         .classList.remove('hidden');
-      silder.setAttribute('selected-slide', e.detail.slides.length - 1);
+
+      selectedIndex = e.detail.slides.length - 1;
     }
   }
+
+  silder.setAttribute('selected-slide', selectedIndex);
 });
 
 // Start Hooks object
