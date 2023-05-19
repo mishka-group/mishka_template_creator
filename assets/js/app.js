@@ -90,6 +90,46 @@ Sortable.create(previewHelper, {
   },
 });
 
+window.addEventListener('slider:navigation', (e) => {
+  const silder = document.getElementById(`carousel-preview-${e.detail.id}`);
+  const selectedSlideAttr = silder.getAttribute('selected-slide');
+
+  e.detail.slides.map((item) => {
+    slide = document.getElementById(`carousel-item-${item}`);
+    slide.classList.add('hidden');
+  });
+
+  if (e.detail.type === 'next') {
+    const nextSlide = e.detail.slides[parseInt(selectedSlideAttr) + 1];
+    if (nextSlide) {
+      document
+        .getElementById(`carousel-item-${nextSlide}`)
+        .classList.remove('hidden');
+      silder.setAttribute('selected-slide', parseInt(selectedSlideAttr) + 1);
+    } else {
+      document
+        .getElementById(`carousel-item-${e.detail.slides[0]}`)
+        .classList.remove('hidden');
+      silder.setAttribute('selected-slide', 0);
+    }
+  } else {
+    const previousSlide = e.detail.slides[parseInt(selectedSlideAttr) - 1];
+    if (previousSlide) {
+      document
+        .getElementById(`carousel-item-${previousSlide}`)
+        .classList.remove('hidden');
+      silder.setAttribute('selected-slide', parseInt(selectedSlideAttr) - 1);
+    } else {
+      document
+        .getElementById(
+          `carousel-item-${e.detail.slides[e.detail.slides.length - 1]}`
+        )
+        .classList.remove('hidden');
+      silder.setAttribute('selected-slide', e.detail.slides.length - 1);
+    }
+  }
+});
+
 // Start Hooks object
 let Hooks = {};
 

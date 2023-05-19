@@ -65,7 +65,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
     >
-      <div id={"carousel-preview-#{@id}"} class="relative w-full">
+      <div id={"carousel-preview-#{@id}"} class="relative w-full unsortable" selected-slide="0">
         <!-- Carousel wrapper -->
         <div class={@element["class"]}>
           <!-- Items -->
@@ -95,10 +95,10 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
         <!-- Slider indicators -->
         <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
           <button
-            :for={{key, _index} <- Enum.with_index(@element["order"])}
+            :for={{_key, index} <- Enum.with_index(@element["order"])}
             type="button"
             class={@element["selected_slide_preview"]}
-            phx-click={reset_and_select(@element["order"], key)}
+            phx-click={reset_and_select(@element["order"], @id, index)}
           >
           </button>
         </div>
@@ -106,8 +106,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
         <button
           type="button"
           class={@element["left_navigation_class"]}
-          phx-click="navigation"
-          phx-value-type="previous"
+          phx-click={JS.dispatch("slider:navigation", detail: %{id: @id, type: "previous", slides: @element["order"]})}
         >
           <span class={@element["navigation_span_class"]}>
             <Heroicons.chevron_left class="w-5 h-5 text-white sm:w-6 sm:h-6" />
@@ -117,8 +116,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
         <button
           type="button"
           class={@element["right_navigation_class"]}
-          phx-click="navigation"
-          phx-value-type="next"
+          phx-click={JS.dispatch("slider:navigation", detail: %{id: @id, type: "next", slides: @element["order"]})}
         >
           <span class={@element["navigation_span_class"]}>
             <Heroicons.chevron_right class="w-5 h-5 text-white sm:w-6 sm:h-6" />
@@ -487,15 +485,16 @@ defmodule MishkaTemplateCreator.Components.Elements.Carousel do
     {:noreply, socket}
   end
 
-  defp reset_and_select(js \\ %JS{}, children, id) do
+  defp reset_and_select(js \\ %JS{}, children, id, index) do
     children
     |> Enum.reduce(js, fn key, acc ->
       acc
       |> JS.add_class("hidden", to: "#carousel-item-#{key}")
     end)
     |> JS.remove_class("hidden",
-      to: "#carousel-item-#{id}",
+      to: "#carousel-item-#{Enum.at(children, index)}",
       transition: "transition delay-50 duration-50 ease-in-out"
     )
+    |> JS.set_attribute({"selected-slide", "#{index}"}, to: "#carousel-preview-#{id}")
   end
 end
