@@ -401,6 +401,19 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
     {:noreply, socket}
   end
 
+  def handle_event("select_icon", %{"name" => name, "block-id" => id}, socket) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", id], fn selected_element ->
+        Map.merge(selected_element, %{"icon" => "Heroicons.#{name}"})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("reset", _params, socket) do
     send(
       self(),
