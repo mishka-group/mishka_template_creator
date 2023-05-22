@@ -65,11 +65,27 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
       phx-value-myself={@myself}
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
+      data-close-menu={
+        JS.remove_class("transform-none", to: "#drawer-#{@id}-navigation")
+        |> JS.add_class("-translate-x-full", to: "#drawer-#{@id}-navigation")
+      }
+      data-open-menu={
+        JS.add_class("transform-none", to: "#drawer-#{@id}-navigation")
+        |> JS.remove_class("-translate-x-full", to: "#drawer-#{@id}-navigation")
+      }
     >
+      <button
+        phx-click={JS.exec("data-open-menu", to: "#drawer-#{@id}")}
+        type="button"
+        class="py-2.5 px-2.5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+      >
+        <Heroicons.bars_4 class="w-7 h-7 text-gray-500" />
+      </button>
       <div
         id={"drawer-#{@id}-navigation"}
         class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform transform-none bg-white w-80"
         tabindex="-1"
+        phx-click-away={JS.exec("data-close-menu", to: "#drawer-#{@id}")}
       >
         <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 uppercase">
           <%= @element["title"] %>
@@ -77,10 +93,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
         <button
           type="button"
           class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center"
-          phx-click={
-            JS.remove_class("transform-none", to: "#drawer-#{@id}-navigation")
-            |> JS.add_class("-translate-x-full", to: "#drawer-#{@id}-navigation")
-          }
+          phx-click={JS.exec("data-close-menu", to: "#drawer-#{@id}")}
         >
           <Heroicons.x_mark class="w-5 h-5" />
           <span class="sr-only">Close menu</span>
@@ -148,12 +161,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
         <div class="flex flex-row justify-center items-center w-full">
           <button
             phx-click={
-              JS.remove_class("transform-none",
-                to: "#drawer-#{String.replace(@id, "form", "call")}-navigation"
-              )
-              |> JS.add_class("-translate-x-full",
-                to: "#drawer-#{String.replace(@id, "form", "call")}-navigation"
-              )
+              JS.exec("data-close-menu", to: "#drawer-#{String.replace(@id, "form", "call")}")
             }
             type="button"
             class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
@@ -162,12 +170,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
           </button>
           <button
             phx-click={
-              JS.add_class("transform-none",
-                to: "#drawer-#{String.replace(@id, "form", "call")}-navigation"
-              )
-              |> JS.remove_class("-translate-x-full",
-                to: "#drawer-#{String.replace(@id, "form", "call")}-navigation"
-              )
+              JS.exec("data-open-menu", to: "#drawer-#{String.replace(@id, "form", "call")}")
             }
             type="button"
             class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
@@ -190,7 +193,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
               :if={length(@element["order"]) == 0}
               class="mx-auto border border-gray-200 bg-gray-100 font-bold py-2 px-3"
             >
-              There is no menu item for this Bottom Navigation
+              There is no menu item for this Drawer
             </span>
 
             <div
