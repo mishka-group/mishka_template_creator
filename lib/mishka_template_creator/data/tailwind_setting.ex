@@ -9757,8 +9757,22 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
 
     %{
       "title" => "Menu",
-      "icon_class" => ["w-6", "h-6", "text-gray-500", "transition", "group-hover/link:text-gray-800"],
-      "link_class" => ["flex", "items-center", "p-2", "text-gray-500", "rounded-lg", "group/link", "hover:text-gray-800"],
+      "icon_class" => [
+        "w-6",
+        "h-6",
+        "text-gray-500",
+        "transition",
+        "group-hover/link:text-gray-800"
+      ],
+      "link_class" => [
+        "flex",
+        "items-center",
+        "p-2",
+        "text-gray-500",
+        "rounded-lg",
+        "group/link",
+        "hover:text-gray-800"
+      ],
       "children" => %{
         "#{Enum.at(ides, 0)}" => %{
           "title" => "Dashboard",

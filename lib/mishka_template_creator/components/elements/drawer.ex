@@ -224,34 +224,27 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
                     </div>
 
                     <div class="flex flex-col gap-2 w-full">
-                      <p class="font-bold text-sm">Image description</p>
-                      <%= text_input(f, :alt,
+                      <p class="font-bold text-sm">Link</p>
+                      <%= text_input(f, :link,
                         class:
                           "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                        placeholder: "Change image description",
-                        value: data["alt"],
-                        id: "alt-#{key}-#{index}-field"
+                        placeholder: "Change Link",
+                        value: data["link"],
+                        id: "image-#{key}-#{index}-field"
                       ) %>
                     </div>
                   </div>
 
-                  <p class="font-bold text-sm">Image</p>
-                  <%= text_input(f, :image,
-                    class:
-                      "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                    placeholder: "Change image",
-                    value: data["image"],
-                    id: "image-#{key}-#{index}-field"
-                  ) %>
-
-                  <p class="font-bold text-sm">Image link</p>
-                  <%= text_input(f, :link,
-                    class:
-                      "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                    placeholder: "Change image link",
-                    value: data["link"],
-                    id: "link-#{key}-#{index}-field"
-                  ) %>
+                  <p class="w-full font-bold text-sm mt-5">
+                    Select Icon:
+                  </p>
+                  <div class="px-5 pb-3">
+                    <Icon.select
+                      selected={String.replace(data["icon"], "Heroicons.", "")}
+                      myself={@myself}
+                      block_id={key}
+                    />
+                  </div>
 
                   <.input
                     field={f[:key]}
@@ -342,9 +335,8 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
       |> update_in(["children"], fn selected_element ->
         Map.merge(selected_element, %{
           "#{unique_id}" => %{
-            "title" => "New Image",
-            "image" => "https://flowbite.com/docs/images/drawer/drawer-1.svg",
-            "alt" => "Test image of drawer",
+            "title" => "Test Menu",
+            "icon" => "Heroicons.square_2_stack",
             "link" => "#"
           }
         })
@@ -360,25 +352,14 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
   def handle_event(
         "edit",
         %{
-          "drawer_component" => %{
-            "title" => title,
-            "image" => image,
-            "alt" => alt,
-            "link" => link,
-            "key" => id
-          }
+          "drawer_component" => %{"title" => title, "link" => link, "key" => id}
         },
         socket
       ) do
     updated =
       socket.assigns.element
       |> update_in(["children", id], fn selected_element ->
-        Map.merge(selected_element, %{
-          "title" => title,
-          "image" => image,
-          "alt" => alt,
-          "link" => link
-        })
+        Map.merge(selected_element, %{"title" => title, "link" => link})
       end)
       |> Map.merge(socket.assigns.selected_form)
 
