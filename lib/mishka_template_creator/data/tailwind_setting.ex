@@ -9756,6 +9756,19 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     ides = Enum.to_list(1..8) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
 
     %{
+      "class" => [
+        "fixed",
+        "top-0",
+        "left-0",
+        "z-40",
+        "h-screen",
+        "p-4",
+        "overflow-y-auto",
+        "transition-transform",
+        "transform-none",
+        "bg-white",
+        "w-80"
+      ],
       "title" => "Menu",
       "title_class" => ["text-base", "font-semibold", "text-gray-500"],
       "icon_class" => [

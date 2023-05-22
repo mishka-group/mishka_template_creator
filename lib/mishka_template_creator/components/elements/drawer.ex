@@ -69,11 +69,13 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
       dir={@element["direction"] || "LTR"}
       data-close-menu={
         JS.remove_class("transform-none", to: "#drawer-#{@id}-navigation")
-        |> JS.add_class("-translate-x-full", to: "#drawer-#{@id}-navigation")
+        |> JS.add_class("ltr:-translate-x-full rtl:translate-x-full", to: "#drawer-#{@id}-navigation")
       }
       data-open-menu={
         JS.add_class("transform-none", to: "#drawer-#{@id}-navigation")
-        |> JS.remove_class("-translate-x-full", to: "#drawer-#{@id}-navigation")
+        |> JS.remove_class("ltr:-translate-x-full rtl:translate-x-full",
+          to: "#drawer-#{@id}-navigation"
+        )
       }
     >
       <button
@@ -86,11 +88,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
           class={@element["sidebar_button_icon_class"]}
         />
       </button>
-      <div
-        id={"drawer-#{@id}-navigation"}
-        class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform transform-none bg-white w-80"
-        tabindex="-1"
-      >
+      <div id={"drawer-#{@id}-navigation"} class={@element["class"]} tabindex="-1">
         <h5 id="drawer-navigation-label" class={@element["title_class"]}>
           <%= @element["title"] %>
         </h5>
@@ -181,6 +179,25 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
             class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
           >
             Show Drawer
+          </button>
+        </div>
+
+        <div class="flex flex-row justify-center items-center w-full">
+          <button
+            phx-click={JS.push("position", value: %{side: "left"})}
+            phx-target={@myself}
+            type="button"
+            class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+          >
+            <Heroicons.bars_3_center_left class="w-5 h-5" />
+          </button>
+          <button
+            phx-click={JS.push("position", value: %{side: "right"})}
+            phx-target={@myself}
+            type="button"
+            class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+          >
+            <Heroicons.bars_3_bottom_right class="w-5 h-5" />
           </button>
         </div>
 
@@ -727,6 +744,26 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
     updated =
       socket.assigns.element
       |> Map.merge(%{"icon_class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("position", %{"side" => side}, socket) do
+    class =
+      case side do
+        "left" ->
+          Enum.reject(socket.assigns.element["class"], &(&1 == "right-0")) ++ ["left-0"]
+
+        _ ->
+          Enum.reject(socket.assigns.element["class"], &(&1 == "left-0")) ++ ["right-0"]
+      end
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"class" => class, "direction" => if(side == "left", do: "LTR", else: "RTL")})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
