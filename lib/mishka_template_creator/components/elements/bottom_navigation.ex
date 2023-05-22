@@ -76,14 +76,21 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
     >
       <div class={@element["class"]} id={"bottom-navigation-box-#{@id}"}>
         <div class="flex flex-warp h-full mx-auto font-medium justify-center items-stretch">
-          <%= for {%{id: _key, data: data}, _index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>
-            <button type="button" class={@element["button_class"]}>
-              <Icon.dynamic module={data["icon"]} class={@element["icon_class"]} />
-              <span class={@element["title_class"]}>
-                <%= data["title"] %>
-              </span>
-            </button>
-          <% end %>
+          <button
+            :for={
+              {%{id: _key, data: data}, _index} <-
+                Enum.with_index(
+                  MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])
+                )
+            }
+            type="button"
+            class={@element["button_class"]}
+          >
+            <Icon.dynamic module={data["icon"]} class={@element["icon_class"]} />
+            <span class={@element["title_class"]}>
+              <%= data["title"] %>
+            </span>
+          </button>
         </div>
       </div>
 
@@ -92,14 +99,21 @@ defmodule MishkaTemplateCreator.Components.Elements.BottomNavigation do
         id={"bottom-navigation-section-#{@id}"}
       >
         <div class="flex flex-warp h-full mx-auto font-medium justify-center items-stretch">
-          <%= for {%{id: _key, data: data}, _index} <- Enum.with_index(MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])) do %>
-            <button type="button" class={@element["button_class"]}>
-              <Icon.dynamic module={data["icon"]} class={@element["icon_class"]} />
-              <span class={@element["title_class"]}>
-                <%= data["title"] %>
-              </span>
-            </button>
-          <% end %>
+          <button
+            :for={
+              {%{id: _key, data: data}, _index} <-
+                Enum.with_index(
+                  MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])
+                )
+            }
+            type="button"
+            class={@element["button_class"]}
+          >
+            <Icon.dynamic module={data["icon"]} class={@element["icon_class"]} />
+            <span class={@element["title_class"]}>
+              <%= data["title"] %>
+            </span>
+          </button>
         </div>
       </div>
     </div>

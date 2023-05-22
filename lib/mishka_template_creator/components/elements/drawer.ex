@@ -9,6 +9,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
   import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias MishkaTemplateCreator.Components.Blocks.Tag
+  alias MishkaTemplateCreator.Components.Blocks.Icon
 
   @impl true
   def update(
@@ -65,7 +66,41 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
     >
-    sss
+      <div
+        id={"drawer-#{@id}-navigation"}
+        class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform transform-none bg-white w-80"
+        tabindex="-1"
+      >
+        <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 uppercase">
+          <%= @element["title"] %>
+        </h5>
+        <button
+          type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center"
+          phx-click={
+            JS.remove_class("transform-none", to: "#drawer-#{@id}-navigation")
+            |> JS.add_class("-translate-x-full", to: "#drawer-#{@id}-navigation")
+          }
+        >
+          <Heroicons.x_mark class="w-5 h-5" />
+          <span class="sr-only">Close menu</span>
+        </button>
+        <div class="py-4 overflow-y-auto">
+          <ul class="space-y-2 font-medium">
+            <li :for={
+              {%{id: _key, data: data}, _index} <-
+                Enum.with_index(
+                  MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])
+                )
+            }>
+              <a href="#" class={@element["link_class"]}>
+                <Icon.dynamic module={data["icon"]} class={@element["icon_class"]} />
+                <span class="ml-3"><%= data["title"] %></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
     """
   end
@@ -416,18 +451,5 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
     send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
 
     {:noreply, socket}
-  end
-
-  defp reset_and_select(js \\ %JS{}, children, id, index) do
-    children
-    |> Enum.reduce(js, fn key, acc ->
-      acc
-      |> JS.add_class("hidden", to: "#drawer-item-#{key}")
-    end)
-    |> JS.remove_class("hidden",
-      to: "#drawer-item-#{Enum.at(children, index)}",
-      transition: "transition delay-50 duration-50 ease-in-out"
-    )
-    |> JS.set_attribute({"selected-slide", "#{index}"}, to: "#drawer-preview-#{id}")
   end
 end

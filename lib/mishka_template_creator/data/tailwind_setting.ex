@@ -9752,6 +9752,59 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     }
   end
 
+  def default_element("drawer") do
+    ides = Enum.to_list(1..8) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
+
+    %{
+      "title" => "Menu",
+      "icon_class" => ["w-6", "h-6", "text-gray-500", "transition", "group-hover/link:text-gray-800"],
+      "link_class" => ["flex", "items-center", "p-2", "text-gray-500", "rounded-lg", "group/link", "hover:text-gray-800"],
+      "children" => %{
+        "#{Enum.at(ides, 0)}" => %{
+          "title" => "Dashboard",
+          "icon" => "Heroicons.chart_pie",
+          "link" => "#"
+        },
+        "#{Enum.at(ides, 1)}" => %{
+          "title" => "E-commerce",
+          "icon" => "Heroicons.chart_bar",
+          "link" => "#"
+        },
+        "#{Enum.at(ides, 2)}" => %{
+          "title" => "Kanban",
+          "icon" => "Heroicons.circle_stack",
+          "link" => "#"
+        },
+        "#{Enum.at(ides, 3)}" => %{
+          "title" => "Inbox",
+          "icon" => "Heroicons.cube",
+          "link" => "#"
+        },
+        "#{Enum.at(ides, 4)}" => %{
+          "title" => "Users",
+          "icon" => "Heroicons.fire",
+          "link" => "#"
+        },
+        "#{Enum.at(ides, 5)}" => %{
+          "title" => "Products",
+          "icon" => "Heroicons.heart",
+          "link" => "#"
+        },
+        "#{Enum.at(ides, 6)}" => %{
+          "title" => "Sign In",
+          "icon" => "Heroicons.rectangle_group",
+          "link" => "#"
+        },
+        "#{Enum.at(ides, 7)}" => %{
+          "title" => "Sign Up",
+          "icon" => "Heroicons.tv",
+          "link" => "#"
+        }
+      },
+      "order" => ides
+    }
+  end
+
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()
   def convert_arbitrary_value(config) do
     [h | t] = String.split(config, "-[")
