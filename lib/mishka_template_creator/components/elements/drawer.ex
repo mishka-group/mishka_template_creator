@@ -77,9 +77,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
       <button
         phx-click={JS.exec("data-open-menu", to: "#drawer-#{@id}")}
         type="button"
-        class="py-2.5 px-2.5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none rounded-lg border border-gray-300 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+        class={@element["sidebar_button_class"]}
       >
-        <Heroicons.bars_4 class="w-7 h-7 text-gray-500" />
+        <Icon.dynamic
+          module={@element["sidebar_button_icon"]}
+          class={@element["sidebar_button_icon_class"]}
+        />
       </button>
       <div
         id={"drawer-#{@id}-navigation"}
@@ -87,7 +90,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
         tabindex="-1"
         phx-click-away={JS.exec("data-close-menu", to: "#drawer-#{@id}")}
       >
-        <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500 uppercase">
+        <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500">
           <%= @element["title"] %>
         </h5>
         <button
@@ -272,7 +275,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
                   <p class="w-full font-bold text-sm mt-5">
                     Select Icon:
                   </p>
-                  <div class="px-5 pb-3">
+                  <div class="px-5 pb-3 mt-3">
                     <Icon.select
                       selected={String.replace(data["icon"], "Heroicons.", "")}
                       myself={@myself}
@@ -305,6 +308,49 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
+          <Aside.aside_accordion id={"drawer-#{@id}"} title="Drawer Title and Button" open={false}>
+            <div class="flex flex-col w-full items-center justify-center pb-5">
+              <MishkaCoreComponent.custom_simple_form
+                :let={f}
+                for={%{}}
+                as={:drawer_component}
+                phx-submit="edit"
+                phx-target={@myself}
+                class="flex flex-col w-full justify-start gap-3 py-5"
+              >
+                <div class="flex flex-col justify-between items-start w-full gap-3">
+                  <p class="font-bold text-sm">Title</p>
+                  <%= text_input(f, :title,
+                    class:
+                      "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                    placeholder: "Change Title",
+                    value: @element["title"],
+                    id: "title-#{@id}-field"
+                  ) %>
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-24 px-4 py-2 mx-auto text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
+                >
+                  Save
+                </button>
+              </MishkaCoreComponent.custom_simple_form>
+
+              <p class="w-full font-bold text-sm mt-5 mb-4">
+                Select Icon:
+              </p>
+              <div class="px-5 pb-3">
+                <Icon.select
+                  selected={String.replace(@element["sidebar_button_icon"], "Heroicons.", "")}
+                  myself={@myself}
+                  block_id={@id}
+                  event_name="select_button_icon"
+                />
+              </div>
+            </div>
+          </Aside.aside_accordion>
+
           <Aside.aside_accordion id={"drawer-#{@id}"} title="Custom Tag name" open={false}>
             <div class="flex flex-col w-full items-center justify-center pb-5">
               <Tag.input_tag myself={@myself} value={@element["tag"]} submit={@submit} id={@id} />
@@ -441,6 +487,17 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
       |> update_in(["children", id], fn selected_element ->
         Map.merge(selected_element, %{"icon" => "Heroicons.#{name}"})
       end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("select_button_icon", %{"name" => name, "block-id" => _id}, socket) do
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"sidebar_button_icon" => "Heroicons.#{name}"})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})

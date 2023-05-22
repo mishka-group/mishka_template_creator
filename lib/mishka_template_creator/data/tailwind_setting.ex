@@ -9773,6 +9773,24 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "group/link",
         "hover:text-gray-800"
       ],
+      "sidebar_button_class" => [
+        "py-1",
+        "px-1",
+        "text-sm",
+        "font-medium",
+        "text-gray-900",
+        "focus:outline-none",
+        "rounded-lg",
+        "border",
+        "border-gray-300",
+        "hover:bg-gray-100",
+        "hover:text-blue-700",
+        "focus:z-10",
+        "focus:ring-4",
+        "focus:ring-gray-200"
+      ],
+      "sidebar_button_icon" => "Heroicons.bars_4",
+      "sidebar_button_icon_class" => ["w-7", "h-7", "text-gray-500"],
       "children" => %{
         "#{Enum.at(ides, 0)}" => %{
           "title" => "Dashboard",
