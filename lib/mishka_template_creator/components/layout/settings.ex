@@ -164,7 +164,7 @@ defmodule MishkaTemplateCreator.Components.Blocks.Settings do
             phx-value-id={@id}
             phx-value-child={field_id}
             phx-value-type="setting"
-            class="!bg-white border-b border-gray-300 shadow-sm text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full !rounded-none"
+            class="!bg-white border-b border-gray-300 shadow-sm !text-gray-600 hover:bg-gray-400 hover:text-gray-400 w-full !rounded-none"
           >
             <div class={"#{if field_id == @selected_setting.form_id, do: "font-bold", else: "font-normal"}"}>
               <%= field_title %>

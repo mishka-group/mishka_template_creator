@@ -11,6 +11,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
   alias MishkaTemplateCreator.Components.Blocks.Tag
   alias MishkaTemplateCreator.Components.Blocks.Icon
   alias MishkaTemplateCreator.Components.Blocks.Color
+  alias MishkaTemplateCreator.Components.Elements.Text
 
   @impl true
   def update(
@@ -90,12 +91,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
         class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform transform-none bg-white w-80"
         tabindex="-1"
       >
-        <h5 id="drawer-navigation-label" class="text-base font-semibold text-gray-500">
+        <h5 id="drawer-navigation-label" class={@element["title_class"]}>
           <%= @element["title"] %>
         </h5>
         <button
           type="button"
-          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 right-2.5 inline-flex items-center"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 ltr:right-2.5 inline-flex items-center rtl:left-2.5"
           phx-click={JS.exec("data-close-menu", to: "#drawer-#{@id}")}
         >
           <Heroicons.x_mark class="w-5 h-5" />
@@ -103,7 +104,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
         </button>
 
         <div class="py-4 overflow-y-auto">
-          <ul class="space-y-2 font-medium">
+          <ul class="space-y-2">
             <li :for={
               {%{id: _key, data: data}, _index} <-
                 Enum.with_index(
@@ -309,7 +310,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <Aside.aside_accordion id={"drawer-#{@id}"} title="Drawer Title and Button" open={false}>
+          <Aside.aside_accordion
+            id={"drawer-#{@id}"}
+            title="Drawer Navigation Button Style "
+            open={false}
+          >
             <div class="flex flex-col w-full items-center justify-center pb-5">
               <MishkaCoreComponent.custom_simple_form
                 :let={f}
@@ -331,8 +336,22 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
                 </div>
               </MishkaCoreComponent.custom_simple_form>
 
+              <Text.font_style
+                myself={@myself}
+                classes={@element["title_class"]}
+                as={:drawer_title_font_style}
+                id={@id}
+              />
+
+              <Color.select
+                title="ُTitle Color:"
+                myself={@myself}
+                event_name="drawer_title_font_style"
+                classes={@element["title_class"]}
+              />
+
               <p class="w-full font-bold text-sm mt-5 mb-4">
-                Select Icon:
+                Select Navigation button Icon:
               </p>
               <div class="px-5 pb-3">
                 <Icon.select
@@ -357,13 +376,39 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
               />
 
               <Color.select
-                title="Border Color:"
+                title="Navigation button Border Color:"
                 type="border"
                 myself={@myself}
                 event_name="drawer_border_style"
                 classes={@element["sidebar_button_class"]}
               />
             </div>
+          </Aside.aside_accordion>
+
+          <Aside.aside_accordion id={"drawer-#{@id}"} title="Direction and Menus Style" open={false}>
+            <Text.direction_selector myself={@myself} />
+
+            <Text.font_style
+              myself={@myself}
+              classes={@element["link_class"]}
+              as={:drawer_menu_font_style}
+              id={@id}
+            />
+
+            <Icon.select_size
+              myself={@myself}
+              classes={@element["icon_class"]}
+              as={:drawer_menu_icon_style}
+              id_input={@id}
+              id={@id}
+            />
+
+            <Color.select
+              title="Link Color:"
+              myself={@myself}
+              event_name="drawer_menu_link_style"
+              classes={@element["link_class"]}
+            />
           </Aside.aside_accordion>
 
           <Aside.aside_accordion id={"drawer-#{@id}"} title="Custom Tag name" open={false}>
@@ -510,11 +555,30 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
     {:noreply, socket}
   end
 
+  def handle_event("drawer_title_font_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class =
+      Enum.reject(socket.assigns.element["title_class"], &(&1 in text_colors)) ++
+        [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"title_class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("drawer_border_style", %{"color" => color}, socket) do
     text_colors =
       TailwindSetting.get_form_options("borders", "border-color", nil, nil).form_configs
 
-    class = Enum.reject(socket.assigns.element["sidebar_button_class"], &(&1 in text_colors)) ++ [color]
+    class =
+      Enum.reject(socket.assigns.element["sidebar_button_class"], &(&1 in text_colors)) ++ [color]
 
     updated =
       socket.assigns.element
@@ -576,6 +640,93 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
     updated =
       socket.assigns.element
       |> Map.merge(%{"sidebar_button_icon" => "Heroicons.#{name}"})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("text_direction", %{"type" => type}, socket) when type in ["RTL", "LTR"] do
+    send(
+      self(),
+      {"element",
+       %{
+         "update_parame" =>
+           %{
+             "key" => "direction",
+             "value" => type
+           }
+           |> Map.merge(socket.assigns.selected_form)
+       }}
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"drawer_title_font_style" => %{"font" => font, "font_size" => font_size}},
+        socket
+      ) do
+    class = Text.edit_font_style_class(socket.assigns.element["title_class"], font_size, font)
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"title_class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"drawer_menu_font_style" => %{"font" => font, "font_size" => font_size}},
+        socket
+      ) do
+    class = Text.edit_font_style_class(socket.assigns.element["link_class"], font_size, font)
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"link_class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("drawer_menu_link_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["link_class"], &(&1 in text_colors)) ++ [color]
+
+    icon_class =
+      Enum.reject(socket.assigns.element["icon_class"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"link_class" => class, "icon_class" => icon_class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"drawer_menu_icon_style" => %{"height" => height, "width" => width}},
+        socket
+      ) do
+    class = Icon.edit_icon_size(socket.assigns.element["icon_class"], [width, height])
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"icon_class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})

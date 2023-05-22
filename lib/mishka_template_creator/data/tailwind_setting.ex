@@ -9757,6 +9757,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
 
     %{
       "title" => "Menu",
+      "title_class" => ["text-base", "font-semibold", "text-gray-500"],
       "icon_class" => [
         "w-6",
         "h-6",
@@ -9771,7 +9772,9 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "text-gray-500",
         "rounded-lg",
         "group/link",
-        "hover:text-gray-800"
+        "hover:text-gray-800",
+        "font-medium",
+        "text-base"
       ],
       "sidebar_button_class" => [
         "py-1",
