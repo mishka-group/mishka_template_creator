@@ -263,7 +263,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
                   :let={f}
                   for={%{}}
                   as={:drawer_component}
-                  phx-submit="edit"
+                  phx-change="edit"
                   phx-target={@myself}
                   class="flex flex-col w-full justify-start gap-3 py-5"
                 >
@@ -309,13 +309,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
                     id={"navigation-#{key}-#{index}-id"}
                   />
 
-                  <button
-                    type="submit"
-                    class="w-24 px-4 py-2 mx-auto text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700"
-                    phx-click={JS.toggle(to: "#drawer-#{key}-#{index}")}
-                  >
-                    Save
-                  </button>
                 </MishkaCoreComponent.custom_simple_form>
               </div>
             </div>
