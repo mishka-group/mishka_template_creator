@@ -9853,6 +9853,63 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     }
   end
 
+  def default_element("footer") do
+    ides = Enum.to_list(1..4) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
+
+    %{
+      "class" => ["bg-white", "rounded-lg", "shadow", "m-4"],
+      "cright_class" => [
+        "w-full",
+        "mx-auto",
+        "max-w-screen-xl",
+        "p-4",
+        "md:flex",
+        "md:items-center",
+        "md:justify-between",
+        "text-gray-500"
+      ],
+      "menu_list_class" => [
+        "flex",
+        "flex-wrap",
+        "items-center",
+        "mt-3",
+        "text-sm",
+        "font-medium",
+        "text-gray-500",
+        "sm:mt-0"
+      ],
+      "menu_link_class" => ["mr-4", "hover:underline", "md:mr-6"],
+      "cright_html" => """
+        <span class="text-sm text-gray-500 sm:text-center">
+          © 2023<a href="https://mishka.group/" class="hover:underline">Flowbite™</a>. All Rights Reserved.
+        </span>
+      """,
+      "children" => %{
+        "#{Enum.at(ides, 0)}" => %{
+          "title" => "About",
+          "icon" => "Heroicons.chart_pie",
+          "link" => "#"
+        },
+        "#{Enum.at(ides, 1)}" => %{
+          "title" => "Privacy Policy",
+          "icon" => "Heroicons.chart_bar",
+          "link" => "#"
+        },
+        "#{Enum.at(ides, 2)}" => %{
+          "title" => "Licensing",
+          "icon" => "Heroicons.circle_stack",
+          "link" => "#"
+        },
+        "#{Enum.at(ides, 3)}" => %{
+          "title" => "Contact",
+          "icon" => "Heroicons.cube",
+          "link" => "#"
+        }
+      },
+      "order" => ides
+    }
+  end
+
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()
   def convert_arbitrary_value(config) do
     [h | t] = String.split(config, "-[")
