@@ -9857,7 +9857,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     ides = Enum.to_list(1..4) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
 
     %{
-      "class" => ["bg-white", "rounded-lg", "shadow", "m-4"],
+      "class" => ["bg-white", "rounded-lg", "shadow", "m-4", "text-sm"],
       "cright_class" => [
         "w-full",
         "mx-auto",
@@ -9873,10 +9873,8 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "flex-wrap",
         "items-center",
         "mt-3",
-        "text-sm",
-        "font-medium",
         "text-gray-500",
-        "sm:mt-0",
+        "sm:mt-0"
       ],
       "menu_link_class" => [
         "mr-4",
@@ -9889,13 +9887,13 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "hover:text-gray-700"
       ],
       "cright_html" => """
-        <span class="text-sm text-gray-500 sm:text-center">
-          © 2022 - 2023 <a href="https://mishka.group/" class="hover:underline">MishkaGroup</a>. All Rights Reserved.
-        </span>
+      <span class="sm:text-center">
+        © 2022 - 2023 <a href="https://mishka.group/" class="hover:underline">MishkaGroup</a>. All Rights Reserved.
+      </span>
       """,
       "icon_class" => [
-        "w-6",
-        "h-6",
+        "w-5",
+        "h-5",
         "text-gray-500",
         "transition",
         "group-hover/link:text-gray-800"

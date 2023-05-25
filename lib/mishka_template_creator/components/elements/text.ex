@@ -124,7 +124,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Text do
               <%= textarea(f, :text,
                 class:
                   "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                rows: "4",
+                rows: "6",
                 value: @element["html"]
               ) %>
               <span class="w-full text-start text-xs mt-2 cursor-pointer">

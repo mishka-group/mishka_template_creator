@@ -133,6 +133,34 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
           </ul>
         </div>
 
+        <MishkaCoreComponent.custom_simple_form
+          :let={f}
+          for={%{}}
+          as={:footer_component}
+          phx-change="edit"
+          phx-target={@myself}
+          class="flex flex-col w-full justify-start gap-3 py-5"
+        >
+          <p class="text-sm font-bold text-start">Copyright:</p>
+          <div class="flex flex-col w-full items-center justify-center pb-5">
+            <%= textarea(f, :cright_html,
+              class:
+                "block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+              rows: "4",
+              value: @element["cright_html"]
+            ) %>
+            <span class="w-full text-start text-xs mt-2 cursor-pointer">
+              <a
+                href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+                target="_blank"
+                class="text-blue-400"
+              >
+                Styling with Markdown is supported, click here
+              </a>
+            </span>
+          </div>
+        </MishkaCoreComponent.custom_simple_form>
+
         <Aside.aside_accordion
           id={"footer-#{@id}"}
           title="footer Settings"
@@ -251,40 +279,12 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
           title="Public Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
-          <Aside.aside_accordion
-            id={"footer-#{@id}"}
-            title="footer Navigation Button Style "
-            open={false}
-          >
-            <div class="flex flex-col w-full items-center justify-center pb-5">
-              <MishkaCoreComponent.custom_simple_form
-                :let={f}
-                for={%{}}
-                as={:footer_component}
-                phx-change="edit"
-                phx-target={@myself}
-                class="flex flex-col w-full justify-start gap-3 py-5"
-              >
-                <div class="flex flex-col justify-between items-start w-full gap-3">
-                  <p class="font-bold text-sm">Title</p>
-                  <%= text_input(f, :title,
-                    class:
-                      "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
-                    placeholder: "Change Title",
-                    value: @element["title"],
-                    id: "title-#{@id}-field"
-                  ) %>
-                </div>
-              </MishkaCoreComponent.custom_simple_form>
-            </div>
-          </Aside.aside_accordion>
-
           <Aside.aside_accordion id={"footer-#{@id}"} title="Direction and Menus Style" open={false}>
             <Text.direction_selector myself={@myself} />
 
             <Text.font_style
               myself={@myself}
-              classes={@element["menu_link_class"]}
+              classes={@element["class"]}
               as={:footer_menu_font_style}
               id={@id}
             />
@@ -298,10 +298,24 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
             />
 
             <Color.select
-              title="Link Color:"
+              title="Copyright Color:"
+              myself={@myself}
+              event_name="footer_copyright_style"
+              classes={@element["cright_class"]}
+            />
+
+            <Color.select
+              title="Menu Color:"
               myself={@myself}
               event_name="footer_menu_link_style"
               classes={@element["menu_link_class"]}
+            />
+
+            <Color.select
+              title="Background Color:"
+              type="bg"
+              myself={@myself}
+              classes={@element["class"]}
             />
           </Aside.aside_accordion>
 
@@ -395,6 +409,17 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
       |> update_in(["children", id], fn selected_element ->
         Map.merge(selected_element, %{"title" => title, "link" => link})
       end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("edit", %{"footer_component" => %{"cright_html" => html}}, socket) do
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"cright_html" => html})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
@@ -580,11 +605,11 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
         %{"footer_menu_font_style" => %{"font" => font, "font_size" => font_size}},
         socket
       ) do
-    class = Text.edit_font_style_class(socket.assigns.element["link_class"], font_size, font)
+    class = Text.edit_font_style_class(socket.assigns.element["class"], font_size, font)
 
     updated =
       socket.assigns.element
-      |> Map.merge(%{"link_class" => class})
+      |> Map.merge(%{"class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
@@ -596,14 +621,47 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
-    class = Enum.reject(socket.assigns.element["link_class"], &(&1 in text_colors)) ++ [color]
+    class =
+      Enum.reject(socket.assigns.element["menu_link_class"], &(&1 in text_colors)) ++ [color]
 
     icon_class =
       Enum.reject(socket.assigns.element["icon_class"], &(&1 in text_colors)) ++ [color]
 
     updated =
       socket.assigns.element
-      |> Map.merge(%{"link_class" => class, "icon_class" => icon_class})
+      |> Map.merge(%{"menu_link_class" => class, "icon_class" => icon_class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("footer_copyright_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["cright_class"], &(&1 in text_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"cright_class" => class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("select_color", %{"color" => color}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in bg_colors)) ++ [color]
+
+    updated =
+      socket.assigns.element
+      |> Map.merge(%{"class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})

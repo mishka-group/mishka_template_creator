@@ -308,7 +308,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
                     value={key}
                     id={"navigation-#{key}-#{index}-id"}
                   />
-
                 </MishkaCoreComponent.custom_simple_form>
               </div>
             </div>
