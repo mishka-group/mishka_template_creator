@@ -58,7 +58,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
   @impl true
   def render(%{render_type: "call"} = assigns) do
     ~H"""
-    <div
+    <footer
       data-type="footer"
       id={"footer-#{@id}"}
       data-id={String.replace(@id, "-call", "")}
@@ -67,57 +67,29 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
       phx-value-myself={@myself}
       phx-target={@myself}
       dir={@element["direction"] || "LTR"}
-      data-close-menu={
-        JS.remove_class("transform-none", to: "#footer-#{@id}-navigation")
-        |> JS.add_class("ltr:-translate-x-full rtl:translate-x-full", to: "#footer-#{@id}-navigation")
-      }
-      data-open-menu={
-        JS.add_class("transform-none", to: "#footer-#{@id}-navigation")
-        |> JS.remove_class("ltr:-translate-x-full rtl:translate-x-full",
-          to: "#footer-#{@id}-navigation"
-        )
-      }
+      class={@element["class"]}
     >
-      <button
-        phx-click={JS.exec("data-open-menu", to: "#footer-#{@id}")}
-        type="button"
-        class={@element["sidebar_button_class"]}
-      >
-        <Icon.dynamic
-          module={@element["sidebar_button_icon"]}
-          class={@element["sidebar_button_icon_class"]}
-        />
-      </button>
-      <div id={"footer-#{@id}-navigation"} class={@element["class"]} tabindex="-1">
-        <h5 id="footer-navigation-label" class={@element["title_class"]}>
-          <%= @element["title"] %>
-        </h5>
-        <button
-          type="button"
-          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 ltr:right-2.5 inline-flex items-center rtl:left-2.5"
-          phx-click={JS.exec("data-close-menu", to: "#footer-#{@id}")}
-        >
-          <Heroicons.x_mark class="w-5 h-5" />
-          <span class="sr-only">Close menu</span>
-        </button>
-
-        <div class="py-4 overflow-y-auto">
-          <ul class="space-y-2">
-            <li :for={
-              {%{id: _key, data: data}, _index} <-
-                Enum.with_index(
-                  MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])
-                )
-            }>
-              <a href="#" class={@element["link_class"]}>
-                <Icon.dynamic module={data["icon"]} class={@element["icon_class"]} />
-                <span class="ml-3"><%= data["title"] %></span>
-              </a>
-            </li>
-          </ul>
-        </div>
+      <div class={@element["cright_class"]}>
+        <%= Phoenix.HTML.raw(@element["cright_html"]) %>
+        <ul class={@element["menu_list_class"]}>
+          <li :for={
+            {%{id: _key, data: data}, _index} <-
+              Enum.with_index(
+                MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])
+              )
+          }>
+            <a href="#" class={@element["menu_link_class"]}>
+              <Icon.dynamic
+                :if={data["icon"] != ""}
+                module={data["icon"]}
+                class={@element["icon_class"]}
+              />
+              <%= data["title"] %>
+            </a>
+          </li>
+        </ul>
       </div>
-    </div>
+    </footer>
     """
   end
 
@@ -159,46 +131,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
               </a>
             </li>
           </ul>
-        </div>
-
-        <div class="flex flex-row justify-center items-center w-full">
-          <button
-            phx-click={
-              JS.exec("data-close-menu", to: "#footer-#{String.replace(@id, "form", "call")}")
-            }
-            type="button"
-            class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
-          >
-            Hide footer
-          </button>
-          <button
-            phx-click={
-              JS.exec("data-open-menu", to: "#footer-#{String.replace(@id, "form", "call")}")
-            }
-            type="button"
-            class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
-          >
-            Show footer
-          </button>
-        </div>
-
-        <div class="flex flex-row justify-center items-center w-full">
-          <button
-            phx-click={JS.push("position", value: %{side: "left"})}
-            phx-target={@myself}
-            type="button"
-            class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
-          >
-            <Heroicons.bars_3_center_left class="w-5 h-5" />
-          </button>
-          <button
-            phx-click={JS.push("position", value: %{side: "right"})}
-            phx-target={@myself}
-            type="button"
-            class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
-          >
-            <Heroicons.bars_3_bottom_right class="w-5 h-5" />
-          </button>
         </div>
 
         <Aside.aside_accordion
@@ -308,7 +240,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
                     value={key}
                     id={"navigation-#{key}-#{index}-id"}
                   />
-
                 </MishkaCoreComponent.custom_simple_form>
               </div>
             </div>
@@ -345,53 +276,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
                   ) %>
                 </div>
               </MishkaCoreComponent.custom_simple_form>
-
-              <Text.font_style
-                myself={@myself}
-                classes={@element["title_class"]}
-                as={:footer_title_font_style}
-                id={@id}
-              />
-
-              <Color.select
-                title="ُTitle Color:"
-                myself={@myself}
-                event_name="footer_title_font_style"
-                classes={@element["title_class"]}
-              />
-
-              <p class="w-full font-bold text-sm mt-5 mb-4">
-                Select Navigation button Icon:
-              </p>
-              <div class="px-5 pb-3">
-                <Icon.select
-                  selected={String.replace(@element["sidebar_button_icon"], "Heroicons.", "")}
-                  myself={@myself}
-                  block_id={@id}
-                  event_name="select_button_icon"
-                />
-              </div>
-
-              <Icon.select_size
-                myself={@myself}
-                classes={@element["sidebar_button_icon_class"]}
-                as={:footer_icon_style}
-                id_input={@id}
-              />
-
-              <Color.select
-                myself={@myself}
-                event_name="footer_icon_font_style"
-                classes={@element["sidebar_button_icon_class"]}
-              />
-
-              <Color.select
-                title="Navigation button Border Color:"
-                type="border"
-                myself={@myself}
-                event_name="footer_border_style"
-                classes={@element["sidebar_button_class"]}
-              />
             </div>
           </Aside.aside_accordion>
 
@@ -400,7 +284,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
 
             <Text.font_style
               myself={@myself}
-              classes={@element["link_class"]}
+              classes={@element["menu_link_class"]}
               as={:footer_menu_font_style}
               id={@id}
             />
@@ -417,7 +301,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
               title="Link Color:"
               myself={@myself}
               event_name="footer_menu_link_style"
-              classes={@element["link_class"]}
+              classes={@element["menu_link_class"]}
             />
           </Aside.aside_accordion>
 

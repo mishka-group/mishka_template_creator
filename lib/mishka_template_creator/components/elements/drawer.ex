@@ -354,7 +354,7 @@ defmodule MishkaTemplateCreator.Components.Elements.Drawer do
               />
 
               <Color.select
-                title="ُTitle Color:"
+                title="Title Color:"
                 myself={@myself}
                 event_name="drawer_title_font_style"
                 classes={@element["title_class"]}

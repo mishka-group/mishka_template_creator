@@ -9876,14 +9876,30 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "text-sm",
         "font-medium",
         "text-gray-500",
-        "sm:mt-0"
+        "sm:mt-0",
       ],
-      "menu_link_class" => ["mr-4", "hover:underline", "md:mr-6"],
+      "menu_link_class" => [
+        "mr-4",
+        "md:mr-6",
+        "flex",
+        "flex-row",
+        "gap-1",
+        "items-center",
+        "justify-center",
+        "hover:text-gray-700"
+      ],
       "cright_html" => """
         <span class="text-sm text-gray-500 sm:text-center">
-          © 2023<a href="https://mishka.group/" class="hover:underline">Flowbite™</a>. All Rights Reserved.
+          © 2022 - 2023 <a href="https://mishka.group/" class="hover:underline">MishkaGroup</a>. All Rights Reserved.
         </span>
       """,
+      "icon_class" => [
+        "w-6",
+        "h-6",
+        "text-gray-500",
+        "transition",
+        "group-hover/link:text-gray-800"
+      ],
       "children" => %{
         "#{Enum.at(ides, 0)}" => %{
           "title" => "About",
