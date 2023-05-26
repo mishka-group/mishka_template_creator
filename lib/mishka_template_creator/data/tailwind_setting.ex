@@ -9924,6 +9924,30 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     }
   end
 
+  def default_element("gallery") do
+    ides = Enum.to_list(1..12) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
+
+    children =
+      Enum.reduce(ides, %{}, fn x, acc ->
+        index = Enum.find_index(ides, &(&1 == x))
+
+        Map.merge(acc, %{
+          "#{x}" => %{
+            "image" =>
+              "https://flowbite.s3.amazonaws.com/docs/gallery/square/image#{if(index == 0, do: "", else: "-#{index}")}.jpg",
+            "link" => "#",
+            "title" => "Image #{index}",
+            "alt" => "Test image #{index}"
+          }
+        })
+      end)
+
+    %{
+      "children" => children,
+      "order" => ides
+    }
+  end
+
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()
   def convert_arbitrary_value(config) do
     [h | t] = String.split(config, "-[")
