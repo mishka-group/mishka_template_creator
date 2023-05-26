@@ -13,7 +13,6 @@ defmodule MishkaTemplateCreator.Data.Elements do
     {"alert", "Alert", "Heroicons.inbox_stack", ["section"]},
     {"quote", "Quote", "Heroicons.inbox_stack", ["section"]},
     {"code", "Code", "Heroicons.inbox_stack", ["section"]},
-    {"card", "Card", "Heroicons.inbox_stack", ["section"]},
     {"avatar", "Avatar", "Heroicons.inbox_stack", ["section"]},
     {"badge", "Badge", "Heroicons.inbox_stack", ["section"]},
     {"breadcrumb", "Breadcrumb", "Heroicons.inbox_stack", ["section"]},
@@ -26,8 +25,9 @@ defmodule MishkaTemplateCreator.Data.Elements do
 
   @media_items [
     {"image", "Image", "Heroicons.inbox_stack", ["section"]},
-    {"video", "Video", "Heroicons.inbox_stack", ["section"]},
     {"gallery", "Gallery", "Heroicons.inbox_stack", ["section"]},
+    {"card", "Card", "Heroicons.inbox_stack", ["section"]},
+    {"video", "Video", "Heroicons.inbox_stack", ["section"]},
     {"thumbnails", "Thumbnails", "Heroicons.inbox_stack", ["section"]},
     {"audio", "Audio", "Heroicons.inbox_stack", ["section"]},
     {"file", "File", "Heroicons.inbox_stack", ["section"]},

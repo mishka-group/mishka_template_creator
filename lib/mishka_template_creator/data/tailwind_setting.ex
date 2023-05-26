@@ -9936,13 +9936,15 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
             "image" =>
               "https://flowbite.s3.amazonaws.com/docs/gallery/square/image#{if(index == 0, do: "", else: "-#{index}")}.jpg",
             "link" => "#",
-            "title" => "Image #{index}",
-            "alt" => "Test image #{index}"
+            "title" => "Image #{index + 1}",
+            "alt" => "Test image #{index + 1}"
           }
         })
       end)
 
     %{
+      "class" => ["grid", "grid-cols-2", "md:grid-cols-3", "gap-4"],
+      "image_class" => ["h-auto", "max-w-full", "rounded-lg"],
       "children" => children,
       "order" => ides
     }

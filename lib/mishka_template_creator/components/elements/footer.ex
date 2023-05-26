@@ -686,26 +686,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Footer do
     {:noreply, socket}
   end
 
-  def handle_event("position", %{"side" => side}, socket) do
-    class =
-      case side do
-        "left" ->
-          Enum.reject(socket.assigns.element["class"], &(&1 == "right-0")) ++ ["left-0"]
-
-        _ ->
-          Enum.reject(socket.assigns.element["class"], &(&1 == "left-0")) ++ ["right-0"]
-      end
-
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"class" => class, "direction" => if(side == "left", do: "LTR", else: "RTL")})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
   def handle_event("reset", _params, socket) do
     send(
       self(),
