@@ -9950,6 +9950,135 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
     }
   end
 
+  def default_element("mega_menu") do
+    mega_menu_ides = Enum.to_list(1..4) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
+    mega_sub_menu_ides = Enum.to_list(1..12) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
+    menu_order = Enum.to_list(1..2) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
+    mega_menu_title = ["Home", "Company", "Team", "Contact"]
+
+    mega_sub_menu_title = [
+      "About Us",
+      "Library",
+      "Resources",
+      "Pro Version",
+      "Blog",
+      "Newsletter",
+      "Playground",
+      "License",
+      "Contact Us",
+      "Support Center",
+      "Terms"
+    ]
+
+    mega_sub_menus =
+      Enum.reduce(Enum.with_index(mega_sub_menu_ides), %{}, fn {x, index}, acc ->
+        Map.merge(acc, %{
+          "#{x}" => %{
+            "link" => "#",
+            "title" => Enum.at(mega_sub_menu_title, index),
+            "order" => []
+          }
+        })
+      end)
+
+    mega_menus =
+      Enum.reduce(Enum.with_index(mega_menu_ides), %{}, fn {x, index}, acc ->
+        Map.merge(acc, %{
+          "#{x}" => %{
+            "link" => "#",
+            "title" => Enum.at(mega_menu_title, index),
+            "children" => if(index == 1, do: mega_sub_menus, else: %{}),
+            "order" => if(index == 1, do: mega_sub_menu_ides, else: [])
+          }
+        })
+      end)
+
+    %{
+      "class" => [
+        "flex",
+        "flex-wrap",
+        "w-full",
+        "items-center",
+        "justify-between",
+        "mx-auto",
+        "p-4",
+        "bg-white",
+        "border-gray-200"
+      ],
+      "mobile_button_class" => [
+        "inline-flex",
+        "items-center",
+        "p-2",
+        "ml-1",
+        "text-sm",
+        "text-gray-500",
+        "rounded-lg",
+        "md:hidden",
+        "hover:bg-gray-100",
+        "focus:outline-none",
+        "focus:ring-2",
+        "focus:ring-gray-200"
+      ],
+      "children" => %{
+        "logo" => %{
+          "image" => "https://flowbite.com/docs/images/logo.svg",
+          "alt" => "Mishka Logo",
+          "link" => "#",
+          "title" => "Mishka",
+          "link_class" => ["flex", "items-center"],
+          "image_class" => ["h-8", "mr-3"],
+          "title_class" => ["self-center", "text-2xl", "font-semibold", "whitespace-nowrap"]
+        },
+        "mega_menu" => mega_menus,
+        "menu" => %{
+          "#{Enum.at(menu_order, 0)}" => %{
+            "link_class" => [
+              "text-gray-800",
+              "hover:bg-gray-50",
+              "focus:ring-4",
+              "focus:ring-gray-300",
+              "font-medium",
+              "rounded-lg",
+              "text-sm",
+              "px-4",
+              "py-2",
+              "md:px-5",
+              "md:py-2.5",
+              "mr-1",
+              "md:mr-2",
+              "focus:outline-none"
+            ],
+            "title" => "Login",
+            "link" => "#"
+          },
+          "#{Enum.at(menu_order, 1)}" => %{
+            "link_class" => [
+              "text-white",
+              "bg-blue-700",
+              "hover:bg-blue-800",
+              "focus:ring-4",
+              "focus:ring-blue-300",
+              "font-medium",
+              "rounded-lg",
+              "text-sm",
+              "px-4",
+              "py-2",
+              "md:px-5",
+              "md:py-2.5",
+              "mr-1",
+              "md:mr-2",
+              "focus:outline-none"
+            ],
+            "title" => "Sign up",
+            "link" => "#"
+          }
+        }
+      },
+      "mega_menu_order" => mega_menu_ides,
+      "menu_order" => menu_order
+    }
+  end
+
   @spec convert_arbitrary_value(String.t()) :: nil | String.t()
   def convert_arbitrary_value(config) do
     [h | t] = String.split(config, "-[")

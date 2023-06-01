@@ -9,9 +9,6 @@ defmodule MishkaTemplateCreator.Components.Elements.Gallery do
   import MishkaTemplateCreatorWeb.CoreComponents
   alias MishkaTemplateCreator.Data.TailwindSetting
   alias MishkaTemplateCreator.Components.Blocks.Tag
-  alias MishkaTemplateCreator.Components.Blocks.Icon
-  alias MishkaTemplateCreator.Components.Blocks.Color
-  alias MishkaTemplateCreator.Components.Elements.Text
 
   @impl true
   def update(

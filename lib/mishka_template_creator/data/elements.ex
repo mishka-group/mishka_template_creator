@@ -20,7 +20,8 @@ defmodule MishkaTemplateCreator.Data.Elements do
     {"bottom_navigation", "Bottom Navigation", "Heroicons.inbox_stack", ["section"]},
     {"carousel", "Carousel", "Heroicons.inbox_stack", ["section"]},
     {"drawer", "Drawer", "Heroicons.inbox_stack", ["section"]},
-    {"footer", "Footer", "Heroicons.inbox_stack", ["section"]}
+    {"footer", "Footer", "Heroicons.inbox_stack", ["section"]},
+    {"mega_menu", "MegaMenu", "Heroicons.inbox_stack", ["section"]}
   ]
 
   @media_items [
