@@ -9975,8 +9975,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         Map.merge(acc, %{
           "#{x}" => %{
             "link" => "#",
-            "title" => Enum.at(mega_sub_menu_title, index),
-            "order" => []
+            "title" => Enum.at(mega_sub_menu_title, index)
           }
         })
       end)

@@ -109,7 +109,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
       >
         <ul class="flex flex-col mt-4 font-medium md:flex-row md:space-x-8 md:mt-0">
           <li :for={
-            {%{id: _key, data: data}, _index} <-
+            {%{id: key, data: data}, _index} <-
               Enum.with_index(
                 MishkaCoreComponent.sorted_list_by_order(
                   @element["mega_menu_order"],
@@ -127,83 +127,36 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
             </a>
             <button
               :if={length(data["order"]) != 0}
-              id="mega-menu-dropdown-button"
-              data-dropdown-toggle="mega-menu-dropdown"
+              id={"mega-menu-dropdown-button-#{key}"}
+              phx-click={JS.toggle(to: "#mega-menu-dropdown-#{key}")}
               class="flex items-center justify-between w-full py-2 pl-3 pr-4 font-medium text-gray-900 border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0"
             >
               <span><%= data["title"] %></span>
               <Heroicons.chevron_down class="w-5 h-5 ml-1" />
             </button>
-            <div
-              id="mega-menu-dropdown"
-              class="absolute z-10 grid hidden w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md md:grid-cols-3"
-            >
-              <div class="p-4 pb-0 text-gray-900 md:pb-4">
-                <ul class="space-y-4" aria-labelledby="mega-menu-dropdown-button">
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      About Us
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      Library
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      Resources
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      Pro Version
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div class="p-4 pb-0 text-gray-900 md:pb-4">
-                <ul class="space-y-4">
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      Blog
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      Newsletter
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      Playground
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      License
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div class="p-4">
-                <ul class="space-y-4">
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      Contact Us
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      Support Center
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-gray-500 hover:text-blue-600">
-                      Terms
-                    </a>
-                  </li>
-                </ul>
+            <div id={"mega-menu-dropdown-#{key}"} class="hidden">
+              <div class="absolute mt-5 z-10 grid w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md md:grid-cols-3">
+                <div
+                  :for={
+                    section <-
+                      Enum.chunk_every(
+                        MishkaCoreComponent.sorted_list_by_order(
+                          data["order"],
+                          data["children"]
+                        ),
+                        4
+                      )
+                  }
+                  class="p-4 pb-0 text-gray-900 md:pb-4"
+                >
+                  <ul class="space-y-4" aria-labelledby="mega-menu-dropdown-button">
+                    <li :for={%{id: _li_key, data: li_data} <- section}>
+                      <a href="#" class="text-gray-500 hover:text-blue-600">
+                        <%= li_data["title"] %>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </li>
