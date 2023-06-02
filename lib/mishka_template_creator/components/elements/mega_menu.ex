@@ -208,7 +208,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
 
         <Aside.aside_accordion
           id={"mega_menu-#{@id}"}
-          title="mega_menu Settings"
+          title="MegaMenu Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
         >
           <:before_title_block>
@@ -217,7 +217,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
 
           <div class="w-full flex flex-col gap-3 space-y-4 pt-3">
             <span
-              :if={length(@element["order"]) == 0}
+              :if={length(@element["mega_menu_order"]) == 0}
               class="mx-auto border border-gray-200 bg-gray-100 font-bold py-2 px-3"
             >
               There is no menu item for this Mega Menu
@@ -227,7 +227,10 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
               :for={
                 {%{id: key, data: data}, index} <-
                   Enum.with_index(
-                    MishkaCoreComponent.sorted_list_by_order(@element["order"], @element["children"])
+                    MishkaCoreComponent.sorted_list_by_order(
+                      @element["mega_menu_order"],
+                      @element["children"]["mega_menu"]
+                    )
                   )
               }
               class="w-full flex flex-col justify-between items-center"
@@ -242,6 +245,17 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                 </span>
 
                 <div class="flex flex-row justify-end items-center gap-2">
+                  <div
+                    class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                    phx-click="delete"
+                    phx-value-id={key}
+                    phx-target={@myself}
+                  >
+                    <Heroicons.plus class="w-5 h-5 cursor-pointer" />
+                    <span class="text-base select-none">
+                      Add
+                    </span>
+                  </div>
                   <div
                     class="flex flex-row justify-center items-start gap-2 cursor-pointer"
                     phx-click={JS.toggle(to: "#mega_menu-#{key}-#{index}")}
@@ -304,6 +318,97 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                   />
                 </MishkaCoreComponent.custom_simple_form>
               </div>
+
+              <div
+                :if={length(data["order"]) != 0}
+                class="flex flex-col w-full justify-start gap-3 p-5 border border-gray-200 mt-3 rounded-md"
+              >
+                <div
+                  :for={
+                    {%{id: li_key, data: li_data}, index} <-
+                      Enum.with_index(
+                        MishkaCoreComponent.sorted_list_by_order(
+                          data["order"],
+                          data["children"]
+                        )
+                      )
+                  }
+                  class="w-full flex flex-col justify-between items-center"
+                >
+                  <div class="w-full flex flex-row justify-between items-center">
+                    <span
+                      class="text-base select-none cursor-pointer"
+                      id={"title-#{key}-#{index}"}
+                      phx-click={JS.toggle(to: "#mega_menu-#{li_key}-#{index}")}
+                    >
+                      <%= li_data["title"] %>
+                    </span>
+
+                    <div class="flex flex-row justify-end items-center gap-2">
+                      <div
+                        class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                        phx-click={JS.toggle(to: "#mega_menu-#{li_key}-#{index}")}
+                      >
+                        <Heroicons.pencil_square class="w-5 h-5" />
+                        <span class="text-base select-none">
+                          Edit
+                        </span>
+                      </div>
+                      <div
+                        class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                        phx-click="delete"
+                        phx-value-id={li_key}
+                        phx-target={@myself}
+                      >
+                        <Heroicons.trash class="w-5 h-5 text-red-600" />
+                        <span class="text-base select-none">Delete</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id={"mega_menu-#{li_key}-#{index}"} class="hidden w-full">
+                    <MishkaCoreComponent.custom_simple_form
+                      :let={f}
+                      for={%{}}
+                      as={:mega_menu_component}
+                      phx-change="edit"
+                      phx-target={@myself}
+                      class="flex flex-col w-full justify-start gap-3 py-5"
+                    >
+                      <div class="flex flex-row justify-between items-center w-full gap-5">
+                        <div class="flex flex-col gap-2 w-full">
+                          <p class="font-bold text-sm">Title</p>
+                          <%= text_input(f, :title,
+                            class:
+                              "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                            placeholder: "Change Title",
+                            value: li_data["title"],
+                            id: "title-#{li_key}-#{index}-field"
+                          ) %>
+                        </div>
+
+                        <div class="flex flex-col gap-2 w-full">
+                          <p class="font-bold text-sm">Link</p>
+                          <%= text_input(f, :link,
+                            class:
+                              "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                            placeholder: "Change Link",
+                            value: li_data["link"],
+                            id: "image-#{li_key}-#{index}-field"
+                          ) %>
+                        </div>
+                      </div>
+
+                      <.input
+                        field={f[:key]}
+                        type="hidden"
+                        value={li_key}
+                        id={"navigation-#{li_key}-#{index}-id"}
+                      />
+                    </MishkaCoreComponent.custom_simple_form>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </Aside.aside_accordion>
@@ -325,28 +430,6 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
               classes={@element["class"]}
               as={:mega_menu_menu_font_style}
               id={@id}
-            />
-
-            <Icon.select_size
-              myself={@myself}
-              classes={@element["icon_class"]}
-              as={:mega_menu_menu_icon_style}
-              id_input={@id}
-              id={@id}
-            />
-
-            <Color.select
-              title="Copyright Color:"
-              myself={@myself}
-              event_name="mega_menu_copyright_style"
-              classes={@element["cright_class"]}
-            />
-
-            <Color.select
-              title="Menu Color:"
-              myself={@myself}
-              event_name="mega_menu_menu_link_style"
-              classes={@element["menu_link_class"]}
             />
 
             <Color.select

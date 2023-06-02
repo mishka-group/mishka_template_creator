@@ -9952,7 +9952,7 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
 
   def default_element("mega_menu") do
     mega_menu_ides = Enum.to_list(1..4) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
-    mega_sub_menu_ides = Enum.to_list(1..12) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
+    mega_sub_menu_ides = Enum.to_list(1..11) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
     menu_order = Enum.to_list(1..2) |> Enum.map(fn _x -> Ecto.UUID.generate() end)
     mega_menu_title = ["Home", "Company", "Team", "Contact"]
 
@@ -10002,7 +10002,8 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "mx-auto",
         "p-4",
         "bg-white",
-        "border-gray-200"
+        "border-gray-200",
+        "text-base"
       ],
       "mobile_button_class" => [
         "inline-flex",
