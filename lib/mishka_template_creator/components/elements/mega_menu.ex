@@ -501,16 +501,19 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
 
     updated =
       socket.assigns.element
-      |> update_in(["children"], fn selected_element ->
+      |> update_in(["children", "mega_menu"], fn selected_element ->
         Map.merge(selected_element, %{
           "#{unique_id}" => %{
-            "title" => "Test Menu",
-            "icon" => "Heroicons.square_2_stack",
-            "link" => "#"
+            "link" => "#",
+            "title" => "New Title",
+            "children" => %{},
+            "order" => []
           }
         })
       end)
-      |> Map.merge(%{"order" => socket.assigns.element["order"] ++ [unique_id]})
+      |> Map.merge(%{
+        "mega_menu_order" => socket.assigns.element["mega_menu_order"] ++ [unique_id]
+      })
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
