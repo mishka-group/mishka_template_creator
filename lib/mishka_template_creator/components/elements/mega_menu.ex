@@ -208,8 +208,73 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
 
         <Aside.aside_accordion
           id={"mega_menu-#{@id}"}
+          title="Logo Settings"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+        >
+          <MishkaCoreComponent.custom_simple_form
+            :let={f}
+            for={%{}}
+            as={:mega_menu_component}
+            phx-change="edit"
+            phx-target={@myself}
+            class="flex flex-col w-full justify-start gap-3 py-5"
+          >
+            <div class="flex flex-col justify-between items-center w-full gap-5">
+              <div class="flex flex-row justify-between items-center w-full gap-5">
+                <div class="flex flex-col gap-2 w-full">
+                  <p class="font-bold text-sm">Title</p>
+                  <%= text_input(f, :title,
+                    class:
+                      "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                    placeholder: "Change Title",
+                    value: @element["children"]["logo"]["title"],
+                    id: "mega-menu-title"
+                  ) %>
+                </div>
+
+                <div class="flex flex-col gap-2 w-full">
+                  <p class="font-bold text-sm">Link</p>
+                  <%= text_input(f, :link,
+                    class:
+                      "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                    placeholder: "Change Link",
+                    value: @element["children"]["logo"]["link"],
+                    id: "mega-menu-link"
+                  ) %>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2 w-full">
+                <p class="font-bold text-sm">Image URL</p>
+                <%= text_input(f, :image,
+                  class:
+                    "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                  placeholder: "Change image",
+                  value: @element["children"]["logo"]["image"],
+                  id: "mega-menu-image"
+                ) %>
+              </div>
+
+              <Text.font_style
+                myself={@myself}
+                classes={@element["children"]["logo"]["title_class"]}
+                as={:mega_menu_menu_font_style}
+                id={@id}
+              />
+
+              <Color.select
+                title="Logo Title Color:"
+                myself={@myself}
+                classes={@element["children"]["logo"]["title_class"]}
+              />
+            </div>
+          </MishkaCoreComponent.custom_simple_form>
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"mega_menu-#{@id}"}
           title="MegaMenu Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
+          open={false}
         >
           <:before_title_block>
             <Heroicons.plus class="w-5 h-5 cursor-pointer" phx-click="add" phx-target={@myself} />
@@ -535,6 +600,46 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                         id: "image-#{key}-#{index}-field"
                       ) %>
                     </div>
+                  </div>
+                  <div class="flex flex-col w-full items-center justify-center">
+                    <ul class="flex flex-row mx-auto text-md border-gray-400 py-5 text-gray-600">
+                      <li
+                        class={"#{create_border_radius(data["link_class"], "rounded-none")} px-3 py-1 border border-gray-300 rounded-l-md border-r-0 hover:bg-gray-200 cursor-pointer"}
+                        phx-click="border_radius"
+                        phx-value-type="rounded-none"
+                        phx-value-id={key}
+                        phx-target={@myself}
+                      >
+                        None
+                      </li>
+                      <li
+                        class={"#{create_border_radius(data["link_class"], "rounded-sm")} px-3 py-1 border border-gray-300 hover:bg-gray-200 cursor-pointer"}
+                        phx-click="border_radius"
+                        phx-value-type="rounded-sm"
+                        phx-value-id={key}
+                        phx-target={@myself}
+                      >
+                        SM
+                      </li>
+                      <li
+                        class={"#{create_border_radius(data["link_class"], "rounded-md")} px-3 py-1 border border-gray-300 border-l-0 hover:bg-gray-200 cursor-pointer"}
+                        phx-click="border_radius"
+                        phx-value-type="rounded-md"
+                        phx-value-id={key}
+                        phx-target={@myself}
+                      >
+                        MD
+                      </li>
+                      <li
+                        class={"#{create_border_radius(data["link_class"], "rounded-lg")} px-3 py-1 border border-gray-300 rounded-r-md border-l-0 hover:bg-gray-200 cursor-pointer"}
+                        phx-click="border_radius"
+                        phx-value-type="rounded-lg"
+                        phx-value-id={key}
+                        phx-target={@myself}
+                      >
+                        LG
+                      </li>
+                    </ul>
                   </div>
 
                   <.input
@@ -1064,6 +1169,22 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
     {:noreply, socket}
   end
 
+  def handle_event("border_radius", %{"type" => type, "id" => id}, socket) do
+    borders = TailwindSetting.get_form_options("borders", "border-radius", nil, nil).form_configs
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "menu", id], fn selected_element ->
+        class = Enum.reject(selected_element["link_class"], &(&1 in borders)) ++ [type]
+        Map.merge(selected_element, %{"link_class" => class})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("delete", %{"type" => "mega_menu", "id" => id}, socket) do
     {_, elements} = pop_in(socket.assigns.element, ["children", "mega_menu", id])
 
@@ -1121,5 +1242,13 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
     send(self(), {"delete", %{"delete_element" => socket.assigns.selected_form}})
 
     {:noreply, socket}
+  end
+
+  defp create_border_radius(classes, type, bg_color \\ "") do
+    Enum.find(classes, &(&1 == type))
+    |> case do
+      nil -> bg_color
+      _ -> "bg-gray-300"
+    end
   end
 end
