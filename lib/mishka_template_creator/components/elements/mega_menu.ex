@@ -317,6 +317,13 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                     value={key}
                     id={"navigation-#{key}-#{index}-id"}
                   />
+
+                  <.input
+                    field={f[:type]}
+                    type="hidden"
+                    value="mega_menu"
+                    id={"navigation--type-#{key}-#{index}-id"}
+                  />
                 </MishkaCoreComponent.custom_simple_form>
               </div>
 
@@ -407,6 +414,20 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                         type="hidden"
                         value={li_key}
                         id={"navigation-#{li_key}-#{index}-id"}
+                      />
+
+                      <.input
+                        field={f[:parent_id]}
+                        type="hidden"
+                        value={key}
+                        id={"navigation-#{li_key}-#{index}-id"}
+                      />
+
+                      <.input
+                        field={f[:type]}
+                        type="hidden"
+                        value="sub_mega_menu"
+                        id={"navigation--type-#{key}-#{index}-id"}
                       />
                     </MishkaCoreComponent.custom_simple_form>
                   </div>
@@ -553,13 +574,18 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
   def handle_event(
         "edit",
         %{
-          "mega_menu_component" => %{"title" => title, "link" => link, "key" => id}
+          "mega_menu_component" => %{
+            "type" => "mega_menu",
+            "title" => title,
+            "link" => link,
+            "key" => id
+          }
         },
         socket
       ) do
     updated =
       socket.assigns.element
-      |> update_in(["children", id], fn selected_element ->
+      |> update_in(["children", "mega_menu", id], fn selected_element ->
         Map.merge(selected_element, %{"title" => title, "link" => link})
       end)
       |> Map.merge(socket.assigns.selected_form)
@@ -569,21 +595,24 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
     {:noreply, socket}
   end
 
-  def handle_event("edit", %{"mega_menu_component" => %{"cright_html" => html}}, socket) do
+  def handle_event(
+        "edit",
+        %{
+          "mega_menu_component" => %{
+            "type" => "sub_mega_menu",
+            "title" => title,
+            "link" => link,
+            "key" => id,
+            "parent_id" => parent_id
+          }
+        },
+        socket
+      ) do
     updated =
       socket.assigns.element
-      |> Map.merge(%{"cright_html" => html})
-      |> Map.merge(socket.assigns.selected_form)
-
-    send(self(), {"element", %{"update_parame" => updated}})
-
-    {:noreply, socket}
-  end
-
-  def handle_event("edit", %{"mega_menu_component" => %{"title" => title}}, socket) do
-    updated =
-      socket.assigns.element
-      |> Map.merge(%{"title" => title})
+      |> update_in(["children", "mega_menu", parent_id, "children", id], fn selected_element ->
+        Map.merge(selected_element, %{"title" => title, "link" => link})
+      end)
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
