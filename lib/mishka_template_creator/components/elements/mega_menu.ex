@@ -376,7 +376,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                     </div>
                   </div>
 
-                  <div id={"mega_menu-#{li_key}-#{index}"} class="hidden w-full">
+                  <div id={"mega_sub_menu-#{li_key}-#{index}"} class="hidden w-full">
                     <MishkaCoreComponent.custom_simple_form
                       :let={f}
                       for={%{}}
@@ -413,25 +413,144 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                         field={f[:key]}
                         type="hidden"
                         value={li_key}
-                        id={"navigation-#{li_key}-#{index}-id"}
+                        id={"navigation-sub-#{li_key}-#{index}-id"}
                       />
 
                       <.input
                         field={f[:parent_id]}
                         type="hidden"
                         value={key}
-                        id={"navigation-#{li_key}-#{index}-id"}
+                        id={"navigation-sub-#{li_key}-#{index}-parent_id"}
                       />
 
                       <.input
                         field={f[:type]}
                         type="hidden"
                         value="sub_mega_menu"
-                        id={"navigation--type-#{key}-#{index}-id"}
+                        id={"navigation-sub-#{key}-#{index}-type"}
                       />
                     </MishkaCoreComponent.custom_simple_form>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </Aside.aside_accordion>
+
+        <Aside.aside_accordion
+          id={"menu-#{@id}"}
+          title="Menu Settings"
+          title_class="my-4 w-full text-center font-bold select-none text-lg"
+          open={false}
+        >
+          <:before_title_block>
+            <Heroicons.plus
+              class="w-5 h-5 cursor-pointer"
+              phx-click="add"
+              phx-value-type="menu"
+              phx-target={@myself}
+            />
+          </:before_title_block>
+
+          <div class="w-full flex flex-col gap-3 space-y-4 pt-3">
+            <span
+              :if={length(@element["menu_order"]) == 0}
+              class="mx-auto border border-gray-200 bg-gray-100 font-bold py-2 px-3"
+            >
+              There is no item for this Menu side
+            </span>
+
+            <div
+              :for={
+                {%{id: key, data: data}, index} <-
+                  Enum.with_index(
+                    MishkaCoreComponent.sorted_list_by_order(
+                      @element["menu_order"],
+                      @element["children"]["menu"]
+                    )
+                  )
+              }
+              class="w-full flex flex-col justify-between items-center"
+            >
+              <div class="w-full flex flex-row justify-between items-center">
+                <span
+                  class="font-bold text-base select-none cursor-pointer"
+                  id={"title-#{key}-#{index}"}
+                  phx-click={JS.toggle(to: "#mega_menu-#{key}-#{index}")}
+                >
+                  <%= data["title"] %>
+                </span>
+
+                <div class="flex flex-row justify-end items-center gap-2">
+                  <div
+                    class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                    phx-click={JS.toggle(to: "#mega_menu-#{key}-#{index}")}
+                  >
+                    <Heroicons.pencil_square class="w-5 h-5" />
+                    <span class="text-base select-none">
+                      Edit
+                    </span>
+                  </div>
+                  <div
+                    class="flex flex-row justify-center items-start gap-2 cursor-pointer"
+                    phx-click="delete"
+                    phx-value-id={key}
+                    phx-value-type="menu"
+                    phx-target={@myself}
+                  >
+                    <Heroicons.trash class="w-5 h-5 text-red-600" />
+                    <span class="text-base select-none">Delete</span>
+                  </div>
+                </div>
+              </div>
+
+              <div id={"mega_menu-#{key}-#{index}"} class="hidden w-full">
+                <MishkaCoreComponent.custom_simple_form
+                  :let={f}
+                  for={%{}}
+                  as={:mega_menu_component}
+                  phx-change="edit"
+                  phx-target={@myself}
+                  class="flex flex-col w-full justify-start gap-3 py-5"
+                >
+                  <div class="flex flex-row justify-between items-center w-full gap-5">
+                    <div class="flex flex-col gap-2 w-full">
+                      <p class="font-bold text-sm">Title</p>
+                      <%= text_input(f, :title,
+                        class:
+                          "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                        placeholder: "Change Title",
+                        value: data["title"],
+                        id: "title-#{key}-#{index}-field"
+                      ) %>
+                    </div>
+
+                    <div class="flex flex-col gap-2 w-full">
+                      <p class="font-bold text-sm">Link</p>
+                      <%= text_input(f, :link,
+                        class:
+                          "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                        placeholder: "Change Link",
+                        value: data["link"],
+                        id: "image-#{key}-#{index}-field"
+                      ) %>
+                    </div>
+                  </div>
+
+                  <.input
+                    field={f[:key]}
+                    type="hidden"
+                    value={key}
+                    id={"navigation-#{key}-#{index}-id"}
+                  />
+
+                  <.input
+                    field={f[:type]}
+                    type="hidden"
+                    value="menu"
+                    id={"navigation-type-#{key}-#{index}-type"}
+                  />
+                </MishkaCoreComponent.custom_simple_form>
               </div>
             </div>
           </div>
@@ -516,6 +635,45 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
          "parent_id" => parent_id
        }}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("add", %{"type" => "menu"}, socket) do
+    unique_id = Ecto.UUID.generate()
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "menu"], fn selected_element ->
+        Map.merge(selected_element, %{
+          "#{unique_id}" => %{
+            "link" => "#",
+            "title" => "New Title",
+            "link_class" => [
+              "text-gray-800",
+              "hover:bg-gray-50",
+              "focus:ring-4",
+              "focus:ring-gray-300",
+              "font-medium",
+              "rounded-lg",
+              "text-sm",
+              "px-4",
+              "py-2",
+              "md:px-5",
+              "md:py-2.5",
+              "mr-1",
+              "md:mr-2",
+              "focus:outline-none"
+            ]
+          }
+        })
+      end)
+      |> Map.merge(%{
+        "menu_order" => socket.assigns.element["menu_order"] ++ [unique_id]
+      })
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
@@ -913,6 +1071,21 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
           "order" => Enum.reject(selected_element["order"], &(&1 == id))
         })
       end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("delete", %{"type" => "menu", "id" => id}, socket) do
+    {_, elements} = pop_in(socket.assigns.element, ["children", "menu", id])
+
+    updated =
+      elements
+      |> Map.merge(%{
+        "menu_order" => Enum.reject(socket.assigns.element["menu_order"], &(&1 == id))
+      })
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
