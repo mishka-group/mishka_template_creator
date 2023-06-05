@@ -779,6 +779,30 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
   end
 
   def handle_event(
+        "edit",
+        %{
+          "mega_menu_component" => %{
+            "type" => "menu",
+            "title" => title,
+            "link" => link,
+            "key" => id
+          }
+        },
+        socket
+      ) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "menu", id], fn selected_element ->
+        Map.merge(selected_element, %{"title" => title, "link" => link})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
         "font_style",
         %{"mega_menu_icon_style" => %{"height" => height, "width" => width}},
         socket
