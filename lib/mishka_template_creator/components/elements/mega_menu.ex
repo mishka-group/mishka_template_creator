@@ -269,6 +269,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                     class="flex flex-row justify-center items-start gap-2 cursor-pointer"
                     phx-click="delete"
                     phx-value-id={key}
+                    phx-value-type="mega_menu"
                     phx-target={@myself}
                   >
                     <Heroicons.trash class="w-5 h-5 text-red-600" />
@@ -338,7 +339,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                   <div class="w-full flex flex-row justify-between items-center">
                     <span
                       class="text-base select-none cursor-pointer"
-                      id={"title-#{key}-#{index}"}
+                      id={"title-#{li_key}-#{index}"}
                       phx-click={JS.toggle(to: "#mega_menu-#{li_key}-#{index}")}
                     >
                       <%= li_data["title"] %>
@@ -358,6 +359,8 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                         class="flex flex-row justify-center items-start gap-2 cursor-pointer"
                         phx-click="delete"
                         phx-value-id={li_key}
+                        phx-value-parent-id={key}
+                        phx-value-type="sub_mega_menu"
                         phx-target={@myself}
                       >
                         <Heroicons.trash class="w-5 h-5 text-red-600" />
@@ -850,12 +853,37 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
     {:noreply, socket}
   end
 
-  def handle_event("delete", %{"id" => id}, socket) do
-    {_, elements} = pop_in(socket.assigns.element, ["children", id])
+  def handle_event("delete", %{"type" => "mega_menu", "id" => id}, socket) do
+    {_, elements} = pop_in(socket.assigns.element, ["children", "mega_menu", id])
 
     updated =
       elements
-      |> Map.merge(%{"order" => Enum.reject(socket.assigns.element["order"], &(&1 == id))})
+      |> Map.merge(%{
+        "mega_menu_order" => Enum.reject(socket.assigns.element["mega_menu_order"], &(&1 == id))
+      })
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "delete",
+        %{"type" => "sub_mega_menu", "parent-id" => parent_id, "id" => id},
+        socket
+      ) do
+    {_, elements} =
+      pop_in(socket.assigns.element, ["children", "mega_menu", parent_id, "children", id])
+
+    updated =
+      elements
+      |> update_in(["children", "mega_menu", parent_id], fn selected_element ->
+        selected_element
+        |> Map.merge(%{
+          "order" => Enum.reject(selected_element["order"], &(&1 == id))
+        })
+      end)
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
