@@ -247,7 +247,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                 <div class="flex flex-row justify-end items-center gap-2">
                   <div
                     class="flex flex-row justify-center items-start gap-2 cursor-pointer"
-                    phx-click="delete"
+                    phx-click="add"
                     phx-value-id={key}
                     phx-target={@myself}
                   >
@@ -492,6 +492,32 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
          "parent_id" => parent_id
        }}
     )
+
+    {:noreply, socket}
+  end
+
+  def handle_event("add", %{"id" => id}, socket) do
+    unique_id = Ecto.UUID.generate()
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "mega_menu", id, "children"], fn selected_element ->
+        Map.merge(selected_element, %{
+          "#{unique_id}" => %{
+            "link" => "#",
+            "title" => "New Title"
+          }
+        })
+      end)
+      |> update_in(["children", "mega_menu", id], fn selected_element ->
+        selected_element
+        |> Map.merge(%{
+          "order" => selected_element["order"] ++ [unique_id]
+        })
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
 
     {:noreply, socket}
   end
