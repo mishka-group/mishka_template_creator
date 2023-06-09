@@ -39,7 +39,8 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
         render_type: render_type,
         selected_form: selected_form,
         element: element,
-        submit: submit
+        submit: submit,
+        form: "goz"
       )
 
     {:ok, new_socket}
@@ -210,6 +211,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
           id={"mega_menu-#{@id}"}
           title="Logo Settings"
           title_class="my-4 w-full text-center font-bold select-none text-lg"
+          open={false}
         >
           <MishkaCoreComponent.custom_simple_form
             :let={f}
@@ -228,7 +230,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                       "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
                     placeholder: "Change Title",
                     value: @element["children"]["logo"]["title"],
-                    id: "mega-menu-title"
+                    id: "mega-menu-logo-title"
                   ) %>
                 </div>
 
@@ -239,7 +241,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                       "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
                     placeholder: "Change Link",
                     value: @element["children"]["logo"]["link"],
-                    id: "mega-menu-link"
+                    id: "mega-menu-logo-link"
                   ) %>
                 </div>
               </div>
@@ -250,24 +252,37 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                     "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
                   placeholder: "Change image",
                   value: @element["children"]["logo"]["image"],
-                  id: "mega-menu-image"
+                  id: "mega-menu-logo-image"
                 ) %>
               </div>
 
-              <Text.font_style
-                myself={@myself}
-                classes={@element["children"]["logo"]["title_class"]}
-                as={:mega_menu_menu_font_style}
-                id={@id}
-              />
+              <div class="flex flex-col gap-2 w-full">
+                <p class="font-bold text-sm">Image URL</p>
+                <%= text_input(f, :alt,
+                  class:
+                    "w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500",
+                  placeholder: "Change description",
+                  value: @element["children"]["logo"]["alt"],
+                  id: "mega-menu-logo-description"
+                ) %>
+              </div>
 
-              <Color.select
-                title="Logo Title Color:"
-                myself={@myself}
-                classes={@element["children"]["logo"]["title_class"]}
-              />
+              <.input field={f[:type]} type="hidden" value="logo" id={"logo-type-#{@id}-id"} />
             </div>
           </MishkaCoreComponent.custom_simple_form>
+          <Text.font_style
+            myself={@myself}
+            classes={@element["children"]["logo"]["title_class"]}
+            as={:mega_menu_logo_font_style}
+            id={@id}
+          />
+
+          <Color.select
+            event_name="mega_menu_logo_style"
+            title="Logo Title Color:"
+            myself={@myself}
+            classes={@element["children"]["logo"]["title_class"]}
+          />
         </Aside.aside_accordion>
 
         <Aside.aside_accordion
@@ -642,6 +657,26 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                     </ul>
                   </div>
 
+                  <Text.font_style
+                    myself={@myself}
+                    classes={data["link_class"]}
+                    as={:mega_menu_menu_font_style}
+                    id={@id}
+                  />
+
+                  <Color.select
+                    title="Menu Font Color:"
+                    myself={@myself}
+                    classes={data["link_class"]}
+                  />
+
+                  <Color.select
+                    title="Menu Background Color:"
+                    myself={@myself}
+                    type="bg"
+                    classes={data["link_class"]}
+                  />
+
                   <.input
                     field={f[:key]}
                     type="hidden"
@@ -850,6 +885,32 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
       socket.assigns.element
       |> update_in(["children", "mega_menu", id], fn selected_element ->
         Map.merge(selected_element, %{"title" => title, "link" => link})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "edit",
+        %{
+          "mega_menu_component" =>
+            %{
+              "type" => "logo",
+              "title" => _title,
+              "link" => _link,
+              "image" => _image,
+              "alt" => _alt
+            } = params
+        },
+        socket
+      ) do
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "logo"], fn selected_element ->
+        Map.merge(selected_element, Map.drop(params, ["type"]))
       end)
       |> Map.merge(socket.assigns.selected_form)
 
@@ -1086,6 +1147,30 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
     {:noreply, socket}
   end
 
+  def handle_event(
+        "font_style",
+        %{"mega_menu_logo_font_style" => %{"font" => font, "font_size" => font_size}},
+        socket
+      ) do
+    class =
+      Text.edit_font_style_class(
+        socket.assigns.element["children"]["logo"]["title_class"],
+        font_size,
+        font
+      )
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "logo"], fn selected_element ->
+        Map.merge(selected_element, %{"title_class" => class})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("mega_menu_menu_link_style", %{"color" => color}, socket) do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
@@ -1099,6 +1184,26 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
     updated =
       socket.assigns.element
       |> Map.merge(%{"menu_link_class" => class, "icon_class" => icon_class})
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("mega_menu_logo_style", %{"color" => color}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    class =
+      Enum.reject(socket.assigns.element["children"]["logo"]["title_class"], &(&1 in text_colors)) ++
+        [color]
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "logo"], fn selected_element ->
+        Map.merge(selected_element, %{"title_class" => class})
+      end)
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})
