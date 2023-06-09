@@ -656,27 +656,6 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                       </li>
                     </ul>
                   </div>
-
-                  <Text.font_style
-                    myself={@myself}
-                    classes={data["link_class"]}
-                    as={:mega_menu_menu_font_style}
-                    id={@id}
-                  />
-
-                  <Color.select
-                    title="Menu Font Color:"
-                    myself={@myself}
-                    classes={data["link_class"]}
-                  />
-
-                  <Color.select
-                    title="Menu Background Color:"
-                    myself={@myself}
-                    type="bg"
-                    classes={data["link_class"]}
-                  />
-
                   <.input
                     field={f[:key]}
                     type="hidden"
@@ -691,6 +670,30 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                     id={"navigation-type-#{key}-#{index}-type"}
                   />
                 </MishkaCoreComponent.custom_simple_form>
+                <Text.font_style
+                  myself={@myself}
+                  classes={data["link_class"]}
+                  as={:menu_font_style}
+                  id_input={key}
+                  id={key}
+                />
+
+                <Color.select
+                  event_name="menu_select_color"
+                  title="Menu Font Color:"
+                  myself={@myself}
+                  classes={data["link_class"]}
+                  id={key}
+                />
+
+                <Color.select
+                  event_name="menu_select_color_bg"
+                  id={key}
+                  title="Menu Background Color:"
+                  myself={@myself}
+                  type="bg"
+                  classes={data["link_class"]}
+                />
               </div>
             </div>
           </div>
@@ -1039,6 +1042,41 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
     {:noreply, socket}
   end
 
+  def handle_event("menu_select_color", %{"color" => color, "id" => id}, socket) do
+    text_colors =
+      TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "menu", id], fn selected_element ->
+        IO.inspect(selected_element)
+        class = Enum.reject(selected_element["link_class"], &(&1 in text_colors)) ++ [color]
+        Map.merge(selected_element, %{"link_class" => class})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event("menu_select_color_bg", %{"color" => color, "id" => id}, socket) do
+    bg_colors =
+      TailwindSetting.get_form_options("backgrounds", "background-color", nil, nil).form_configs
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "menu", id], fn selected_element ->
+        class = Enum.reject(selected_element["link_class"], &(&1 in bg_colors)) ++ [color]
+        Map.merge(selected_element, %{"link_class" => class})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
   def handle_event("validate", %{"public_tag" => %{"tag" => tag}}, socket) do
     submit_status =
       Regex.match?(~r/^[A-Za-z][A-Za-z0-9-]*$/, String.trim(tag)) and
@@ -1163,6 +1201,27 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
       socket.assigns.element
       |> update_in(["children", "logo"], fn selected_element ->
         Map.merge(selected_element, %{"title_class" => class})
+      end)
+      |> Map.merge(socket.assigns.selected_form)
+
+    send(self(), {"element", %{"update_parame" => updated}})
+
+    {:noreply, socket}
+  end
+
+  def handle_event(
+        "font_style",
+        %{"menu_font_style" => %{"font" => font, "font_size" => font_size, "id" => id}},
+        socket
+      ) do
+    IO.inspect(id)
+
+    updated =
+      socket.assigns.element
+      |> update_in(["children", "menu", id], fn selected_element ->
+        class = Text.edit_font_style_class(selected_element["link_class"], font_size, font)
+
+        Map.merge(selected_element, %{"link_class" => class})
       end)
       |> Map.merge(socket.assigns.selected_form)
 

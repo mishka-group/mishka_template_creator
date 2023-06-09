@@ -7,6 +7,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Color do
   attr(:title, :string, required: false, default: "Color:")
   attr(:type, :string, required: false, default: "text")
   attr(:event_name, :string, required: false, default: "select_color")
+  attr(:id, :string, required: false, default: nil)
+  attr(:parent_id, :string, required: false, default: nil)
 
   attr(:class, :string,
     required: false,
@@ -30,6 +32,8 @@ defmodule MishkaTemplateCreator.Components.Blocks.Color do
           class={"bg-#{String.replace(item, "text-", "")} w-4 h-4 cursor-pointer"}
           phx-click={@event_name}
           phx-value-color={String.replace(item, "text", @type)}
+          phx-value-id={@id}
+          phx-value-parent-id={@parent_id}
           phx-target={@myself}
         >
           <Heroicons.x_mark
