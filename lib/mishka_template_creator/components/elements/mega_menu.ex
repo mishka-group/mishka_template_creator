@@ -435,7 +435,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
                     <div class="flex flex-row justify-end items-center gap-2">
                       <div
                         class="flex flex-row justify-center items-start gap-2 cursor-pointer"
-                        phx-click={JS.toggle(to: "#mega_menu-#{li_key}-#{index}")}
+                        phx-click={JS.toggle(to: "#mega_sub_menu-#{li_key}-#{index}")}
                       >
                         <Heroicons.pencil_square class="w-5 h-5" />
                         <span class="text-base select-none">
