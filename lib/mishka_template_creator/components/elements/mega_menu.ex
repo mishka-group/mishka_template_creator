@@ -121,7 +121,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
             <a
               :if={length(data["order"]) == 0}
               href="#"
-              class="block py-2 pl-3 pr-4 border-b text-gray-900 border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:p-0"
+              class={@element["mega_menu_link_class"]}
               aria-current="page"
             >
               <%= data["title"] %>
@@ -130,7 +130,7 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
               :if={length(data["order"]) != 0}
               id={"mega-menu-dropdown-button-#{key}"}
               phx-click={JS.toggle(to: "#mega-menu-dropdown-#{key}")}
-              class="flex items-center justify-between w-full py-2 pl-3 pr-4 font-medium text-gray-900 border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0"
+              class={@element["mega_menu_button_class"]}
             >
               <span><%= data["title"] %></span>
               <Heroicons.chevron_down class="w-5 h-5 ml-1" />
@@ -719,6 +719,13 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
             />
 
             <Color.select
+              event_name="select_color_font"
+              title="Font Color:"
+              myself={@myself}
+              classes={@element["class"]}
+            />
+
+            <Color.select
               title="Background Color:"
               type="bg"
               myself={@myself}
@@ -1270,15 +1277,15 @@ defmodule MishkaTemplateCreator.Components.Elements.MegaMenu do
     {:noreply, socket}
   end
 
-  def handle_event("mega_menu_copyright_style", %{"color" => color}, socket) do
+  def handle_event("select_color_font", %{"color" => color}, socket) do
     text_colors =
       TailwindSetting.get_form_options("typography", "text-color", nil, nil).form_configs
 
-    class = Enum.reject(socket.assigns.element["cright_class"], &(&1 in text_colors)) ++ [color]
+    class = Enum.reject(socket.assigns.element["class"], &(&1 in text_colors)) ++ [color]
 
     updated =
       socket.assigns.element
-      |> Map.merge(%{"cright_class" => class})
+      |> Map.merge(%{"class" => class})
       |> Map.merge(socket.assigns.selected_form)
 
     send(self(), {"element", %{"update_parame" => updated}})

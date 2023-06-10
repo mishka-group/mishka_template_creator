@@ -10003,7 +10003,8 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "p-4",
         "bg-white",
         "border-gray-200",
-        "text-base"
+        "text-base",
+        "text-gray-900"
       ],
       "mobile_button_class" => [
         "inline-flex",
@@ -10019,6 +10020,36 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
         "focus:ring-2",
         "focus:ring-gray-200"
       ],
+      "mega_menu_link_class" => [
+        "block",
+        "py-2",
+        "pl-3",
+        "pr-4",
+        "border-b",
+        "border-gray-100",
+        "hover:bg-gray-50",
+        "md:hover:bg-transparent",
+        "md:border-0",
+        "md:p-0"
+      ],
+      "mega_menu_button_class" => [
+        "flex",
+        "items-center",
+        "justify-between",
+        "w-full",
+        "py-2",
+        "pl-3",
+        "pr-4",
+        "font-medium",
+        "border-b",
+        "border-gray-100",
+        "md:w-auto",
+        "hover:bg-gray-50",
+        "md:hover:bg-transparent",
+        "md:border-0",
+        "md:hover:text-blue-600",
+        "md:p-0"
+      ],
       "children" => %{
         "logo" => %{
           "image" => "https://flowbite.com/docs/images/logo.svg",
@@ -10027,7 +10058,13 @@ defmodule MishkaTemplateCreator.Data.TailwindSetting do
           "title" => "Mishka",
           "link_class" => ["flex", "items-center"],
           "image_class" => ["h-8", "mr-3"],
-          "title_class" => ["self-center", "text-2xl", "font-semibold", "whitespace-nowrap"]
+          "title_class" => [
+            "self-center",
+            "text-2xl",
+            "font-semibold",
+            "whitespace-nowrap",
+            "text-gray-900"
+          ]
         },
         "mega_menu" => mega_menus,
         "menu" => %{
